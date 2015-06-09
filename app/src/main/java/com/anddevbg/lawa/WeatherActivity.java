@@ -1,9 +1,11 @@
 package com.anddevbg.lawa;
 
+
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
 
 
 public class WeatherActivity extends ActionBarActivity {
@@ -12,6 +14,13 @@ public class WeatherActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        WeatherFragment weatherFragment = new WeatherFragment();
+        fragmentTransaction.add(R.id.fragment, weatherFragment);
+        fragmentTransaction.commit();
+
+
     }
 
 

@@ -2,24 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:id="@+id/container"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".WeatherActivityFragment"
     android:background="#ff44b8bb">
-
-    <fragment
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:name="com.anddevbg.lawa.WeatherFragment"
-        android:id="@+id/fragment"
-        android:background="#bb00bb"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +20,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/temperature_textView"
         android:textAlignment="center"
-        android:textSize="60sp" />
+        android:textSize="60dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +30,7 @@
         android:id="@+id/textView2"
         android:layout_marginTop="91dp"
         android:textAlignment="center"
-        android:textSize="30sp"
+        android:textSize="30dp"
         android:layout_below="@+id/temperature_textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -61,7 +47,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="36dp"
         android:layout_marginEnd="36dp"
-        android:textSize="30sp" />
+        android:textSize="30dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -107,5 +93,8 @@
         android:layout_alignLeft="@+id/textView9"
         android:layout_alignStart="@+id/textView9"
         android:paddingTop="10dp" />
+
+
+
 
 </RelativeLayout>
