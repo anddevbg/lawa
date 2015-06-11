@@ -1,12 +1,5 @@
 <resources>
     <string name="app_name">LAWA</string>
-    <string name="hello_world">Hello weather!</string>
+    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="today_text_view">Today</string>
-    <string name="tomorrow_text_view">Tomorrow</string>
-    <string name="temperature_textView">22ºC</string>
-    <string name="today_temperature_min">Min 15ºC</string>
-    <string name="today_temperature_max">Max 25ºC</string>
-    <string name="tomorrow_temperature_min">Min 20ºC</string>
-    <string name="tomorrow_temperature_max">Max 29ºC</string>
 </resources>
