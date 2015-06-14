@@ -11,9 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+
 
 public class WeatherActivity extends ActionBarActivity {
-    ViewPager viewPager=null;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,12 @@ set adapter to the viewpager by passing it a fragment manager object
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(new MyAdapter(fragmentManager));
 
-
+// create image view for floating action button and set drawable to it and instantiate it
+        ImageView imageView = new ImageView(getApplicationContext());
+        imageView.setImageResource(R.mipmap.action_button);
+        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                .setContentView(imageView)
+                .build();
     }
 
 
@@ -78,15 +85,11 @@ class MyAdapter extends FragmentStatePagerAdapter {
             SecondCityFragment fragment2 = new SecondCityFragment();
             return fragment2;
         }
-        if(position==2)
-        {
-            return fragment;
-        }
         return fragment;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 }

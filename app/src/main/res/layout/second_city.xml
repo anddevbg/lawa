@@ -75,4 +75,6 @@
             android:layout_below="@+id/min_temp_textView"
             android:layout_alignRight="@+id/temperature_textView" />
 
+
+
 </LinearLayout>
