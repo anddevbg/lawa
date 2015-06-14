@@ -2,9 +2,13 @@ package com.anddevbg.lawa;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 
 /**
@@ -21,5 +25,13 @@ public class WeatherFragment extends Fragment {
 
         return inflater.inflate(R.layout.fragment_weather, container, false);
 
+
     }
+
+    @Override
+    public void setHasOptionsMenu(boolean hasMenu) {
+        super.setHasOptionsMenu(hasMenu);
+    }
+
+
 }
