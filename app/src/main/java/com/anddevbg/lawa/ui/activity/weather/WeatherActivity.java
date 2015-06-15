@@ -1,26 +1,65 @@
-package com.anddevbg.lawa;
+package com.anddevbg.lawa.ui.activity.weather;
 
 
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.anddevbg.lawa.R;
+import com.anddevbg.lawa.adapter.MyAdapter;
+import com.anddevbg.lawa.model.WeatherData;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class WeatherActivity extends ActionBarActivity {
     ViewPager viewPager;
+
+    private MyAdapter mWeatherAdapter;
+
+    private List<WeatherData> createMockData() {
+        List<WeatherData> result = new ArrayList<>();
+
+        WeatherData city1Data = new WeatherData();
+        city1Data.setCityName("New York");
+        city1Data.setCurrent(22);
+        city1Data.setMin(5);
+        city1Data.setMax(22);
+        city1Data.setWeatherImage("asd");
+
+        WeatherData city2Data = new WeatherData();
+        city2Data.setCityName("Paris");
+        city2Data.setCurrent(22);
+        city2Data.setMin(5);
+        city2Data.setMax(22);
+        city2Data.setWeatherImage("asd");
+
+        result.add(city1Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        result.add(city2Data);
+        return result;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+
+        mWeatherAdapter = new MyAdapter(getSupportFragmentManager());
+        mWeatherAdapter.setWeatherData(createMockData());
 
 /*
 Instantiate viewpager and fragment manager +
@@ -29,7 +68,7 @@ set adapter to the viewpager by passing it a fragment manager object
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(new MyAdapter(fragmentManager));
+        viewPager.setAdapter(mWeatherAdapter);
 
 // create image view for floating action button and set drawable to it and instantiate it
         ImageView imageView = new ImageView(getApplicationContext());
@@ -64,32 +103,3 @@ set adapter to the viewpager by passing it a fragment manager object
 
 }
 
-// create adapter to handle the views
-class MyAdapter extends FragmentStatePagerAdapter {
-
-    public MyAdapter(FragmentManager fm) {
-        super(fm);
-    }
-
-    // Check where we are and show fragment at each position
-
-    @Override
-    public Fragment getItem(int position) {
-        WeatherFragment fragment = new WeatherFragment();
-        if(position==0)
-        {
-            return fragment;
-        }
-        if(position==1)
-        {
-            SecondCityFragment fragment2 = new SecondCityFragment();
-            return fragment2;
-        }
-        return fragment;
-    }
-
-    @Override
-    public int getCount() {
-        return 2;
-    }
-}
