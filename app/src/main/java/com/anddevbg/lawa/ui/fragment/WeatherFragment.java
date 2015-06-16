@@ -38,6 +38,7 @@ public class WeatherFragment extends Fragment {
     private TextView mMin;
     private TextView mMax;
     private WeatherData mWeatherData;
+    private TextView mTimeLastRefresh;
 
 
 
@@ -69,6 +70,7 @@ public class WeatherFragment extends Fragment {
         mCity = (TextView) view.findViewById(R.id.city_textView);
         mMin = (TextView) view.findViewById(R.id.min_temp_textView);
         mMax = (TextView) view.findViewById(R.id.max_temp_textView);
+        mTimeLastRefresh = (TextView) view.findViewById(R.id.last_refresh_textView);
     }
 
     private void setupControls() {
@@ -76,6 +78,7 @@ public class WeatherFragment extends Fragment {
         mCity.setText(mWeatherData.getCityName());
         mMin.setText(Integer.toString(mWeatherData.getMin()));
         mMax.setText(Integer.toString(mWeatherData.getMax()));
+        mTimeLastRefresh.setText(Integer.toString(mWeatherData.getTimeLastRefresh()));
 
     }
 

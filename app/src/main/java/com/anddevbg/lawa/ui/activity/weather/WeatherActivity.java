@@ -34,6 +34,7 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         city1Data.setMin(5);
         city1Data.setMax(22);
         city1Data.setWeatherImage("asd");
+        city1Data.setTimeLastRefresh(2400);
 
         WeatherData city2Data = new WeatherData();
         city2Data.setCityName("Paris");
@@ -41,6 +42,7 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         city2Data.setMin(5);
         city2Data.setMax(22);
         city2Data.setWeatherImage("asd");
+        city2Data.setTimeLastRefresh(2300);
 
         result.add(city1Data);
         result.add(city2Data);
@@ -118,7 +120,7 @@ set adapter to the viewpager by passing it a fragment manager object
 
     @Override
     public void onRefresh() {
-        
+
 
     }
 }
