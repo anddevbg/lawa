@@ -14,8 +14,17 @@ public class WeatherData implements Serializable {
     private int mMax;
     private String mCityName;
     private String mWeatherImageUrl;
+    private int mTimeLastRefresh;
 
     public WeatherData() {
+    }
+
+    public int getTimeLastRefresh() {
+        return mTimeLastRefresh;
+    }
+
+    public void setTimeLastRefresh(int timeLastRefresh) {
+            this.mTimeLastRefresh= timeLastRefresh;
     }
 
     public int getCurrent() {
@@ -66,6 +75,8 @@ public class WeatherData implements Serializable {
                 ", mMax=" + mMax +
                 ", mCityName='" + mCityName + '\'' +
                 ", mWeatherImageUrl='" + mWeatherImageUrl + '\'' +
+                ", mTimeLastRefresh=" + mTimeLastRefresh +
                 '}';
     }
+
 }

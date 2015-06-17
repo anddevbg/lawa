@@ -4,10 +4,12 @@ package com.anddevbg.lawa.ui.activity.weather;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.MyAdapter;
@@ -17,10 +19,11 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherActivity extends ActionBarActivity {
+public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener  {
     ViewPager viewPager;
 
     private MyAdapter mWeatherAdapter;
+    private SwipeRefreshLayout mSwipeRefresh;
 
     private List<WeatherData> createMockData() {
         List<WeatherData> result = new ArrayList<>();
@@ -31,6 +34,7 @@ public class WeatherActivity extends ActionBarActivity {
         city1Data.setMin(5);
         city1Data.setMax(22);
         city1Data.setWeatherImage("asd");
+        city1Data.setTimeLastRefresh(2400);
 
         WeatherData city2Data = new WeatherData();
         city2Data.setCityName("Paris");
@@ -38,18 +42,14 @@ public class WeatherActivity extends ActionBarActivity {
         city2Data.setMin(5);
         city2Data.setMax(22);
         city2Data.setWeatherImage("asd");
+        city2Data.setTimeLastRefresh(2300);
 
         result.add(city1Data);
         result.add(city2Data);
+        result.add(city1Data);
         result.add(city2Data);
         result.add(city2Data);
-        result.add(city2Data);
-        result.add(city2Data);
-        result.add(city2Data);
-        result.add(city2Data);
-        result.add(city2Data);
-        result.add(city2Data);
-        result.add(city2Data);
+
         return result;
     }
 
@@ -58,6 +58,16 @@ public class WeatherActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
+        mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(getApplicationContext(), "Refreshing", Toast.LENGTH_LONG).show();
+                checkIsRefreshing();
+            }
+        });
+
+        
         mWeatherAdapter = new MyAdapter(getSupportFragmentManager());
         mWeatherAdapter.setWeatherData(createMockData());
 
@@ -76,6 +86,13 @@ set adapter to the viewpager by passing it a fragment manager object
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
                 .setContentView(imageView)
                 .build();
+    }
+
+    private void checkIsRefreshing() {
+        if(mSwipeRefresh.isRefreshing()) {
+            mSwipeRefresh.setRefreshing(false);
+        }
+
     }
 
 
@@ -101,5 +118,10 @@ set adapter to the viewpager by passing it a fragment manager object
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onRefresh() {
+
+
+    }
 }
 

@@ -74,5 +74,10 @@
         android:text="30ºC"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="20sp" />
+    <TextView
+        android:id="@+id/last_refresh_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
 
 </LinearLayout>

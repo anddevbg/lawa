@@ -1,15 +1,20 @@
 package com.anddevbg.lawa.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.model.WeatherData;
+
 
 
 /**
@@ -33,21 +38,30 @@ public class WeatherFragment extends Fragment {
     private TextView mMin;
     private TextView mMax;
     private WeatherData mWeatherData;
+    private TextView mTimeLastRefresh;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
+
         initControls(view);
         setupControls();
+        /*
+        mSwipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        */
+
         return view;
+
     }
 
     private void initControls(View view) {
@@ -56,6 +70,7 @@ public class WeatherFragment extends Fragment {
         mCity = (TextView) view.findViewById(R.id.city_textView);
         mMin = (TextView) view.findViewById(R.id.min_temp_textView);
         mMax = (TextView) view.findViewById(R.id.max_temp_textView);
+        mTimeLastRefresh = (TextView) view.findViewById(R.id.last_refresh_textView);
     }
 
     private void setupControls() {
@@ -63,12 +78,13 @@ public class WeatherFragment extends Fragment {
         mCity.setText(mWeatherData.getCityName());
         mMin.setText(Integer.toString(mWeatherData.getMin()));
         mMax.setText(Integer.toString(mWeatherData.getMax()));
+        mTimeLastRefresh.setText(Integer.toString(mWeatherData.getTimeLastRefresh()));
+
     }
 
     @Override
     public void setHasOptionsMenu(boolean hasMenu) {
         super.setHasOptionsMenu(hasMenu);
     }
-
 
 }
