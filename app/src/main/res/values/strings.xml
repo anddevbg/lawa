@@ -9,4 +9,8 @@
     <string name="today_temperature_max">Max 25ºC</string>
     <string name="tomorrow_temperature_min">Min 20ºC</string>
     <string name="tomorrow_temperature_max">Max 29ºC</string>
+    <string name="location_dialog_message">Location not enabled</string>
+    <string name="positive_button">Settings</string>
+    <string name="negative_button">Cancel</string>
+    <string name="internet_dialog_message">Please turn on Internet or Wi-Fi connection</string>
 </resources>

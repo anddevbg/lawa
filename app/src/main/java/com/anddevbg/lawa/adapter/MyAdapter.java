@@ -21,7 +21,6 @@ public class MyAdapter extends FragmentStatePagerAdapter {
 
     public MyAdapter(FragmentManager fm) {
         super(fm);
-
         mWeatherData = new ArrayList<>();
     }
 
@@ -32,25 +31,12 @@ public class MyAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
-
     // Check where we are and show fragment at each position
 
     @Override
     public Fragment getItem(int position) {
         Log.d("asd", "position: " +position + " Setting up: " + mWeatherData.get(position).toString());
         return WeatherFragment.getInstance(mWeatherData.get(position));
-        /*
-            WeatherFragment fragment = new WeatherFragment();
-            if (position == 0) {
-                return fragment;
-            }
-            if (position == 1) {
-                SecondCityFragment fragment2 = new SecondCityFragment();
-                return fragment2;
-            }
-            return fragment;
-        */
     }
 
     @Override

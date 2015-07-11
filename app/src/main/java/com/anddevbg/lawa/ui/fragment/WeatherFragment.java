@@ -3,18 +3,16 @@ package com.anddevbg.lawa.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.anddevbg.lawa.Networking.ContextHelper;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.model.WeatherData;
-
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -23,6 +21,7 @@ import com.anddevbg.lawa.model.WeatherData;
 public class WeatherFragment extends Fragment {
 
     private static final String WEATHER_DATA = "weather_data";
+    private Context mContext;
 
     public static WeatherFragment getInstance(WeatherData weatherData) {
         WeatherFragment fragment = new WeatherFragment();
@@ -53,13 +52,9 @@ public class WeatherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
-
+        mContext = this.getActivity();
         initControls(view);
         setupControls();
-        /*
-        mSwipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
-        */
-
         return view;
 
     }
@@ -78,7 +73,8 @@ public class WeatherFragment extends Fragment {
         mCity.setText(mWeatherData.getCityName());
         mMin.setText(Integer.toString(mWeatherData.getMin()));
         mMax.setText(Integer.toString(mWeatherData.getMax()));
-        mTimeLastRefresh.setText(Integer.toString(mWeatherData.getTimeLastRefresh()));
+        mTimeLastRefresh.setText(Double.toString(mWeatherData.getTimeLastRefresh()));
+        //TODO
 
     }
 

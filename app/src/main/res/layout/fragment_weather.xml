@@ -12,14 +12,14 @@
 
     <ImageView
         android:id="@+id/current_weather_imageView"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="40dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/cloudwithrain" />
+        />
 
     <TextView
         android:id="@+id/temperature_textView"

@@ -14,12 +14,12 @@ public class WeatherData implements Serializable {
     private int mMax;
     private String mCityName;
     private String mWeatherImageUrl;
-    private int mTimeLastRefresh;
+    private double mTimeLastRefresh;
 
     public WeatherData() {
     }
 
-    public int getTimeLastRefresh() {
+    public double getTimeLastRefresh() {
         return mTimeLastRefresh;
     }
 
