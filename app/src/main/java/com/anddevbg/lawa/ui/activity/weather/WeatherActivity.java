@@ -99,7 +99,7 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
     public void onConnected(Bundle bundle) {
         Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        panoramioWrapper.fetchPictures(mLastLocation);
+        //panoramioWrapper.fetchPictures(mLastLocation);
     }
 
     @Override
@@ -173,6 +173,11 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         mImageView = (ImageView) findViewById(R.id.current_weather_imageView);
 
+        mWeatherAdapter = new MyAdapter(getSupportFragmentManager());
+        mWeatherAdapter.setWeatherData(createMockData());
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager.setAdapter(mWeatherAdapter);
+
         ImageView imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.action_image);
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
@@ -191,10 +196,7 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
                 }
             }
         }, 1000);
-        mWeatherAdapter = new MyAdapter(getSupportFragmentManager());
-        mWeatherAdapter.setWeatherData(createMockData());
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(mWeatherAdapter);
+
     }
 
     public boolean isConnected() {
