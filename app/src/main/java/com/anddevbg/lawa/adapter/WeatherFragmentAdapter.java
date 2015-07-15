@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.ui.fragment.WeatherFragment;
+import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by tpenkov on 15.6.2015 г..
  */
-public class MyAdapter extends FragmentStatePagerAdapter {
+public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
 
     private List<WeatherData> mWeatherData;
     // create adapter to handle the views
 
-    public MyAdapter(FragmentManager fm) {
+    public WeatherFragmentAdapter(FragmentManager fm) {
         super(fm);
         mWeatherData = new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class MyAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Log.d("asd", "position: " +position + " Setting up: " + mWeatherData.get(position).toString());
-        return WeatherFragment.getInstance(mWeatherData.get(position));
+        return BaseWeatherFragment.createInstance(mWeatherData.get(position));
     }
 
     @Override

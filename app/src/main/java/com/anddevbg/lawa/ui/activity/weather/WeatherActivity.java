@@ -5,13 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -20,72 +17,54 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.anddevbg.lawa.Location.RetrieveLocation;
-import com.anddevbg.lawa.Panoramio.PanoramioWrapper;
 import com.anddevbg.lawa.R;
-import com.anddevbg.lawa.adapter.MyAdapter;
+import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
 import com.anddevbg.lawa.model.WeatherData;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RetrieveLocation {
+public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+
     ViewPager viewPager;
 
-    private MyAdapter mWeatherAdapter;
-    private SwipeRefreshLayout mSwipeRefresh;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
-    private PanoramioWrapper panoramioWrapper;
-    private ConnectivityManager connectivityManager;
-    private String PanoURL;
-    private ImageView mImageView;
-    private JSONArray array;
 
+    private WeatherFragmentAdapter mWeatherAdapter;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private ConnectivityManager connectivityManager;
+    private WeatherData city1Data;
+    private WeatherData city2Data;
 
     private List<WeatherData> createMockData() {
         List<WeatherData> result = new ArrayList<>();
+        city1Data = new WeatherData();
 
-
-        WeatherData city1Data = new WeatherData();
         city1Data.setCityName("New York");
         city1Data.setCurrent(22);
         city1Data.setMin(5);
         city1Data.setMax(22);
-        //city1Data.setWeatherImage(picassoImage());
-        city1Data.setTimeLastRefresh(2400);
 
-        WeatherData city2Data = new WeatherData();
-        city2Data.setCityName("Paris");
-        city2Data.setCurrent(22);
-        city2Data.setMin(5);
-        city2Data.setMax(22);
-        city2Data.setTimeLastRefresh(2300);
+        city2Data = new WeatherData();
+        city2Data.setCityName("Veliko Tarnovo");
+        city2Data.setCurrent(25);
+        city2Data.setMax(32);
+
 
         result.add(city1Data);
         result.add(city2Data);
 
+
         return result;
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         initControls();
-        buildGoogleApiClient();
-        if(mLastLocation == null) {
-            checkLocationEnabled();
-        }
+        checkLocationEnabled();
+
     }
 
     @Override
@@ -93,33 +72,6 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         super.onResume();
         checkInternetEnabled();
 
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        //panoramioWrapper.fetchPictures(mLastLocation);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Toast.makeText(this, "Connection suspended", Toast.LENGTH_SHORT)
-                .show();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Toast.makeText(this, "Connection failed", Toast.LENGTH_SHORT)
-                .show();
-    }
-
-    @Override
-    public Location retrieveLocation() {
-        if (mLastLocation != null) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-        return mLastLocation;
     }
 
     @Override
@@ -133,7 +85,6 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -142,16 +93,6 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_weather, menu);
         return true;
-    }
-
-    private void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-
     }
 
     @Override
@@ -163,17 +104,22 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
                 checkIsRefreshing();
             }
         });
+
     }
 
+    public boolean isConnected() {
+        if (connectivityManager.getActiveNetworkInfo() != null) {
+            if (connectivityManager.getActiveNetworkInfo().isConnected())
+                return true;
+        }
+        return false;
+    }
 
     private void initControls() {
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        panoramioWrapper = new PanoramioWrapper(this);
-        FragmentManager fragmentManager = getSupportFragmentManager();
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-        mImageView = (ImageView) findViewById(R.id.current_weather_imageView);
 
-        mWeatherAdapter = new MyAdapter(getSupportFragmentManager());
+        mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
         mWeatherAdapter.setWeatherData(createMockData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
@@ -192,19 +138,10 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
             public void run() {
                 if (mSwipeRefresh.isRefreshing()) {
                     mSwipeRefresh.setRefreshing(false);
-
                 }
             }
         }, 1000);
 
-    }
-
-    public boolean isConnected() {
-        if (connectivityManager.getActiveNetworkInfo() != null) {
-            if (connectivityManager.getActiveNetworkInfo().isConnected())
-                return true;
-        }
-        return false;
     }
 
     private void checkInternetEnabled() {
@@ -227,8 +164,6 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
                     });
             alertBuilder.show();
         }
-
-
     }
 
     private void checkLocationEnabled() {
@@ -260,5 +195,6 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         }
 
     }
+
 }
 
