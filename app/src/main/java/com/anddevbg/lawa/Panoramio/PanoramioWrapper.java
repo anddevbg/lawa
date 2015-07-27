@@ -1,9 +1,7 @@
 package com.anddevbg.lawa.panoramio;
 
 import android.location.Location;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
 import com.android.volley.Request;

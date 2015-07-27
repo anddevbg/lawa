@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.ForecastAdapter;
@@ -36,23 +36,24 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     Location mLocationLast;
     public List<ForecastData> dataList;
     private ForecastWrapper forecastWrapper;
-    ForecastAdapter mForecastAdapter;
+    private ForecastAdapter mForecastAdapter;
+    private TextView emptyTextView;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
-        dataList = new ArrayList<>();
-        getIntentInfo();
+
+        fetchForecast();
         initControls();
         initLocation();
-
     }
 
     @Override
     public void onForecastReceived(JSONObject response) {
+        dataList = new ArrayList<>();
         try {
-            Log.d("asd", "JSON response is " + response.toString(2));
             JSONObject city = response.getJSONObject("city");
             String cityName = city.getString("name");
 
@@ -60,21 +61,28 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jMain = jsonArray.getJSONObject(i);
                 ForecastData forecastDataObj = new ForecastData();
+                int timestamp = jMain.getInt("dt");
+                Date date = new Date(timestamp*1000L);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String day = sdf.format(date);
 
                 JSONObject main = jMain.getJSONObject("temp");
                 float maxTempDay = (float) main.getDouble("max");
                 float minTempDay = (float) main.getDouble("min");
-                forecastDataObj.setmMaximalTemperature(maxTempDay);
-                forecastDataObj.setmMinimalTemperature(minTempDay);
-                forecastDataObj.setmDay(cityName);
+                forecastDataObj.setMaximalTemperature(maxTempDay);
+                forecastDataObj.setMinimalTemperature(minTempDay);
+                forecastDataObj.setDay(day);
                 dataList.add(forecastDataObj);
-                Log.d("asd", "max/min temp is " + maxTempDay + " " + minTempDay);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         if(dataList.isEmpty()) {
-            Toast.makeText(this, "empty data list", Toast.LENGTH_SHORT).show();
+            mRecyclerView.setVisibility(View.GONE);
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            mForecastAdapter.setData(dataList);
         }
     }
 
@@ -82,10 +90,9 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     public void onForeastError(VolleyError error) {
     }
 
-    private void getIntentInfo() {
+    private void fetchForecast() {
         Intent i = getIntent();
         int idOfCity = i.getIntExtra("id", -1);
-        Log.d("asd", "id of city is " + idOfCity);
         forecastWrapper = new ForecastWrapper(idOfCity);
         forecastWrapper.receiveWeatherForecast(this);
     }
@@ -96,12 +103,12 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     }
 
     private void initControls() {
-        mForecastAdapter = new ForecastAdapter(this, dataList);
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        emptyTextView = (TextView) findViewById(R.id.empty_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
+        mForecastAdapter = new ForecastAdapter(this);
         mRecyclerView.setAdapter(mForecastAdapter);
-
     }
 
 }

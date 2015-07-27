@@ -26,23 +26,23 @@ public class ForecastData {
         return mDay;
     }
 
-    public void setmDay(String mDay) {
+    public void setDay(String mDay) {
         this.mDay = mDay;
     }
 
-    public float getmMinimalTemperature() {
+    public float getMinimalTemperature() {
         return mMinimalTemperature;
     }
 
-    public void setmMinimalTemperature(float mMinimalTemperature) {
+    public void setMinimalTemperature(float mMinimalTemperature) {
         this.mMinimalTemperature = mMinimalTemperature;
     }
 
-    public float getmMaximalTemperature() {
+    public float getMaximalTemperature() {
         return mMaximalTemperature;
     }
 
-    public void setmMaximalTemperature(float mMaximalTemperature) {
+    public void setMaximalTemperature(float mMaximalTemperature) {
         this.mMaximalTemperature = mMaximalTemperature;
     }
 

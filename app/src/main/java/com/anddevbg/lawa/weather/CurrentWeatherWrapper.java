@@ -1,15 +1,10 @@
 package com.anddevbg.lawa.weather;
 
-import android.content.Context;
 import android.location.Location;
-import android.location.LocationManager;
 import android.util.Log;
 
 import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
-import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
-import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;

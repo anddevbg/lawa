@@ -1,6 +1,5 @@
 package com.anddevbg.lawa.weather;
 
-import android.location.Location;
 import android.util.Log;
 
 import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
@@ -10,8 +9,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
-
-import java.text.DecimalFormat;
 
 /**
  * Created by adri.stanchev on 20/07/2015.
@@ -26,8 +23,6 @@ public class ForecastWrapper {
     }
 
     private final String getForecastUrl() {
-
-
         Log.d("asd", "city api call: " + "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityIdName +
                 "&cnt=5&units=metric&APPID=8b632a903448af2dfe8865826f40b459");
         return "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityIdName +

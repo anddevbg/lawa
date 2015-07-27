@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 import com.anddevbg.lawa.ui.fragment.CurrentLocationWeatherFragment;
 
 import java.util.ArrayList;

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.model.ForecastData;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,13 +21,12 @@ import java.util.List;
  */
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
 
-
     private LayoutInflater inflater;
     List<ForecastData> forecastDataList = Collections.emptyList();
 
-    public ForecastAdapter(Context context, List<ForecastData> data) {
+    public ForecastAdapter(Context context) {
         inflater = LayoutInflater.from(context);
-        this.forecastDataList = data ;
+        forecastDataList = new ArrayList<>();
     }
 
     @Override
@@ -41,14 +41,20 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
     public void onBindViewHolder(ForecastViewHolder holder, int position) {
         ForecastData forecastObject = forecastDataList.get(position);
         holder.dayOfWeek.setText(forecastObject.getmDay());
-        holder.minimalTemperature.setText(String.valueOf(forecastObject.getmMinimalTemperature()));
-        holder.maximalTemperature.setText(String.valueOf(forecastObject.getmMaximalTemperature()));
-        holder.weatherIcon.setImageResource(R.drawable.cloudsasdas);
+        holder.minimalTemperature.setText(String.valueOf(forecastObject.getMinimalTemperature()));
+        holder.maximalTemperature.setText(String.valueOf(forecastObject.getMaximalTemperature()));
+        //holder.weatherIcon.setImageResource(R.drawable.cloudsasdas);
+
     }
 
     @Override
     public int getItemCount() {
             return forecastDataList.size();
+    }
+
+    public void setData(List<ForecastData> data) {
+        forecastDataList = data;
+        notifyDataSetChanged();
     }
 }
 
@@ -60,6 +66,7 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
     ImageView weatherIcon;
     TextView slashText;
 
+
     public ForecastViewHolder(View itemView) {
         super(itemView);
 
@@ -68,6 +75,7 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
         maximalTemperature = (TextView) itemView.findViewById(R.id.max_temperature_text_view);
         weatherIcon = (ImageView) itemView.findViewById(R.id.weather_Icon);
         slashText = (TextView) itemView.findViewById(R.id.slash_text_view);
+
     }
 }
 
