@@ -4,22 +4,36 @@
     <uses-permission android:name="ANDROID.PERMISSION.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="ANDROID.PERMISSION.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="ANDROID.PERMISSION.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="ANDROID.PERMISSION.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".LawaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/Theme.AppCompat" >
+        <meta-data android:name="android.app.default_searchable" android:value=".model.SearchActivity"/>
         <activity
             android:name=".ui.activity.weather.WeatherActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity android:name=".model.SearchActivity"
+            android:parentActivityName=".ui.activity.weather.WeatherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity android:name=".ui.activity.weather.ForecastActivity" />
+
+        </application>
+
 
 </manifest>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/row_forecast_layout"
+    android:background="@color/colorPrimaryDark">
+
+
+    <TextView
+        android:id="@+id/day_text_view"
+        android:paddingTop="17dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Day"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/min_temperature_text_view"
+        android:paddingTop="17dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Min Temp"
+        android:layout_below="@+id/day_text_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/max_temperature_text_view"
+        android:paddingTop="17dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Max Temp"
+        android:layout_alignBottom="@+id/slash_text_view"
+        android:layout_toRightOf="@+id/slash_text_view"
+        android:layout_toEndOf="@+id/slash_text_view" />
+
+    <TextView
+        android:id="@+id/slash_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="/"
+        android:layout_alignBottom="@+id/min_temperature_text_view"
+        android:layout_toRightOf="@+id/min_temperature_text_view"
+        android:layout_toEndOf="@+id/min_temperature_text_view" />
+
+    <ImageView
+        android:id="@+id/weather_Icon"
+        android:paddingTop="17dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/slash_text_view"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="39dp"
+        android:layout_marginEnd="39dp" />
+</RelativeLayout>

@@ -2,59 +2,43 @@ package com.anddevbg.lawa.ui.activity.weather;
 
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
+import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class WeatherActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     ViewPager viewPager;
-
+    SearchView searchView;
 
     private WeatherFragmentAdapter mWeatherAdapter;
     private SwipeRefreshLayout mSwipeRefresh;
     private ConnectivityManager connectivityManager;
-    private WeatherData city1Data;
-    private WeatherData city2Data;
+    WeatherData city1Data;
 
-    private List<WeatherData> createMockData() {
-        List<WeatherData> result = new ArrayList<>();
+    private ArrayList<WeatherData> getWeatherData() {
+        ArrayList<WeatherData> result = new ArrayList<>();
         city1Data = new WeatherData();
-
-        city1Data.setCityName("New York");
-        city1Data.setCurrent(22);
-        city1Data.setMin(5);
-        city1Data.setMax(22);
-
-        city2Data = new WeatherData();
-        city2Data.setCityName("Veliko Tarnovo");
-        city2Data.setCurrent(25);
-        city2Data.setMax(32);
-
-
         result.add(city1Data);
-        result.add(city2Data);
-
-
         return result;
     }
 
@@ -64,14 +48,12 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         setContentView(R.layout.activity_weather);
         initControls();
         checkLocationEnabled();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkInternetEnabled();
-
     }
 
     @Override
@@ -89,10 +71,24 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
     }
 
     @Override
+    public boolean onSearchRequested() {
+        Intent i = new Intent(this, SearchActivity.class);
+        i.putExtra("name", searchView.getQuery());
+        startActivity(i);
+        return super.onSearchRequested();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_weather, menu);
-        return true;
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -100,10 +96,12 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Toast.makeText(getApplicationContext(), "Refreshing", Toast.LENGTH_SHORT).show();
                 checkIsRefreshing();
             }
         });
+    }
+
+    private void checkIsRefreshing() {
 
     }
 
@@ -120,28 +118,16 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
 
         mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
-        mWeatherAdapter.setWeatherData(createMockData());
+        mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
 
-        ImageView imageView = new ImageView(this);
+        /*ImageView imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.action_image);
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
                 .setContentView(imageView)
                 .build();
-    }
-
-    private void checkIsRefreshing() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mSwipeRefresh.isRefreshing()) {
-                    mSwipeRefresh.setRefreshing(false);
-                }
-            }
-        }, 1000);
-
+                */
     }
 
     private void checkInternetEnabled() {
@@ -193,7 +179,6 @@ public class WeatherActivity extends ActionBarActivity implements SwipeRefreshLa
             });
             dialog.show();
         }
-
     }
 
 }

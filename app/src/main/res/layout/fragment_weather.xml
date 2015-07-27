@@ -79,5 +79,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"/>
+    <Button
+        android:id="@+id/forecast_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="goToForecastActivity"
+        android:paddingBottom="10dp"/>
 
 </LinearLayout>
