@@ -3,7 +3,7 @@ package com.anddevbg.lawa;
 import android.app.Application;
 import android.content.Context;
 
-import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
+import com.anddevbg.lawa.networking.NetworkRequestManager;
 
 /**
  * Created by adri.stanchev on 12/07/2015.
@@ -16,7 +16,7 @@ public class LawaApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        NetworkRequestManagerImpl.setup(this);
+        NetworkRequestManager.setup(this);
         instance = this;
     }
     public static Context getContext() {

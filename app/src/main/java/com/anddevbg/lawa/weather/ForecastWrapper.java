@@ -1,6 +1,6 @@
 package com.anddevbg.lawa.weather;
 
-import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
+import com.anddevbg.lawa.networking.NetworkRequestManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -37,7 +37,7 @@ public class ForecastWrapper {
                 callback.onForeastError(error);
             }
         });
-        NetworkRequestManagerImpl.getInstance().performRequest(request);
+        NetworkRequestManager.getInstance().performRequest(request);
 
     }
 }

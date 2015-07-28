@@ -3,7 +3,7 @@ package com.anddevbg.lawa.weather;
 import android.location.Location;
 import android.util.Log;
 
-import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
+import com.anddevbg.lawa.networking.NetworkRequestManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -23,7 +23,7 @@ public class CurrentWeatherWrapper {
         mLocation = mLastKnownLocation;
     }
 
-    private final String getOpenWeatherApiUrl() {
+    public final String getOpenWeatherApiUrl() {
 
         if (mLocation != null) {
             latitude = mLocation.getLatitude();
@@ -46,6 +46,6 @@ public class CurrentWeatherWrapper {
                 weatherCallback.onWeatherApiErrorResponse(error);
             }
         });
-        NetworkRequestManagerImpl.getInstance().performRequest(request);
+        NetworkRequestManager.getInstance().performRequest(request);
     }
 }

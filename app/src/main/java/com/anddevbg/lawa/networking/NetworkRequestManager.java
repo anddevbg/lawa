@@ -10,23 +10,23 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by adri.stanchev on 12/07/2015.
  */
-public class NetworkRequestManagerImpl implements IRequestManager<Request<?>>, RequestQueue.RequestFinishedListener<Object> {
+public class NetworkRequestManager implements IRequestManager<Request<?>>, RequestQueue.RequestFinishedListener<Object> {
 
-    private static NetworkRequestManagerImpl sInstance = null;
+    private static NetworkRequestManager sInstance = null;
 
     private RequestQueue mRequestQueue;
 
     private SparseArray<Request<?>> mOnGoingRequests;
 
-    public static NetworkRequestManagerImpl getInstance() {
+    public static NetworkRequestManager getInstance() {
         if (sInstance == null) {
-            sInstance = new NetworkRequestManagerImpl();
+            sInstance = new NetworkRequestManager();
         }
         return sInstance;
     }
 
     public static void setup(Context context) {
-        NetworkRequestManagerImpl manager = getInstance();
+        NetworkRequestManager manager = getInstance();
         manager.init(context);
     }
 

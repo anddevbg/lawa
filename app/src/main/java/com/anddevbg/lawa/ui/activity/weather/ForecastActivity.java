@@ -48,7 +48,7 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
         dataList = new ArrayList<>();
         try {
             JSONObject city = response.getJSONObject("city");
-            String cityName = city.getString("name");
+            //String cityName = city.getString("name");
 
             JSONArray jsonArray = (JSONArray) response.get("list");
             for (int i = 0; i < jsonArray.length(); i++) {

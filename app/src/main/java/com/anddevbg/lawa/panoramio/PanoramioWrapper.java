@@ -2,7 +2,7 @@ package com.anddevbg.lawa.panoramio;
 
 import android.location.Location;
 
-import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
+import com.anddevbg.lawa.networking.NetworkRequestManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,7 +20,7 @@ public class PanoramioWrapper {
 
     private static final double BOUNDING_BOX = 0.1;
 
-    private static final String getPanoramioURL(double minx, double maxx, double miny, double maxy) {
+    public final String getPanoramioURL(double minx, double maxx, double miny, double maxy) {
         return "http://www.panoramio.com" +
                 "/map/get_panoramas.php?" +
                 "order=popularity&" +
@@ -56,7 +56,7 @@ public class PanoramioWrapper {
                 callback.onPanoramioErrorResponse(error);
             }
         });
-        NetworkRequestManagerImpl.getInstance().performRequest(request);
+        NetworkRequestManager.getInstance().performRequest(request);
     }
 
 }
