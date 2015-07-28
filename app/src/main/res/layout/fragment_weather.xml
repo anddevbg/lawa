@@ -30,7 +30,6 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="fitCenter"
-        android:text="22ºC"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="50sp" />
 
@@ -43,7 +42,6 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="fitCenter"
-        android:text="New York"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="42sp" />
 
@@ -58,7 +56,6 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="fitCenter"
-        android:text="15ºC"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="20sp" />
 
@@ -71,7 +68,6 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="fitCenter"
-        android:text="30ºC"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="20sp" />
     <TextView
@@ -79,11 +75,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"/>
-    <Button
-        android:id="@+id/forecast_button"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="goToForecastActivity"
-        android:paddingBottom="10dp"/>
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/forecast_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:onClick="goToForecastActivity"
+            android:paddingBottom="10dp"/>
+    </RelativeLayout>
+
 
 </LinearLayout>

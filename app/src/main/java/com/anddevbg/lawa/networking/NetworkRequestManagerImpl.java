@@ -12,7 +12,7 @@ import com.android.volley.toolbox.Volley;
  */
 public class NetworkRequestManagerImpl implements IRequestManager<Request<?>>, RequestQueue.RequestFinishedListener<Object> {
 
-    private static NetworkRequestManagerImpl sInstance = null; // static fields start with 's'
+    private static NetworkRequestManagerImpl sInstance = null;
 
     private RequestQueue mRequestQueue;
 
@@ -22,7 +22,6 @@ public class NetworkRequestManagerImpl implements IRequestManager<Request<?>>, R
         if (sInstance == null) {
             sInstance = new NetworkRequestManagerImpl();
         }
-
         return sInstance;
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.anddevbg.lawa.R;
@@ -48,9 +46,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView mCurrentTemp;
     private TextView mMin;
     private TextView mMax;
-    protected WeatherData mWeatherData;
-    private TextView mTimeLastRefresh;
-    private Button forecastButton;
+    private WeatherData mWeatherData;
+    private TextView descriptionWeatherText;
 
     protected Location mLastKnownLocation;
     protected PanoramioWrapper panoramioWrapper;
@@ -113,16 +110,13 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             mMin.setText(String.valueOf(humidity) + "%");
 
             cityID = result.getInt("id");
-
-            Log.d("asd", "id = " + cityID);
-
             String name = result.getString("name");
             mCity.setText(name);
 
             JSONArray jArray = result.getJSONArray("weather");
             JSONObject description = jArray.getJSONObject(0);
             String desc = description.getString("description");
-            mTimeLastRefresh.setText(desc);
+            descriptionWeatherText.setText(desc);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -141,7 +135,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     @Override
     public void onPanoramioResponse(JSONObject result)  {
-        JSONArray array = null;
+        JSONArray array;
         ArrayList<String> photoArray = new ArrayList<>();
         try {
             array = result.getJSONArray("photos");
@@ -159,7 +153,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     }
 
     private void initControls(View view) {
-        forecastButton = (Button) view.findViewById(R.id.forecast_button);
+        Button forecastButton = (Button) view.findViewById(R.id.forecast_button);
         forecastButton.setText("see forecast");
         forecastButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,13 +166,12 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mCity = (TextView) view.findViewById(R.id.city_textView);
         mMin = (TextView) view.findViewById(R.id.min_temp_textView);
         mMax = (TextView) view.findViewById(R.id.max_temp_textView);
-        mTimeLastRefresh = (TextView) view.findViewById(R.id.last_refresh_textView);
+        descriptionWeatherText = (TextView) view.findViewById(R.id.last_refresh_textView);
     }
 
     public void goToForecastActivity() {
         Intent i = new Intent(getActivity(), ForecastActivity.class);
         i.putExtra("id", cityID);
-        Log.d("asd", "id of city is " + cityID);
         startActivity(i);
     }
 
@@ -187,7 +180,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mCity.setText(mWeatherData.getCityName());
         mMin.setText(Integer.toString(mWeatherData.getMin()));
         mMax.setText(Integer.toString(mWeatherData.getMax()));
-        mTimeLastRefresh.setText(Double.toString(mWeatherData.getTimeLastRefresh()));
+        descriptionWeatherText.setText((mWeatherData.getTimeLastRefresh()));
     }
 
     private void respondToPanoramioErrorResponse() {

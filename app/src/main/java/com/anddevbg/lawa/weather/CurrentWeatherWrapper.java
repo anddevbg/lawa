@@ -16,25 +16,22 @@ import org.json.JSONObject;
  */
 public class CurrentWeatherWrapper {
     private Location mLocation;
-    double latitude = 42.6964;
-    double longitude = 23.3260;
+    double latitude = 42.6833333;
+    double longitude = 23.3166667;
 
     public CurrentWeatherWrapper(Location mLastKnownLocation) {
         mLocation = mLastKnownLocation;
     }
-
 
     private final String getOpenWeatherApiUrl() {
 
         if (mLocation != null) {
             latitude = mLocation.getLatitude();
             longitude = mLocation.getLongitude();
-            Log.d("asd", "Location = " + latitude + " " + longitude);
-
+            Log.d("asd", "location null");
         }
         return "http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+
                 "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
-
     }
 
     public void getWeatherUpdate(final ICurrentWeatherCallback weatherCallback) {

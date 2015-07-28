@@ -1,7 +1,6 @@
 package com.anddevbg.lawa.panoramio;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.anddevbg.lawa.networking.NetworkRequestManagerImpl;
 import com.android.volley.Request;
@@ -19,8 +18,7 @@ public class PanoramioWrapper {
     private double mLatitude;
     private double mLongitude;
 
-
-    private static final double BOUNDING_BOX = 0.05;
+    private static final double BOUNDING_BOX = 0.1;
 
     private static final String getPanoramioURL(double minx, double maxx, double miny, double maxy) {
         return "http://www.panoramio.com" +
@@ -55,7 +53,6 @@ public class PanoramioWrapper {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("error", "Volley error");
                 callback.onPanoramioErrorResponse(error);
             }
         });

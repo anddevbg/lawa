@@ -10,11 +10,11 @@ public interface IRequestManager<T> {
      * @param request
      * @return request id that can be used to cancel the request.
      */
-    public int performRequest(T request);
+    int performRequest(T request);
 
     /**
      *
      * @param requestId
      */
-    public void cancelRequest(int requestId);
+    void cancelRequest(int requestId);
 }

@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.model.ForecastData;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,10 +43,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
     public void onBindViewHolder(ForecastViewHolder holder, int position) {
         ForecastData forecastObject = forecastDataList.get(position);
         holder.dayOfWeek.setText(forecastObject.getmDay());
-        holder.minimalTemperature.setText(String.valueOf(forecastObject.getMinimalTemperature()));
-        holder.maximalTemperature.setText(String.valueOf(forecastObject.getMaximalTemperature()));
-        //holder.weatherIcon.setImageResource(R.drawable.cloudsasdas);
-
+        holder.minimalTemperature.setText(String.valueOf(forecastObject.getMinimalTemperature() + "ºC"));
+        holder.maximalTemperature.setText(String.valueOf(forecastObject.getMaximalTemperature() + "ºC"));
+        holder.descriptionText.setText(String.valueOf(forecastObject.getmDescription()));
+        Picasso.with(LawaApplication.getContext()).load(forecastObject.getImageUrl()).into(holder.weatherIcon);
     }
 
     @Override
@@ -65,6 +67,7 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
     TextView maximalTemperature;
     ImageView weatherIcon;
     TextView slashText;
+    TextView descriptionText;
 
 
     public ForecastViewHolder(View itemView) {
@@ -75,6 +78,7 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
         maximalTemperature = (TextView) itemView.findViewById(R.id.max_temperature_text_view);
         weatherIcon = (ImageView) itemView.findViewById(R.id.weather_Icon);
         slashText = (TextView) itemView.findViewById(R.id.slash_text_view);
+        descriptionText = (TextView) itemView.findViewById(R.id.description_text_view);
 
     }
 }

@@ -9,6 +9,15 @@ public class ForecastData {
     private String mDay;
     private float mMinimalTemperature;
     private float mMaximalTemperature;
+    private String mDescription;
+
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
 
     public ForecastData() {
 

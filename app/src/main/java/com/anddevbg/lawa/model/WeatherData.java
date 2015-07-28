@@ -1,7 +1,5 @@
 package com.anddevbg.lawa.model;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 
 /**
@@ -14,16 +12,16 @@ public class WeatherData implements Serializable {
     private int mMax;
     private String mCityName;
     private String mWeatherImageUrl;
-    private double mTimeLastRefresh;
+    private String mTimeLastRefresh;
 
     public WeatherData() {
     }
 
-    public double getTimeLastRefresh() {
+    public String getTimeLastRefresh() {
         return mTimeLastRefresh;
     }
 
-    public void setTimeLastRefresh(int timeLastRefresh) {
+    public void setTimeLastRefresh(String timeLastRefresh) {
             this.mTimeLastRefresh= timeLastRefresh;
     }
 

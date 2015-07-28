@@ -36,7 +36,6 @@ public class SearchActivity extends Activity implements IPanoramioCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
-
         searchImageView = (ImageView) findViewById(R.id.search_activity_image);
 
         handleIntent(getIntent());
@@ -76,12 +75,11 @@ public class SearchActivity extends Activity implements IPanoramioCallback {
                 }
             }.execute();
         }
-
     }
 
     @Override
     public void onPanoramioResponse(JSONObject result) {
-        JSONArray array = null;
+        JSONArray array;
         try {
             array = result.getJSONArray("photos");
             JSONObject json = array.getJSONObject(RandomUtil.randInt(0, 5));

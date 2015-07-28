@@ -3,7 +3,6 @@ package com.anddevbg.lawa.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.ui.fragment.CurrentLocationWeatherFragment;
@@ -17,7 +16,6 @@ import java.util.List;
 public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
 
     private List<WeatherData> mWeatherData;
-    // create adapter to handle the views
 
     public WeatherFragmentAdapter(FragmentManager fm) {
         super(fm);
@@ -31,12 +29,8 @@ public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    // Check where we are and show fragment at each position
-
     @Override
     public Fragment getItem(int position) {
-
-        Log.d("asd", "position: " + position + " Setting up: " + mWeatherData.get(position).toString());
         return CurrentLocationWeatherFragment.createInstance(mWeatherData.get(position));
     }
 

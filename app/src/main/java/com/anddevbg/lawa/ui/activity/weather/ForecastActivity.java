@@ -1,9 +1,6 @@
 package com.anddevbg.lawa.ui.activity.weather;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,10 +29,7 @@ import java.util.List;
  */
 public class ForecastActivity extends AppCompatActivity implements IForecastCallback {
 
-    LocationManager locationManager;
-    Location mLocationLast;
     public List<ForecastData> dataList;
-    private ForecastWrapper forecastWrapper;
     private ForecastAdapter mForecastAdapter;
     private TextView emptyTextView;
     private RecyclerView mRecyclerView;
@@ -47,7 +41,6 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
 
         fetchForecast();
         initControls();
-        initLocation();
     }
 
     @Override
@@ -60,10 +53,12 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
             JSONArray jsonArray = (JSONArray) response.get("list");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jMain = jsonArray.getJSONObject(i);
+                JSONArray j1 = jMain.getJSONArray("weather");
                 ForecastData forecastDataObj = new ForecastData();
+
                 int timestamp = jMain.getInt("dt");
                 Date date = new Date(timestamp*1000L);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                 String day = sdf.format(date);
 
                 JSONObject main = jMain.getJSONObject("temp");
@@ -72,6 +67,15 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
                 forecastDataObj.setMaximalTemperature(maxTempDay);
                 forecastDataObj.setMinimalTemperature(minTempDay);
                 forecastDataObj.setDay(day);
+
+                JSONObject weatherObj = j1.getJSONObject(0);
+                String mainString = weatherObj.getString("main");
+                forecastDataObj.setmDescription(mainString);
+
+                String pngFileUrl = weatherObj.getString("icon");
+                String fullForecastIconUrl = "http://openweathermap.org/img/w/" + pngFileUrl + ".png";
+                forecastDataObj.setImageUrl(fullForecastIconUrl);
+
                 dataList.add(forecastDataObj);
             }
         } catch (JSONException e) {
@@ -93,13 +97,8 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     private void fetchForecast() {
         Intent i = getIntent();
         int idOfCity = i.getIntExtra("id", -1);
-        forecastWrapper = new ForecastWrapper(idOfCity);
+        ForecastWrapper forecastWrapper = new ForecastWrapper(idOfCity);
         forecastWrapper.receiveWeatherForecast(this);
-    }
-
-    private void initLocation() {
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        mLocationLast = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
     }
 
     private void initControls() {

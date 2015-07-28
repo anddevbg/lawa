@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
@@ -30,7 +29,6 @@ public class WeatherActivity extends AppCompatActivity implements SwipeRefreshLa
     ViewPager viewPager;
     SearchView searchView;
 
-    private WeatherFragmentAdapter mWeatherAdapter;
     private SwipeRefreshLayout mSwipeRefresh;
     private ConnectivityManager connectivityManager;
     WeatherData city1Data;
@@ -117,7 +115,7 @@ public class WeatherActivity extends AppCompatActivity implements SwipeRefreshLa
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
 
-        mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
+        WeatherFragmentAdapter mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
         mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
