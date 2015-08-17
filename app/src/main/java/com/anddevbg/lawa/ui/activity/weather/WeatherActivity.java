@@ -1,13 +1,10 @@
 package com.anddevbg.lawa.ui.activity.weather;
 
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -17,6 +14,7 @@ import android.widget.SearchView;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
+import com.anddevbg.lawa.animation.ZoomPagerTransformation;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 
@@ -44,17 +42,6 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         initControls();
-
-    }
-
-    private void startNotification() {
-        Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle("LAWA")
-                .setContentText("Weather in " + result.get(0).getCityName() + " is " + result.get(0).getCurrent() + "ºC")
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
     }
 
     @Override
@@ -79,7 +66,6 @@ public class WeatherActivity extends AppCompatActivity {
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
         Button add = (Button) menu.findItem(R.id.action_add).getActionView();
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -103,7 +89,6 @@ public class WeatherActivity extends AppCompatActivity {
             case R.id.action_add:
                 addNewCity();
                 viewPager.setCurrentItem(result.size(), true);
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -119,6 +104,7 @@ public class WeatherActivity extends AppCompatActivity {
         mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
+        viewPager.setPageTransformer(true, new ZoomPagerTransformation());
         viewPager.setOffscreenPageLimit(2);
     }
 

@@ -1,4 +1,4 @@
-package com.anddevbg.lawa.adapter;
+package com.anddevbg.lawa.recyclerview;
 
 /**
  * Created by adri.stanchev on 16/08/2015.

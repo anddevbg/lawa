@@ -2,7 +2,6 @@ package com.anddevbg.lawa.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import android.widget.TextView;
 import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.model.ForecastData;
+import com.anddevbg.lawa.recyclerview.InterfaceTouchHelper;
+import com.anddevbg.lawa.recyclerview.OnStartDragListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -99,10 +100,7 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
         cityNameTextView = (TextView) itemView.findViewById(R.id.city_name_text_view);
 
     }
-    public void onItemClear() {
-
-    }
-
 }
+
 
 

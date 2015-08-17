@@ -29,8 +29,11 @@ public class CurrentWeatherWrapper {
             latitude = mLocation.getLatitude();
             longitude = mLocation.getLongitude();
             Log.d("asd", "location null");
+        } else {
+            latitude = 42.6964;
+            longitude = 23.3260;
         }
-        return "http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+
+        return "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude +
                 "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
     }
 

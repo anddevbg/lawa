@@ -2,6 +2,7 @@ package com.anddevbg.lawa.ui.fragment;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -22,6 +23,7 @@ import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.panoramio.IPanoramioCallback;
 import com.anddevbg.lawa.panoramio.PanoramioWrapper;
 import com.anddevbg.lawa.ui.activity.weather.ForecastActivity;
+import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 import com.anddevbg.lawa.util.RandomUtil;
 import com.anddevbg.lawa.weather.CurrentWeatherWrapper;
 import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
@@ -121,8 +123,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     @Override
     public void onWeatherApiResponse(JSONObject result) {
-
-
         try {
             JSONObject main = result.getJSONObject("main");
             currentWeather = main.getInt("temp");
@@ -150,11 +150,9 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                     .build();
 
             notificationManager.notify(1, notification);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

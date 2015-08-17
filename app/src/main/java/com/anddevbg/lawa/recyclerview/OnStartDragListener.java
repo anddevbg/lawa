@@ -1,4 +1,4 @@
-package com.anddevbg.lawa.adapter;
+package com.anddevbg.lawa.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 

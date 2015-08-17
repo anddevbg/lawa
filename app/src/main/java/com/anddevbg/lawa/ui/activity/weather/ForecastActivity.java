@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.ForecastAdapter;
-import com.anddevbg.lawa.adapter.OnStartDragListener;
-import com.anddevbg.lawa.adapter.SimpleItemTouchHelperCallback;
+import com.anddevbg.lawa.recyclerview.OnStartDragListener;
+import com.anddevbg.lawa.recyclerview.SimpleItemTouchHelperCallback;
 import com.anddevbg.lawa.model.ForecastData;
 import com.anddevbg.lawa.weather.ForecastWrapper;
 import com.anddevbg.lawa.weather.IForecastCallback;

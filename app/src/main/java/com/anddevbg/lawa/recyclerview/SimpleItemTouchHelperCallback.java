@@ -1,4 +1,4 @@
-package com.anddevbg.lawa.adapter;
+package com.anddevbg.lawa.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -45,16 +45,8 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         return true;
     }
 
-   /* @Override
-    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        super.clearView(recyclerView, viewHolder);
-        viewHolder.itemView.setAlpha(ALPHA_FULL);
-
-        if (viewHolder instanceof ForecastViewHolder) {
-            // Tell the view holder it's time to restore the idle state
-            ForecastViewHolder itemViewHolder = (ForecastViewHolder) viewHolder;
-            itemViewHolder.onItemClear();
-        }
+    @Override
+    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+        super.onSelectedChanged(viewHolder, actionState);
     }
-    */
 }
