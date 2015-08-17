@@ -8,8 +8,8 @@ import java.io.Serializable;
 public class WeatherData implements Serializable {
 
     private int mCurrent;
-    private int mMin;
-    private int mMax;
+    private int mHumidity;
+    private int mmWindSpeed;
     private String mCityName;
     private String mWeatherImageUrl;
     private String mTimeLastRefresh;
@@ -17,12 +17,12 @@ public class WeatherData implements Serializable {
     public WeatherData() {
     }
 
-    public String getTimeLastRefresh() {
+    public String getDescription() {
         return mTimeLastRefresh;
     }
 
-    public void setTimeLastRefresh(String timeLastRefresh) {
-            this.mTimeLastRefresh= timeLastRefresh;
+    public void setDescription(String description) {
+            this.mTimeLastRefresh= description;
     }
 
     public int getCurrent() {
@@ -34,19 +34,19 @@ public class WeatherData implements Serializable {
     }
 
     public int getMin() {
-        return mMin;
+        return mHumidity;
     }
 
     public void setMin(int min) {
-        this.mMin = min;
+        this.mHumidity = min;
     }
 
     public int getMax() {
-        return mMax;
+        return mmWindSpeed;
     }
 
     public void setMax(int max) {
-        this.mMax = max;
+        this.mmWindSpeed = max;
     }
 
     public String getCityName() {
@@ -69,8 +69,8 @@ public class WeatherData implements Serializable {
     public String toString() {
         return "WeatherData{" +
                 "mCurrent=" + mCurrent +
-                ", mMin=" + mMin +
-                ", mMax=" + mMax +
+                ", mHumidity=" + mHumidity +
+                ", mWindSpeed=" + mmWindSpeed +
                 ", mCityName='" + mCityName + '\'' +
                 ", mWeatherImageUrl='" + mWeatherImageUrl + '\'' +
                 ", mTimeLastRefresh=" + mTimeLastRefresh +

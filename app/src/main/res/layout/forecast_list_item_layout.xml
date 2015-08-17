@@ -69,4 +69,14 @@
         android:layout_below="@+id/weather_Icon"
         android:layout_alignLeft="@+id/weather_Icon"
         android:layout_alignStart="@+id/weather_Icon" />
+
+    <TextView
+        android:id="@+id/city_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="city text"
+        android:layout_below="@+id/min_temperature_text_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

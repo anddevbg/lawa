@@ -10,6 +10,17 @@ public class ForecastData {
     private float mMinimalTemperature;
     private float mMaximalTemperature;
     private String mDescription;
+    private String mCityName;
+
+    public String getmCityName() {
+        return mCityName;
+    }
+
+    public void setmCityName(String mCityName) {
+        this.mCityName = mCityName;
+    }
+
+
 
     public String getmDescription() {
         return mDescription;

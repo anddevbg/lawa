@@ -3,8 +3,10 @@ package com.anddevbg.lawa.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import com.anddevbg.lawa.model.WeatherData;
+import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 import com.anddevbg.lawa.ui.fragment.CurrentLocationWeatherFragment;
 
 import java.util.ArrayList;

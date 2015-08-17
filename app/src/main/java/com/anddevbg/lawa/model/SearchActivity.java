@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.panoramio.IPanoramioCallback;
 import com.anddevbg.lawa.panoramio.PanoramioWrapper;
 import com.anddevbg.lawa.util.RandomUtil;
+import com.anddevbg.lawa.weather.CurrentWeatherWrapper;
 import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
 
@@ -30,14 +32,13 @@ import java.util.List;
  * Created by adri.stanchev on 16/07/2015.
  */
 public class SearchActivity extends Activity implements IPanoramioCallback {
-    private ImageView searchImageView;
 
+    private ImageView searchImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
         searchImageView = (ImageView) findViewById(R.id.search_activity_image);
-
         handleIntent(getIntent());
     }
 
@@ -47,7 +48,7 @@ public class SearchActivity extends Activity implements IPanoramioCallback {
         handleIntent(intent);
     }
 
-    private void handleIntent(Intent intent) {
+    private void handleIntent(final Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             final String query = intent.getStringExtra(SearchManager.QUERY);
             final Geocoder geocoder = new Geocoder(this);
@@ -66,12 +67,15 @@ public class SearchActivity extends Activity implements IPanoramioCallback {
                     mLocation.setLongitude(a.getLongitude());
                     return mLocation;
                 }
-
                 @Override
                 protected void onPostExecute(Location location) {
                     super.onPostExecute(location);
                     PanoramioWrapper panoramioWrapObject = new PanoramioWrapper();
                     panoramioWrapObject.fetchPictures(location, SearchActivity.this);
+                    CurrentWeatherWrapper currentWeatherWrapper = new CurrentWeatherWrapper(location);
+                    currentWeatherWrapper.getOpenWeatherApiUrl();
+                    Log.d("location is: ", currentWeatherWrapper.getOpenWeatherApiUrl());
+
                 }
             }.execute();
         }

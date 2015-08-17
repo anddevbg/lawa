@@ -13,4 +13,6 @@
     <string name="positive_button">Settings</string>
     <string name="negative_button">Cancel</string>
     <string name="internet_dialog_message">Please turn on Internet or Wi-Fi connection</string>
+    <string name="action_search">Search</string>
+    <string name="action_add">Add</string>
 </resources>

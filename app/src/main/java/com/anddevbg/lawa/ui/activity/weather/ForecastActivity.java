@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.TextView;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.ForecastAdapter;
+import com.anddevbg.lawa.adapter.OnStartDragListener;
+import com.anddevbg.lawa.adapter.SimpleItemTouchHelperCallback;
 import com.anddevbg.lawa.model.ForecastData;
 import com.anddevbg.lawa.weather.ForecastWrapper;
 import com.anddevbg.lawa.weather.IForecastCallback;
@@ -19,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,12 +31,13 @@ import java.util.List;
 /**
  * Created by adri.stanchev on 20/07/2015.
  */
-public class ForecastActivity extends AppCompatActivity implements IForecastCallback {
+public class ForecastActivity extends AppCompatActivity implements IForecastCallback, OnStartDragListener {
 
     public List<ForecastData> dataList;
-    private ForecastAdapter mForecastAdapter;
+    ForecastAdapter mForecastAdapter;
     private TextView emptyTextView;
     private RecyclerView mRecyclerView;
+    private SimpleItemTouchHelperCallback mSimpleItemTouchHelperCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,7 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
 
         fetchForecast();
         initControls();
+
     }
 
     @Override
@@ -48,13 +54,15 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
         dataList = new ArrayList<>();
         try {
             JSONObject city = response.getJSONObject("city");
-            //String cityName = city.getString("name");
+            String cityName = city.getString("name");
 
             JSONArray jsonArray = (JSONArray) response.get("list");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jMain = jsonArray.getJSONObject(i);
                 JSONArray j1 = jMain.getJSONArray("weather");
                 ForecastData forecastDataObj = new ForecastData();
+
+                forecastDataObj.setmCityName(cityName);
 
                 int timestamp = jMain.getInt("dt");
                 Date date = new Date(timestamp*1000L);
@@ -64,8 +72,9 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
                 JSONObject main = jMain.getJSONObject("temp");
                 float maxTempDay = (float) main.getDouble("max");
                 float minTempDay = (float) main.getDouble("min");
-                forecastDataObj.setMaximalTemperature(maxTempDay);
-                forecastDataObj.setMinimalTemperature(minTempDay);
+                DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                forecastDataObj.setMaximalTemperature(Float.parseFloat(decimalFormat.format(maxTempDay)));
+                forecastDataObj.setMinimalTemperature(Float.parseFloat(decimalFormat.format(minTempDay)));
                 forecastDataObj.setDay(day);
 
                 JSONObject weatherObj = j1.getJSONObject(0);
@@ -106,8 +115,15 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        mForecastAdapter = new ForecastAdapter(this);
+        mForecastAdapter = new ForecastAdapter(this, this);
         mRecyclerView.setAdapter(mForecastAdapter);
+        mForecastAdapter.onAttachedToRecyclerView(mRecyclerView);
+        SimpleItemTouchHelperCallback callback = new SimpleItemTouchHelperCallback(mForecastAdapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(mRecyclerView);
     }
 
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+    }
 }

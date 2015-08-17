@@ -2,6 +2,7 @@ package com.anddevbg.lawa.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,15 @@ import java.util.List;
 /**
  * Created by adri.stanchev on 22/07/2015.
  */
-public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
+public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> implements InterfaceTouchHelper {
 
     private LayoutInflater inflater;
     List<ForecastData> forecastDataList = Collections.emptyList();
+    private final OnStartDragListener mDragStartListener;
 
-    public ForecastAdapter(Context context) {
+    public ForecastAdapter(Context context, OnStartDragListener listener) {
         inflater = LayoutInflater.from(context);
+        mDragStartListener = listener;
         forecastDataList = new ArrayList<>();
     }
 
@@ -46,6 +49,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
         holder.minimalTemperature.setText(String.valueOf(forecastObject.getMinimalTemperature() + "ºC"));
         holder.maximalTemperature.setText(String.valueOf(forecastObject.getMaximalTemperature() + "ºC"));
         holder.descriptionText.setText(String.valueOf(forecastObject.getmDescription()));
+        holder.cityNameTextView.setText(forecastObject.getmCityName());
         Picasso.with(LawaApplication.getContext()).load(forecastObject.getImageUrl()).into(holder.weatherIcon);
     }
 
@@ -58,6 +62,18 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
         forecastDataList = data;
         notifyDataSetChanged();
     }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(forecastDataList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        forecastDataList.remove(position);
+        notifyItemRemoved(position);
+    }
 }
 
 class ForecastViewHolder extends RecyclerView.ViewHolder {
@@ -68,6 +84,7 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
     ImageView weatherIcon;
     TextView slashText;
     TextView descriptionText;
+    TextView cityNameTextView;
 
 
     public ForecastViewHolder(View itemView) {
@@ -79,8 +96,13 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
         weatherIcon = (ImageView) itemView.findViewById(R.id.weather_Icon);
         slashText = (TextView) itemView.findViewById(R.id.slash_text_view);
         descriptionText = (TextView) itemView.findViewById(R.id.description_text_view);
+        cityNameTextView = (TextView) itemView.findViewById(R.id.city_name_text_view);
 
     }
+    public void onItemClear() {
+
+    }
+
 }
 
 

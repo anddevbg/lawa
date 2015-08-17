@@ -1,15 +1,18 @@
 package com.anddevbg.lawa.ui.activity.weather;
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.SearchView;
 
 import com.anddevbg.lawa.R;
@@ -18,17 +21,19 @@ import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class WeatherActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class WeatherActivity extends AppCompatActivity {
 
+    WeatherFragmentAdapter mWeatherAdapter;
     ViewPager viewPager;
     SearchView searchView;
+    ArrayList<WeatherData> result;
 
-    private SwipeRefreshLayout mSwipeRefresh;
     WeatherData city1Data;
 
-    private ArrayList<WeatherData> getWeatherData() {
-        ArrayList<WeatherData> result = new ArrayList<>();
+    private List<WeatherData> getWeatherData() {
+        result = new ArrayList<>();
         city1Data = new WeatherData();
         result.add(city1Data);
         return result;
@@ -39,6 +44,17 @@ public class WeatherActivity extends AppCompatActivity implements SwipeRefreshLa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         initControls();
+
+    }
+
+    private void startNotification() {
+        Notification notification = new NotificationCompat.Builder(this)
+                .setContentTitle("LAWA")
+                .setContentText("Weather in " + result.get(0).getCityName() + " is " + result.get(0).getCurrent() + "ºC")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
     }
 
     @Override
@@ -62,37 +78,48 @@ public class WeatherActivity extends AppCompatActivity implements SwipeRefreshLa
                 .getActionView();
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
+        Button add = (Button) menu.findItem(R.id.action_add).getActionView();
 
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public void onRefresh() {
-        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                checkIsRefreshing();
-            }
-        });
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("weather_array", result);
     }
 
-    private void checkIsRefreshing() {
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
 
+        result = (ArrayList<WeatherData>) savedInstanceState.getSerializable("weather_array");
+        mWeatherAdapter.setWeatherData(result);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                addNewCity();
+                viewPager.setCurrentItem(result.size(), true);
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addNewCity() {
+        WeatherData newCityData = new WeatherData();
+        result.add(newCityData);
+        mWeatherAdapter.setWeatherData(result);
     }
 
     private void initControls() {
-        mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-
-        WeatherFragmentAdapter mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
+        mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
         mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
-        /*ImageView imageView = new ImageView(this);
-        imageView.setImageResource(R.drawable.action_image);
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(imageView)
-                .build();
-                */
+        viewPager.setOffscreenPageLimit(2);
     }
 
 }

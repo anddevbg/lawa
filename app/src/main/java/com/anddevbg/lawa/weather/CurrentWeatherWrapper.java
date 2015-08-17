@@ -16,8 +16,8 @@ import org.json.JSONObject;
  */
 public class CurrentWeatherWrapper {
     private Location mLocation;
-    double latitude = 42.6833333;
-    double longitude = 23.3166667;
+    double latitude;
+    double longitude;
 
     public CurrentWeatherWrapper(Location mLastKnownLocation) {
         mLocation = mLastKnownLocation;
