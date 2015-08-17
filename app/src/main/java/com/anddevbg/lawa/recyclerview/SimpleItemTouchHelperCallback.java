@@ -9,19 +9,15 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final InterfaceTouchHelper mAdapter;
-    public static final float ALPHA_FULL = 1.0f;
-
     public SimpleItemTouchHelperCallback(InterfaceTouchHelper adapter) {
         mAdapter = adapter;
     }
-
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
         return makeMovementFlags(dragFlags, swipeFlags);
-
     }
 
     @Override

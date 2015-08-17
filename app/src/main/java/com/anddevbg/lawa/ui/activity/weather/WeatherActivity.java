@@ -5,11 +5,11 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.SearchView;
 
 import com.anddevbg.lawa.R;
@@ -27,7 +27,6 @@ public class WeatherActivity extends AppCompatActivity {
     ViewPager viewPager;
     SearchView searchView;
     ArrayList<WeatherData> result;
-
     WeatherData city1Data;
 
     private List<WeatherData> getWeatherData() {
@@ -65,7 +64,7 @@ public class WeatherActivity extends AppCompatActivity {
                 .getActionView();
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
-        Button add = (Button) menu.findItem(R.id.action_add).getActionView();
+        //Button add = (Button) menu.findItem(R.id.action_add).getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -76,7 +75,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         result = (ArrayList<WeatherData>) savedInstanceState.getSerializable("weather_array");
@@ -104,7 +103,7 @@ public class WeatherActivity extends AppCompatActivity {
         mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
-        viewPager.setPageTransformer(true, new ZoomPagerTransformation());
+        viewPager.setPageTransformer(false, new ZoomPagerTransformation());
         viewPager.setOffscreenPageLimit(2);
     }
 

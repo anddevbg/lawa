@@ -87,7 +87,6 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
     TextView descriptionText;
     TextView cityNameTextView;
 
-
     public ForecastViewHolder(View itemView) {
         super(itemView);
 
@@ -98,7 +97,6 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
         slashText = (TextView) itemView.findViewById(R.id.slash_text_view);
         descriptionText = (TextView) itemView.findViewById(R.id.description_text_view);
         cityNameTextView = (TextView) itemView.findViewById(R.id.city_name_text_view);
-
     }
 }
 
