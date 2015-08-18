@@ -32,6 +32,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".ui.activity.weather.ForecastActivity" />
+        <activity android:name=".ui.activity.weather.SearchCityActivity"/>
 
         </application>
 

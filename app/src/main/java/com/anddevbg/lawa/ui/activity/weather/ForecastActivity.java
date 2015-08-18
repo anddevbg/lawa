@@ -37,7 +37,6 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     ForecastAdapter mForecastAdapter;
     private TextView emptyTextView;
     private RecyclerView mRecyclerView;
-    private SimpleItemTouchHelperCallback mSimpleItemTouchHelperCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -28,6 +29,7 @@ public class WeatherActivity extends AppCompatActivity {
     SearchView searchView;
     ArrayList<WeatherData> result;
     WeatherData city1Data;
+    int search_request_code = 1;
 
     private List<WeatherData> getWeatherData() {
         result = new ArrayList<>();
@@ -86,16 +88,21 @@ public class WeatherActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                addNewCity();
-                viewPager.setCurrentItem(result.size(), true);
+                Intent searchActivityIntent = new Intent(this, SearchCityActivity.class);
+                startActivityForResult(searchActivityIntent, search_request_code);
+                //viewPager.setCurrentItem(result.size(), true);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void addNewCity() {
-        WeatherData newCityData = new WeatherData();
-        result.add(newCityData);
-        mWeatherAdapter.setWeatherData(result);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == search_request_code) {
+            if (resultCode == RESULT_OK) {
+                Log.d("asd", "in weather activity result" + data.getStringExtra("c1name"));
+            }
+        }
     }
 
     private void initControls() {
