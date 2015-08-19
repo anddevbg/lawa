@@ -10,12 +10,18 @@ import android.view.ViewGroup;
  */
 public class FavoriteCityFragment extends BaseWeatherFragment {
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
+        initLocation();
+        initControls(view);
         return view;
+    }
+
+    @Override
+    public void initLocation() {
+        super.initLocation();
+        mLastKnownLocation = null;
     }
 
 }

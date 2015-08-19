@@ -2,7 +2,6 @@ package com.anddevbg.lawa.ui.fragment;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -23,9 +22,8 @@ import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.panoramio.IPanoramioCallback;
 import com.anddevbg.lawa.panoramio.PanoramioWrapper;
 import com.anddevbg.lawa.ui.activity.weather.ForecastActivity;
-import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 import com.anddevbg.lawa.util.RandomUtil;
-import com.anddevbg.lawa.weather.CurrentWeatherWrapper;
+import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
 import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
@@ -35,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -55,6 +54,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     protected TextView descriptionWeatherText;
     int currentWeather;
     private NotificationManager notificationManager;
+    private List<WeatherData> weatherList;
 
     protected Location mLastKnownLocation;
     protected PanoramioWrapper panoramioWrapper;
@@ -74,7 +74,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
-
     }
 
     @Override
@@ -90,10 +89,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             view = inflater.inflate(R.layout.activity_land_mode, container, false);
             initControls(view);
         }
-
         return view;
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -116,8 +113,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         }
     }
 
-    private void initWeather() {
-        CurrentWeatherWrapper weatherWrapper = new CurrentWeatherWrapper(mLastKnownLocation);
+    protected void initWeather() {
+        LocationCurrentWeatherWrapper weatherWrapper = new LocationCurrentWeatherWrapper(mLastKnownLocation);
         weatherWrapper.getWeatherUpdate(this);
     }
 
@@ -148,7 +145,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                     .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .build();
-
             notificationManager.notify(1, notification);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -172,7 +168,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             array = result.getJSONArray("photos");
             JSONObject jsonObject = array.getJSONObject(RandomUtil.randInt(0,5));
             photoArray.add(jsonObject.getString("photo_file_url"));
-            Picasso.with(getActivity()).load(photoArray.get(0)).into(mWeatherImage);
+            Picasso.with(getActivity()).load(photoArray.get(0)).placeholder(R.layout.progress).into(mWeatherImage);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -183,7 +179,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         respondToPanoramioErrorResponse();
     }
 
-    private void initControls(View view) {
+    protected void initControls(View view) {
         Button forecastButton = (Button) view.findViewById(R.id.forecast_button);
         forecastButton.setText("see forecast");
         forecastButton.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +202,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         startActivity(i);
     }
 
-    private void setupControls() {
+    protected void setupControls() {
         mCurrentTemp.setText(Integer.toString(mWeatherData.getCurrent()));
         mCity.setText(mWeatherData.getCityName());
         mHumidity.setText(Integer.toString(mWeatherData.getMin()));

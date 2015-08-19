@@ -18,6 +18,9 @@ import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
 import com.anddevbg.lawa.animation.ZoomPagerTransformation;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
+import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
+import com.anddevbg.lawa.ui.fragment.FavoriteCityFragment;
+import com.anddevbg.lawa.weather.FavoriteCurrentWeatherWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +82,6 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
         result = (ArrayList<WeatherData>) savedInstanceState.getSerializable("weather_array");
         mWeatherAdapter.setWeatherData(result);
     }
@@ -90,7 +92,6 @@ public class WeatherActivity extends AppCompatActivity {
             case R.id.action_add:
                 Intent searchActivityIntent = new Intent(this, SearchCityActivity.class);
                 startActivityForResult(searchActivityIntent, search_request_code);
-                //viewPager.setCurrentItem(result.size(), true);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -100,7 +101,13 @@ public class WeatherActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == search_request_code) {
             if (resultCode == RESULT_OK) {
-                Log.d("asd", "in weather activity result" + data.getStringExtra("c1name"));
+                Log.d("asd", "in weather activity result " + data.getStringExtra("c1name"));
+                WeatherData mNewWeather = new WeatherData();
+                result.add(mNewWeather);
+                FavoriteCityFragment.createInstance(mNewWeather);
+                mWeatherAdapter.setWeatherData(result);
+                mWeatherAdapter.notifyDataSetChanged();
+                viewPager.setCurrentItem(result.size(), true);
             }
         }
     }
