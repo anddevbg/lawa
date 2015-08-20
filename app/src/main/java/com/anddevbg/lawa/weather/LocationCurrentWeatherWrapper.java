@@ -28,7 +28,6 @@ public class LocationCurrentWeatherWrapper {
         if (mLocation != null) {
             latitude = mLocation.getLatitude();
             longitude = mLocation.getLongitude();
-            Log.d("asd", "location null");
         } else {
             latitude = 42.6964;
             longitude = 23.3260;

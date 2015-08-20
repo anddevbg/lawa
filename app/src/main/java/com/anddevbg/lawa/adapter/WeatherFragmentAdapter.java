@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 import com.anddevbg.lawa.ui.fragment.CurrentLocationWeatherFragment;
+import com.anddevbg.lawa.ui.fragment.FavoriteCityFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return CurrentLocationWeatherFragment.createInstance(mWeatherData.get(position));
+        return BaseWeatherFragment.createInstance(mWeatherData.get(position));
     }
 
     @Override

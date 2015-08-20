@@ -3,7 +3,6 @@ package com.anddevbg.lawa.weather;
 import android.util.Log;
 
 import com.anddevbg.lawa.networking.NetworkRequestManager;
-import com.anddevbg.lawa.ui.fragment.FavoriteCityFragment;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;

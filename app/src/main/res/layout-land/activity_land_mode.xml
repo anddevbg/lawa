@@ -72,6 +72,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <Button
+                android:id="@+id/add_button"
+                android:text="add"
+                android:onClick="addCity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+            <Button
                 android:id="@+id/forecast_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

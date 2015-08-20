@@ -18,8 +18,6 @@ public class SearchCityWrapper {
     String citySearchName;
     public SearchCityWrapper(String cityName) {
         citySearchName = cityName;
-
-
     }
     private String getCityList() {
         String spaces = citySearchName.replaceAll("\\s","");
