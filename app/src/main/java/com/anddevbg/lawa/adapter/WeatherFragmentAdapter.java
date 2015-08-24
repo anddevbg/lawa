@@ -2,13 +2,11 @@ package com.anddevbg.lawa.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.ViewGroup;
 
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
-import com.anddevbg.lawa.ui.fragment.CurrentLocationWeatherFragment;
-import com.anddevbg.lawa.ui.fragment.FavoriteCityFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +34,7 @@ public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         return BaseWeatherFragment.createInstance(mWeatherData.get(position));
     }
+
 
     @Override
     public int getCount() {
