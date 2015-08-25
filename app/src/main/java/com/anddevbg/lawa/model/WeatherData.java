@@ -7,15 +7,33 @@ import java.io.Serializable;
  */
 public class WeatherData implements Serializable {
 
+
+
     private int mCurrent;
     private int mHumidity;
-    private int mmWindSpeed;
+    private double mWindSpeed;
     private String mCityName;
-    private String mTimeLastRefresh;
+    private String mDescription;
     private double mLongitude;
     private double mLatitude;
 
     public WeatherData() {
+    }
+
+    public void setWindSpeed(double mWindSpeed) {
+        this.mWindSpeed = mWindSpeed;
+    }
+
+    public void setHumidity(int mHumidity) {
+        this.mHumidity = mHumidity;
+    }
+
+    public void setCityName(String mCityName) {
+        this.mCityName = mCityName;
+    }
+
+    public void setTimeLastRefresh(String mTimeLastRefresh) {
+        this.mDescription = mTimeLastRefresh;
     }
 
     public double getLongitude() {
@@ -35,19 +53,23 @@ public class WeatherData implements Serializable {
     }
 
     public String getDescription() {
-        return mTimeLastRefresh;
+        return mDescription;
     }
 
     public int getCurrent() {
         return mCurrent;
     }
 
+    public void setCurrent(int mCurrent) {
+        this.mCurrent = mCurrent;
+    }
+
     public int getMin() {
         return mHumidity;
     }
 
-    public int getMax() {
-        return mmWindSpeed;
+    public double getMax() {
+        return mWindSpeed;
     }
 
     public String getCityName() {
@@ -60,10 +82,11 @@ public class WeatherData implements Serializable {
         return "WeatherData{" +
                 "mCurrent=" + mCurrent +
                 ", mHumidity=" + mHumidity +
-                ", mWindSpeed=" + mmWindSpeed +
+                ", mWindSpeed=" + mWindSpeed +
                 ", mCityName='" + mCityName + '\'' +
-                ", mTimeLastRefresh=" + mTimeLastRefresh +
+                ", mDescription='" + mDescription + '\'' +
+                ", mLongitude=" + mLongitude +
+                ", mLatitude=" + mLatitude +
                 '}';
     }
-
 }

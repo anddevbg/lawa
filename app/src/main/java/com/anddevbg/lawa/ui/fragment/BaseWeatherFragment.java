@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -16,14 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.panoramio.IPanoramioCallback;
 import com.anddevbg.lawa.panoramio.PanoramioWrapper;
 import com.anddevbg.lawa.ui.activity.weather.ForecastActivity;
-import com.anddevbg.lawa.ui.activity.weather.SearchCityActivity;
 import com.anddevbg.lawa.util.RandomUtil;
 import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
@@ -77,7 +74,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
         initControls(view);
-        setupControls();
+        //setupControls();
         return view;
     }
 
@@ -90,6 +87,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     }
 
     public void initWeatherAndPanoramio(double longitude, double latitude) {
+        Log.d("asd", "long " + longitude + " lat " + latitude);
+
         Location location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
@@ -105,6 +104,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             JSONObject main = result.getJSONObject("main");
             currentWeather = main.getInt("temp");
             mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
+
 
             JSONObject windSpeed = result.getJSONObject("wind");
             double wind = windSpeed.getDouble("speed");
@@ -129,9 +129,15 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                         .build();
                 notificationManager.notify(1, notification);
             }
+            mWeatherData.setCurrent(currentWeather);
+            mWeatherData.setCityName(name);
+            mWeatherData.setHumidity(humidity);
+            mWeatherData.setTimeLastRefresh(desc);
+            mWeatherData.setWindSpeed(wind);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d("asd", "wd in baseweather fragment: " + mWeatherData.toString());
     }
 
     @Override
@@ -154,6 +160,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             panoURL = photoArray.get(0);
             Picasso.with(getActivity()).load(panoURL).placeholder(R.layout.progress).into(mWeatherImage);
         } catch (JSONException e) {
+            Log.d("asd", "ops");
             e.printStackTrace();
         }
     }
@@ -184,18 +191,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         Intent i = new Intent(getActivity(), ForecastActivity.class);
         i.putExtra("id", cityID);
         startActivity(i);
-    }
-
-    protected void setupControls() {
-        if(mWeatherData != null) {
-            mCurrentTemp.setText(Integer.toString(mWeatherData.getCurrent()));
-            mCity.setText(mWeatherData.getCityName());
-            mHumidity.setText(Integer.toString(mWeatherData.getMin()));
-            mWindSpeed.setText(Integer.toString(mWeatherData.getMax()));
-            descriptionWeatherText.setText((mWeatherData.getDescription()));
-        } else {
-            Log.d("asd", "mWeatherData is null");
-        }
     }
 
     private void respondToPanoramioErrorResponse(VolleyError error) {

@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -38,6 +39,8 @@ public class WeatherActivity extends AppCompatActivity {
     private SearchView searchView;
     private double mLatitude;
     private double mLongitude;
+    private double mLocationLatitude;
+    private double mLocationLongitude;
 
 
     private LocationManager locationManager;
@@ -112,24 +115,40 @@ public class WeatherActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Log.d("asd", "in weather activity result " + data.getStringExtra("c1name"));
                 String locationName = data.getStringExtra("c1name");
-                WeatherData weatherData = new WeatherData();
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses;
-                double latitude;
-                double longitude;
+                //TODO separate thread
                 try {
                     addresses = geocoder.getFromLocationName(locationName, 1);
                     Address address = addresses.get(0);
-                    longitude = address.getLongitude();
-                    latitude = address.getLatitude();
-                    weatherData.setLatitude(latitude);
-                    weatherData.setLongitude(longitude);
+                    mLocationLongitude = address.getLongitude();
+                    mLocationLatitude = address.getLatitude();
+                    Log.d("asd", "longa " + mLocationLongitude + " lata " + mLocationLatitude);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                WeatherData weatherData = new WeatherData();
+                weatherData.setLatitude(mLocationLatitude);
+                weatherData.setLongitude(mLocationLongitude);
+                Log.d("asd", "wd: " + weatherData.toString());
                 result.add(weatherData);
                 mWeatherAdapter.setWeatherData(result);
-                mWeatherAdapter.notifyDataSetChanged();
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        mWeatherAdapter.notifyDataSetChanged();
+                    }
+                };
                 viewPager.setCurrentItem(result.size(), true);
             }
         }
