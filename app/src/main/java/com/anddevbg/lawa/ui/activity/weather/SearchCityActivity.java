@@ -31,8 +31,10 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
 
     private EditText searchCityEditText;
     private Button searchCityButton;
+    private Button useCurrentLocationButton;
     private ListView searchCityListView;
     private List<String> cityList;
+    private int current_request_code = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +59,24 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
                 finish();
             }
         });
+        useCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(SearchCityActivity.this, WeatherActivity.class);
+                startActivityForResult(i, current_request_code);
+            }
+        });
     }
 
     private void initControls() {
         searchCityEditText = (EditText) findViewById(R.id.search_city_edit_text);
         searchCityButton = (Button) findViewById(R.id.button_search_city);
         searchCityListView = (ListView) findViewById(R.id.city_list);
+        useCurrentLocationButton = (Button) findViewById(R.id.button_location);
     }
 
     @Override
     public void onJSONResponse(JSONObject response) {
-        Log.d("asd", "JSon resonse maybe " + response.toString());
         cityList = new ArrayList<>();
         try {
             JSONArray searchCityArray = response.getJSONArray("list");

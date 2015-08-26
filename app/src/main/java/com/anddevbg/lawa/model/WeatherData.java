@@ -1,5 +1,7 @@
 package com.anddevbg.lawa.model;
 
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**

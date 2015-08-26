@@ -10,7 +10,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
@@ -26,6 +26,7 @@ import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +36,8 @@ public class WeatherActivity extends AppCompatActivity {
     private WeatherFragmentAdapter mWeatherAdapter;
     private ViewPager viewPager;
     private List<WeatherData> result;
-    int search_request_code = 1;
+    private int search_request_code = 1;
+    private int current_request_code = 2;
     private SearchView searchView;
     private double mLatitude;
     private double mLongitude;
@@ -46,7 +48,7 @@ public class WeatherActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private Location mLastKnownLocation;
 
-    private List<WeatherData> getWeatherData() {
+    /*private List<WeatherData> getWeatherData() {
         result = new ArrayList<>();
         if(mLastKnownLocation != null) {
             mLatitude = mLastKnownLocation.getLatitude();
@@ -58,19 +60,37 @@ public class WeatherActivity extends AppCompatActivity {
         result.add(city1Data);
         return result;
     }
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+        result = new ArrayList<>();
         locationManager = (LocationManager) this.getApplicationContext().getSystemService(LOCATION_SERVICE);
+        initLocation();
         initControls();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initLocation();
+        mWeatherAdapter.setWeatherData(result);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("weatherlist", (Serializable) result);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        result = (List<WeatherData>) savedInstanceState.get("weatherlist");
+        mWeatherAdapter.setWeatherData(result);
+
     }
 
     private void initLocation() {
@@ -143,6 +163,7 @@ public class WeatherActivity extends AppCompatActivity {
                         }
                         return null;
                     }
+
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
@@ -152,11 +173,23 @@ public class WeatherActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(result.size(), true);
             }
         }
+        if (requestCode == current_request_code) {
+            Toast.makeText(this, "request code match", Toast.LENGTH_LONG).show();
+            if (resultCode == RESULT_OK) {
+                initLocation();
+                WeatherData currentData = new WeatherData();
+                currentData.setLatitude(mLastKnownLocation.getLatitude());
+                currentData.setLongitude(mLastKnownLocation.getLongitude());
+                result.add(currentData);
+                mWeatherAdapter.setWeatherData(result);
+            }
+        }
     }
 
     private void initControls() {
         mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
-        mWeatherAdapter.setWeatherData(getWeatherData());
+
+        //mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
         viewPager.setPageTransformer(false, new ZoomPagerTransformation());

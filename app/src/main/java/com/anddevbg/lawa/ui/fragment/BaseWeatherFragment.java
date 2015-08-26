@@ -74,6 +74,9 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
         initControls(view);
+        double lat = mWeatherData.getLatitude();
+        double lon = mWeatherData.getLongitude();
+        initWeatherAndPanoramio(lon, lat);
         //setupControls();
         return view;
     }
@@ -81,9 +84,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        double lat = mWeatherData.getLatitude();
-        double lon = mWeatherData.getLongitude();
-        initWeatherAndPanoramio(lon, lat);
+
     }
 
     public void initWeatherAndPanoramio(double longitude, double latitude) {
