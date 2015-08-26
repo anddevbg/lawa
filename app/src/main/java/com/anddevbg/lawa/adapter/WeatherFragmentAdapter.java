@@ -3,9 +3,7 @@ package com.anddevbg.lawa.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
@@ -32,12 +30,15 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
         notifyDataSetChanged();
     }
 
+    /*
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         BaseWeatherFragment baseFragment = (BaseWeatherFragment) super.instantiateItem(container, position);
 
         return baseFragment;
     }
+    */
 
     @Override
     public Fragment getItem(int position) {

@@ -89,7 +89,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     public void initWeatherAndPanoramio(double longitude, double latitude) {
         Log.d("asd", "long " + longitude + " lat " + latitude);
-
         Location location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);

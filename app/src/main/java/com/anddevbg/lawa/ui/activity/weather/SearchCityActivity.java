@@ -54,7 +54,6 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
                 String c1Name = (String) adapterView.getItemAtPosition(position);
                 Intent i = getIntent();
                 i.putExtra("c1name", c1Name);
-                Log.d("asd", "c1name is " + c1Name);
                 setResult(RESULT_OK, i);
                 finish();
             }
@@ -62,8 +61,7 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
         useCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(SearchCityActivity.this, WeatherActivity.class);
-                startActivityForResult(i, current_request_code);
+
             }
         });
     }

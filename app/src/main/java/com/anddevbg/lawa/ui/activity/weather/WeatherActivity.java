@@ -48,11 +48,13 @@ public class WeatherActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private Location mLastKnownLocation;
 
-    /*private List<WeatherData> getWeatherData() {
+    private List<WeatherData> getWeatherData() {
         result = new ArrayList<>();
         if(mLastKnownLocation != null) {
             mLatitude = mLastKnownLocation.getLatitude();
             mLongitude = mLastKnownLocation.getLongitude();
+        } else {
+            Toast.makeText(this, "Last known location not available", Toast.LENGTH_LONG).show();
         }
         WeatherData city1Data = new WeatherData();
         city1Data.setLatitude(mLatitude);
@@ -60,16 +62,15 @@ public class WeatherActivity extends AppCompatActivity {
         result.add(city1Data);
         return result;
     }
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-        result = new ArrayList<>();
         locationManager = (LocationManager) this.getApplicationContext().getSystemService(LOCATION_SERVICE);
         initLocation();
         initControls();
+        result = new ArrayList<>();
     }
 
     @Override
@@ -153,43 +154,26 @@ public class WeatherActivity extends AppCompatActivity {
                 Log.d("asd", "wd: " + weatherData.toString());
                 result.add(weatherData);
                 mWeatherAdapter.setWeatherData(result);
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        mWeatherAdapter.notifyDataSetChanged();
-                    }
-                };
                 viewPager.setCurrentItem(result.size(), true);
             }
         }
         if (requestCode == current_request_code) {
-            Toast.makeText(this, "request code match", Toast.LENGTH_LONG).show();
+            Log.d("asd", "request success");
             if (resultCode == RESULT_OK) {
-                initLocation();
                 WeatherData currentData = new WeatherData();
                 currentData.setLatitude(mLastKnownLocation.getLatitude());
                 currentData.setLongitude(mLastKnownLocation.getLongitude());
                 result.add(currentData);
                 mWeatherAdapter.setWeatherData(result);
+            } if (resultCode == RESULT_CANCELED) {
+                Log.d("asd", "result cancelled");
             }
         }
     }
 
     private void initControls() {
         mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
-
-        //mWeatherAdapter.setWeatherData(getWeatherData());
+        mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
         viewPager.setPageTransformer(false, new ZoomPagerTransformation());
