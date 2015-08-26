@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.model.WeatherData;
@@ -41,17 +42,17 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     private static final String WEATHER_DATA = "weather_data";
 
-    protected int cityID;
+    private int cityID;
     public String panoURL;
 
-    protected ImageView mWeatherImage;
-    protected TextView mCity;
-    protected TextView mCurrentTemp;
-    protected TextView mHumidity;
-    protected TextView mWindSpeed;
+    private ImageView mWeatherImage;
+    private TextView mCity;
+    private TextView mCurrentTemp;
+    private TextView mHumidity;
+    private TextView mWindSpeed;
     private WeatherData mWeatherData;
-    protected TextView descriptionWeatherText;
-    protected int currentWeather;
+    private TextView descriptionWeatherText;
+    private int currentWeather;
     private NotificationManager notificationManager;
 
     public static BaseWeatherFragment createInstance(WeatherData weatherData) {
@@ -77,14 +78,12 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         double lat = mWeatherData.getLatitude();
         double lon = mWeatherData.getLongitude();
         initWeatherAndPanoramio(lon, lat);
-        //setupControls();
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     public void initWeatherAndPanoramio(double longitude, double latitude) {
@@ -92,10 +91,10 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         Location location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
-        LocationCurrentWeatherWrapper weatherWrapper = new LocationCurrentWeatherWrapper(location);
-        weatherWrapper.getWeatherUpdate(this);
         PanoramioWrapper panoramioWrapper = new PanoramioWrapper();
         panoramioWrapper.fetchPictures(location, this);
+        LocationCurrentWeatherWrapper weatherWrapper = new LocationCurrentWeatherWrapper(location);
+        weatherWrapper.getWeatherUpdate(this);
     }
 
     @Override
@@ -104,7 +103,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             JSONObject main = result.getJSONObject("main");
             currentWeather = main.getInt("temp");
             mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
-
 
             JSONObject windSpeed = result.getJSONObject("wind");
             double wind = windSpeed.getDouble("speed");
@@ -138,10 +136,14 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             e.printStackTrace();
         }
         Log.d("asd", "wd in baseweather fragment: " + mWeatherData.toString());
+        if(mWeatherData == null) {
+            Log.d("asd", "weather data is null");
+        }
     }
 
     @Override
     public void onWeatherApiErrorResponse(VolleyError error) {
+        Toast.makeText(getActivity(), "Something went wrong" + error.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -2,7 +2,9 @@ package com.anddevbg.lawa.weather;
 
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.networking.NetworkRequestManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -16,24 +18,20 @@ import org.json.JSONObject;
  */
 public class LocationCurrentWeatherWrapper {
     private Location mLocation;
-    double latitude;
-    double longitude;
+    private double latitude;
+    private double longitude;
 
     public LocationCurrentWeatherWrapper(Location mLastKnownLocation) {
         mLocation = mLastKnownLocation;
     }
 
     public final String getOpenWeatherApiUrl() {
-
-        if (mLocation != null) {
-            latitude = mLocation.getLatitude();
-            longitude = mLocation.getLongitude();
-        } else {
-            latitude = 42.6964;
-            longitude = 23.3260;
-        }
-        return "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude +
+        latitude = mLocation.getLatitude();
+        longitude = mLocation.getLongitude();
+        String result = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude +
                 "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
+        Log.d("asd", result);
+        return result;
     }
 
     public void getWeatherUpdate(final ICurrentWeatherCallback weatherCallback) {

@@ -8,7 +8,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
@@ -33,14 +31,14 @@ import java.util.Locale;
 
 public class WeatherActivity extends AppCompatActivity {
 
+    private static final String WEATHER_ARRAY = "weather_array";
+
     private WeatherFragmentAdapter mWeatherAdapter;
     private ViewPager viewPager;
     private List<WeatherData> result;
     private int search_request_code = 1;
     private int current_request_code = 2;
     private SearchView searchView;
-    private double mLatitude;
-    private double mLongitude;
     private double mLocationLatitude;
     private double mLocationLongitude;
 
@@ -50,15 +48,13 @@ public class WeatherActivity extends AppCompatActivity {
 
     private List<WeatherData> getWeatherData() {
         result = new ArrayList<>();
-        if(mLastKnownLocation != null) {
-            mLatitude = mLastKnownLocation.getLatitude();
-            mLongitude = mLastKnownLocation.getLongitude();
-        } else {
-            Toast.makeText(this, "Last known location not available", Toast.LENGTH_LONG).show();
-        }
         WeatherData city1Data = new WeatherData();
-        city1Data.setLatitude(mLatitude);
-        city1Data.setLongitude(mLongitude);
+        if(mLastKnownLocation != null) {
+            mLocationLatitude = mLastKnownLocation.getLatitude();
+            mLocationLongitude = mLastKnownLocation.getLongitude();
+        }
+        city1Data.setLatitude(mLocationLatitude);
+        city1Data.setLongitude(mLocationLongitude);
         result.add(city1Data);
         return result;
     }
@@ -70,28 +66,24 @@ public class WeatherActivity extends AppCompatActivity {
         locationManager = (LocationManager) this.getApplicationContext().getSystemService(LOCATION_SERVICE);
         initLocation();
         initControls();
-        result = new ArrayList<>();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mWeatherAdapter.setWeatherData(result);
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("weatherlist", (Serializable) result);
+        outState.putSerializable(WEATHER_ARRAY, (Serializable) result);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        result = (List<WeatherData>) savedInstanceState.get("weatherlist");
+        result = (List<WeatherData>) savedInstanceState.get(WEATHER_ARRAY);
         mWeatherAdapter.setWeatherData(result);
-
     }
 
     private void initLocation() {
@@ -138,25 +130,23 @@ public class WeatherActivity extends AppCompatActivity {
                 String locationName = data.getStringExtra("c1name");
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses;
-                //TODO separate thread
                 try {
                     addresses = geocoder.getFromLocationName(locationName, 1);
                     Address address = addresses.get(0);
                     mLocationLongitude = address.getLongitude();
                     mLocationLatitude = address.getLatitude();
-                    Log.d("asd", "longa " + mLocationLongitude + " lata " + mLocationLatitude);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 WeatherData weatherData = new WeatherData();
                 weatherData.setLatitude(mLocationLatitude);
                 weatherData.setLongitude(mLocationLongitude);
-                Log.d("asd", "wd: " + weatherData.toString());
                 result.add(weatherData);
                 mWeatherAdapter.setWeatherData(result);
                 viewPager.setCurrentItem(result.size(), true);
             }
         }
+        /*
         if (requestCode == current_request_code) {
             Log.d("asd", "request success");
             if (resultCode == RESULT_OK) {
@@ -169,13 +159,14 @@ public class WeatherActivity extends AppCompatActivity {
                 Log.d("asd", "result cancelled");
             }
         }
+        */
     }
 
     private void initControls() {
         mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
-        mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
+        mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager.setPageTransformer(false, new ZoomPagerTransformation());
     }
 
