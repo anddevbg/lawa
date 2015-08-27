@@ -52,7 +52,13 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView mWindSpeed;
     private WeatherData mWeatherData;
     private TextView descriptionWeatherText;
+
     private int currentWeather;
+    private double wind;
+    private int humidity;
+    private String name;
+    private String desc;
+
     private NotificationManager notificationManager;
 
     public static BaseWeatherFragment createInstance(WeatherData weatherData) {
@@ -100,46 +106,55 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onWeatherApiResponse(JSONObject result) {
         try {
-            JSONObject main = result.getJSONObject("main");
-            currentWeather = main.getInt("temp");
-            mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
+            if(result.has("main")) {
+                JSONObject main = result.getJSONObject("main");
+                currentWeather = main.getInt("temp");
+                //mWeatherData.setCurrent(currentWeather);
+                mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
 
-            JSONObject windSpeed = result.getJSONObject("wind");
-            double wind = windSpeed.getDouble("speed");
-            mWindSpeed.setText(String.valueOf(wind) + " m/s");
+                JSONObject windSpeed = result.getJSONObject("wind");
+                wind = windSpeed.getDouble("speed");
+                //mWeatherData.setWindSpeed(wind);
+                mWindSpeed.setText(String.valueOf(wind) + " m/s");
 
-            int humidity = main.getInt("humidity");
-            mHumidity.setText(String.valueOf(humidity) + "%");
+                humidity = main.getInt("humidity");
+                //mWeatherData.setHumidity(humidity);
+                mHumidity.setText(String.valueOf(humidity) + "%");
 
-            cityID = result.getInt("id");
-            String name = result.getString("name");
-            mCity.setText(name);
+                cityID = result.getInt("id");
+                name = result.getString("name");
+                //mWeatherData.setCityName(name);
+                mCity.setText(name);
 
-            JSONArray jArray = result.getJSONArray("weather");
-            JSONObject description = jArray.getJSONObject(0);
-            String desc = description.getString("description");
-            descriptionWeatherText.setText(desc);
-            if(getActivity() != null) {
-                Notification notification = new NotificationCompat.Builder(getActivity())
-                        .setContentTitle("LAWA")
-                        .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .build();
-                notificationManager.notify(1, notification);
+                JSONArray jArray = result.getJSONArray("weather");
+                JSONObject description = jArray.getJSONObject(0);
+                desc = description.getString("description");
+                //mWeatherData.setTimeLastRefresh(desc);
+                descriptionWeatherText.setText(desc);
+                if (getActivity() != null) {
+                    Notification notification = new NotificationCompat.Builder(getActivity())
+                            .setContentTitle("LAWA")
+                            .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .build();
+                    notificationManager.notify(1, notification);
+                }
+            } else {
+                Log.d("asd", "error loading weather data");
             }
-            mWeatherData.setCurrent(currentWeather);
-            mWeatherData.setCityName(name);
-            mWeatherData.setHumidity(humidity);
-            mWeatherData.setTimeLastRefresh(desc);
-            mWeatherData.setWindSpeed(wind);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        Log.d("asd", "wd in baseweather fragment: " + mWeatherData.toString());
-        if(mWeatherData == null) {
-            Log.d("asd", "weather data is null");
+            Log.d("asd", "JSON EXCEPTION in baseweather frag " + e.toString());
         }
     }
+
+//    private void setupControls() {
+//        mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
+//        mWindSpeed.setText(String.valueOf(wind) + " m/s");
+//        descriptionWeatherText.setText(desc);
+//        mHumidity.setText(String.valueOf(humidity) + "%");
+//        mCity.setText(name);
+//    }
 
     @Override
     public void onWeatherApiErrorResponse(VolleyError error) {
