@@ -28,6 +28,7 @@ public class LocationCurrentWeatherWrapper {
     private double latitude;
     private double longitude;
     private String cityNameOne;
+    private String mResultResponse;
 
     public LocationCurrentWeatherWrapper(Location mLastKnownLocation) {
         mLocation = mLastKnownLocation;
@@ -39,15 +40,17 @@ public class LocationCurrentWeatherWrapper {
         Geocoder geocoder = new Geocoder(LawaApplication.getContext(), Locale.getDefault());
         try {
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-            if(addressList.size() > 0 ) {
+            if (addressList.size() > 0) {
                 cityNameOne = addressList.get(0).getLocality();
                 Log.d("asd", "city name is " + cityNameOne);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String blabla = cityNameOne.replaceAll("\\s","%20");
-        String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + blabla +"&units=metric";
+        if (cityNameOne != null) {
+            mResultResponse = cityNameOne.replaceAll("\\s", "%20");
+        }
+        String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse + "&units=metric";
 //        String result = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude +
 //                "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
 //        Log.d("asd", result);

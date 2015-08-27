@@ -75,7 +75,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         result = new ArrayList<>();
-        setUpGoogleApiClient();
         initControls();
     }
 
@@ -91,6 +90,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     protected void onResume() {
         super.onResume();
+        setUpGoogleApiClient();
     }
 
     @Override
@@ -180,6 +180,10 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("asd", "connected to google api");
+        handleBusiness();
+    }
+
+    private void handleBusiness() {
         myLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -191,35 +195,30 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             result.add(weatherDat4);
             mWeatherAdapter.setWeatherData(result);
         } else {
-            while (myLastLocation == null) {
-                LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
-            }
+            Log.d("asd", "location is null");
+            LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
         }
-
     }
-    //LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d("asd", "location changed");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Log.d("asd", "location changed");
     }
 
     @Override
     public void onLocationChanged(Location location) {
+
         Log.d("asd", "location changed");
         if(location != null) {
-            WeatherData wd1 = new WeatherData();
-            wd1.setLatitude(myLastLocation.getLatitude());
-            wd1.setLongitude(myLastLocation.getLongitude());
-            result.add(wd1);
-            mWeatherAdapter.setWeatherData(result);
+            Log.d("asd", "location FOUND!");
+            LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
+            handleBusiness();
         }
-        client.disconnect();
     }
 }
 
