@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:text="Search city by name"
         android:textSize="27dp"/>
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/search_city_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -17,11 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Search"/>
-    <Button
-        android:id="@+id/button_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Use current location"/>
     <ListView
         android:id="@+id/city_list"
         android:layout_width="match_parent"

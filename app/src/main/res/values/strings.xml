@@ -15,4 +15,16 @@
     <string name="internet_dialog_message">Please turn on Internet or Wi-Fi connection</string>
     <string name="action_search">Search</string>
     <string name="action_add">Add</string>
+    <string-array name="city_list">
+        <item>Veliko Tarnovo</item>
+        <item>Velingrad</item>
+        <item>Veliki Preslav</item>
+        <item>Varna</item>
+        <item>Vaglevtsi</item>
+        <item>Valchidol</item>
+        <item>New York</item>
+        <item>San Francisco</item>
+        <item>San Andreas</item>
+        <item>San Cristobal</item>
+    </string-array>
 </resources>

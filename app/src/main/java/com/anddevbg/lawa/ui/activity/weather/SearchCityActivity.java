@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -28,18 +29,20 @@ import java.util.List;
  */
 public class SearchCityActivity extends AppCompatActivity implements ISearchCityCallback {
 
-    private EditText searchCityEditText;
+    private AutoCompleteTextView searchCityEditText;
     private Button searchCityButton;
-    private Button useCurrentLocationButton;
     private ListView searchCityListView;
     private List<String> cityList;
     private int current_request_code = 2;
+    private String[] myCities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_city_activity);
+        myCities = getResources().getStringArray(R.array.city_list);
         initControls();
+
         searchCityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,19 +60,14 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
                 finish();
             }
         });
-        useCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
     }
 
     private void initControls() {
-        searchCityEditText = (EditText) findViewById(R.id.search_city_edit_text);
+        searchCityEditText = (AutoCompleteTextView) findViewById(R.id.search_city_edit_text);
         searchCityButton = (Button) findViewById(R.id.button_search_city);
         searchCityListView = (ListView) findViewById(R.id.city_list);
-        useCurrentLocationButton = (Button) findViewById(R.id.button_location);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, myCities);
+        searchCityEditText.setAdapter(arrayAdapter);
     }
 
     @Override
