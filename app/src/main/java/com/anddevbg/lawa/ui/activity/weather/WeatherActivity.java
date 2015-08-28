@@ -29,6 +29,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -76,11 +77,13 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         setContentView(R.layout.activity_weather);
         result = new ArrayList<>();
         initControls();
+        setUpGoogleApiClient();
     }
 
     private void setUpGoogleApiClient() {
         client = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
@@ -90,7 +93,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     protected void onResume() {
         super.onResume();
-        setUpGoogleApiClient();
     }
 
     @Override
