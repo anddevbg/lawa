@@ -2,6 +2,7 @@ package com.anddevbg.lawa.ui.activity.weather;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +34,7 @@ import java.util.List;
 /**
  * Created by adri.stanchev on 18/08/2015.
  */
-public class SearchCityActivity extends AppCompatActivity implements ISearchCityCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class SearchCityActivity extends FragmentActivity implements ISearchCityCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private AutoCompleteTextView searchCityEditText;
     private Button searchCityButton;
@@ -72,16 +73,24 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
                 finish();
             }
         });
+        placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, googleApiClient,
+                BOUNDS_GREATER_SYDNEY, null);
+        searchCityEditText.setAdapter(placeAutoCompleteAdapter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     public void setupGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, R.string.google_maps_key, this)
-                .addApi(Places.GEO_DATA_API)
+                .enableAutoManage(this, R.string.google_maps_key , this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                .addApi(Places.GEO_DATA_API)
                 .build();
         googleApiClient.connect();
+
     }
 
     private void initControls() {
@@ -118,10 +127,7 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("asd", "GoogleApiClient connected in SEARCH ACTIVITY");
-        placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, googleApiClient,
-                BOUNDS_GREATER_SYDNEY, null);
-        searchCityEditText.setAdapter(placeAutoCompleteAdapter);
+        Log.d("asd", "connected to GoogleApiClient");
     }
 
     @Override

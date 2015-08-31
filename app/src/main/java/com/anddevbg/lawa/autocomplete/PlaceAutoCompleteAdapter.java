@@ -13,6 +13,7 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
@@ -39,23 +40,19 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
 
     @Override
     public PlaceAutocomplete getItem(int position) {
-        Log.d("asd", "GET ITEM");
         return mResultList.get(position);
     }
 
     @Override
     public int getCount() {
-        Log.d("asd", "GET COUNT");
         return mResultList.size();
     }
 
     @Override
     public Filter getFilter() {
-        Log.d("asd", "FILTER");
         Filter filter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                Log.d("asd", "perform filtering");
                 FilterResults filterResults = new FilterResults();
                 if (charSequence != null) {
                     Log.d("asd", "char sequence != null");
@@ -64,8 +61,6 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
                         Log.d("asd", "mResultList != NULL");
                         filterResults.values = mResultList;
                         filterResults.count = mResultList.size();
-                    } else {
-                        Log.d("asd", "result list is NULL :(");
                     }
                 }
                 return filterResults;
@@ -85,14 +80,13 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
         return filter;
     }
 
-    private ArrayList<PlaceAutocomplete> getAutoComplete(CharSequence charSequence) {
+    private ArrayList<PlaceAutocomplete> getAutoComplete(CharSequence constraint) {
         if (mGoogleApiClient.isConnected()) {
-            Log.d("asd", "getting autocomplete predictions");
             PendingResult<AutocompletePredictionBuffer> results = Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient,
-                    charSequence.toString(), latLngBounds, mAutocompleteFilter);
+                    constraint.toString(), latLngBounds, mAutocompleteFilter);
             Log.d("asd", "after getAutoCompletePredictions call");
-            AutocompletePredictionBuffer autocompletePredictions = results.await(60, TimeUnit.SECONDS);
-            Status status = autocompletePredictions.getStatus();
+            AutocompletePredictionBuffer autocompletePredictions = results.await(10, TimeUnit.SECONDS);
+            final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
                 Log.d("asd", "Error connecting to API " + status.toString());
                 autocompletePredictions.release();
