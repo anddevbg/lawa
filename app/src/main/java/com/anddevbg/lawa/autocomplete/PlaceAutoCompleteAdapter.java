@@ -13,7 +13,6 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;

@@ -3,14 +3,12 @@ package com.anddevbg.lawa.ui.activity.weather;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.anddevbg.lawa.R;
@@ -45,8 +43,8 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
     private GoogleApiClient googleApiClient;
     private PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
 
-    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
-            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
+    private static final LatLngBounds BOUNDS_BULGARIA = new LatLngBounds(
+            new LatLng(41.5167, 23.4000), new LatLng(43.7000, 28.5167));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +72,7 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
             }
         });
         placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, googleApiClient,
-                BOUNDS_GREATER_SYDNEY, null);
+                BOUNDS_BULGARIA, null);
         searchCityEditText.setAdapter(placeAutoCompleteAdapter);
     }
 
