@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
@@ -51,33 +48,18 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private double mLocationLongitude;
 
 
-    //    private Location mLastKnownLocation;
     private Location myLastLocation;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
-
-//    private List<WeatherData> getWeatherData() {
-//
-//
-//        WeatherData city1Data = new WeatherData();
-//        if(mLastKnownLocation != null) {
-//            mLocationLatitude = mLastKnownLocation.getLatitude();
-//            mLocationLongitude = mLastKnownLocation.getLongitude();
-//        }
-//        city1Data.setLatitude(mLocationLatitude);
-//        city1Data.setLongitude(mLocationLongitude);
-//        result.add(city1Data);
-//        return result;
-//    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         result = new ArrayList<>();
-        initControls();
         setUpGoogleApiClient();
+        initControls();
+
     }
 
     private void setUpGoogleApiClient() {
@@ -175,17 +157,18 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
-//        mWeatherAdapter.setWeatherData(getWeatherData());
         viewPager.setPageTransformer(false, new ZoomPagerTransformation());
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("asd", "connected to google api");
-        handleBusiness();
+        if(result.size() == 0) {
+            handleWeatherInformation();
+        }
     }
 
-    private void handleBusiness() {
+    private void handleWeatherInformation() {
         myLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -219,7 +202,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         if(location != null) {
             Log.d("asd", "location FOUND!");
             LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
-            handleBusiness();
+            handleWeatherInformation();
         }
     }
 }

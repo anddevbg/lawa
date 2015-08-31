@@ -13,9 +13,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.anddevbg.lawa.R;
+import com.anddevbg.lawa.autocomplete.PlaceAutoCompleteAdapter;
 import com.anddevbg.lawa.weather.ISearchCityCallback;
 import com.anddevbg.lawa.weather.SearchCityWrapper;
 import com.android.volley.VolleyError;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +33,7 @@ import java.util.List;
 /**
  * Created by adri.stanchev on 18/08/2015.
  */
-public class SearchCityActivity extends AppCompatActivity implements ISearchCityCallback {
+public class SearchCityActivity extends AppCompatActivity implements ISearchCityCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private AutoCompleteTextView searchCityEditText;
     private Button searchCityButton;
@@ -35,11 +41,17 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
     private List<String> cityList;
     private int current_request_code = 2;
     private String[] myCities;
+    private GoogleApiClient googleApiClient;
+    private PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
+
+    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
+            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_city_activity);
+        setupGoogleApiClient();
         myCities = getResources().getStringArray(R.array.city_list);
         initControls();
 
@@ -62,12 +74,21 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
         });
     }
 
+    public void setupGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, R.string.google_maps_key, this)
+                .addApi(Places.GEO_DATA_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        googleApiClient.connect();
+    }
+
     private void initControls() {
         searchCityEditText = (AutoCompleteTextView) findViewById(R.id.search_city_edit_text);
         searchCityButton = (Button) findViewById(R.id.button_search_city);
         searchCityListView = (ListView) findViewById(R.id.city_list);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, myCities);
-        searchCityEditText.setAdapter(arrayAdapter);
+
     }
 
     @Override
@@ -93,6 +114,23 @@ public class SearchCityActivity extends AppCompatActivity implements ISearchCity
     @Override
     public void onJSONError(VolleyError error) {
         Log.d("asd", "JSOn error maybe " + error.toString());
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("asd", "GoogleApiClient connected in SEARCH ACTIVITY");
+        placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, googleApiClient,
+                BOUNDS_GREATER_SYDNEY, null);
+        searchCityEditText.setAdapter(placeAutoCompleteAdapter);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 }

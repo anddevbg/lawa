@@ -27,4 +27,5 @@
         <item>San Andreas</item>
         <item>San Cristobal</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 </resources>
