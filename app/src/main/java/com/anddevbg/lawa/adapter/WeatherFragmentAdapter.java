@@ -3,6 +3,7 @@ package com.anddevbg.lawa.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.anddevbg.lawa.model.WeatherData;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Created by tpenkov on 15.6.2015 г..
  */
-public class WeatherFragmentAdapter extends FragmentPagerAdapter {
+public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
 
     private List<WeatherData> mWeatherData;
 
@@ -35,9 +36,10 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
         return WeatherFragmentAdapter.POSITION_NONE;
     }
 
-        public void removeWeatherData(int position) {
-        mWeatherData.remove(position);
-
+    public void removeWeatherData(int position) {
+        if(mWeatherData.size() > 0) {
+            mWeatherData.remove(position);
+        }
         notifyDataSetChanged();
     }
 

@@ -126,7 +126,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 Log.d("asd", "action remove clicked");
                 if(result.size() > 0) {
                     mWeatherAdapter.removeWeatherData(0);
-                    result.remove()
                 }
         }
         return super.onOptionsItemSelected(item);
