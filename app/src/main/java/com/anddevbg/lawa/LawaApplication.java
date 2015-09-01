@@ -15,7 +15,6 @@ public class LawaApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         NetworkRequestManager.setup(this);
         instance = this;
     }

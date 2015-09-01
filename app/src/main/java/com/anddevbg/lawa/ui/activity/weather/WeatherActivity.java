@@ -42,10 +42,10 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private ViewPager viewPager;
     private List<WeatherData> result;
     private int search_request_code = 1;
-    private int current_request_code = 2;
     private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
+    private WeatherData weatherData;
 
 
     private Location myLastLocation;
@@ -59,7 +59,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         result = new ArrayList<>();
         setUpGoogleApiClient();
         initControls();
-
     }
 
     private void setUpGoogleApiClient() {
@@ -112,6 +111,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
         Button add = (Button) menu.findItem(R.id.action_add).getActionView();
+        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -122,6 +122,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 Log.d("asd", "action add clicked");
                 Intent searchActivityIntent = new Intent(WeatherActivity.this, SearchCityActivity.class);
                 startActivityForResult(searchActivityIntent, search_request_code);
+            case  R.id.action_remove:
+                Log.d("asd", "action remove clicked");
+                if(result.size() > 0) {
+                    mWeatherAdapter.removeWeatherData(0);
+                    result.remove()
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -143,7 +149,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                WeatherData weatherData = new WeatherData();
+                weatherData = new WeatherData();
                 weatherData.setLatitude(mLocationLatitude);
                 weatherData.setLongitude(mLocationLongitude);
                 result.add(weatherData);
@@ -163,7 +169,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("asd", "connected to google api");
-        if(result.size() == 0) {
+        if (result.size() == 0) {
             handleWeatherInformation();
         }
     }
@@ -199,7 +205,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     public void onLocationChanged(Location location) {
 
         Log.d("asd", "location changed");
-        if(location != null) {
+        if (location != null) {
             Log.d("asd", "location FOUND!");
             LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
             handleWeatherInformation();

@@ -12,5 +12,9 @@
         android:id="@+id/action_add"
         android:icon="@drawable/ic_action_add_to_queue"
         android:title="@string/action_add"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_remove"
+        android:title="Remove"
+        android:showAsAction="ifRoom" />
 </menu>

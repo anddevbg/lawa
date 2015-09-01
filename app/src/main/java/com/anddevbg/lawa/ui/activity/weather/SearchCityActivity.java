@@ -38,8 +38,6 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
     private Button searchCityButton;
     private ListView searchCityListView;
     private List<String> cityList;
-    private int current_request_code = 2;
-    private String[] myCities;
     private GoogleApiClient googleApiClient;
     private PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
 
@@ -51,7 +49,7 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_city_activity);
         setupGoogleApiClient();
-        myCities = getResources().getStringArray(R.array.city_list);
+//        myCities = getResources().getStringArray(R.array.city_list);
         initControls();
 
         searchCityButton.setOnClickListener(new View.OnClickListener() {
@@ -83,19 +81,17 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
 
     public void setupGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, R.string.google_maps_key , this)
+                .enableAutoManage(this, R.string.google_maps_key, this)
                 .addConnectionCallbacks(this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
         googleApiClient.connect();
-
     }
 
     private void initControls() {
         searchCityEditText = (AutoCompleteTextView) findViewById(R.id.search_city_edit_text);
         searchCityButton = (Button) findViewById(R.id.button_search_city);
         searchCityListView = (ListView) findViewById(R.id.city_list);
-
     }
 
     @Override
@@ -108,7 +104,6 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
                 String searchNameCity = city.getString("name");
                 cityList.add(searchNameCity);
             }
-
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
@@ -120,7 +115,7 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
 
     @Override
     public void onJSONError(VolleyError error) {
-        Log.d("asd", "JSOn error maybe " + error.toString());
+        Log.d("asd", "JSOn error " + error.toString());
     }
 
     @Override
@@ -130,11 +125,11 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d("asd", "connection suspended");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Log.d("asd", "connection failed");
     }
 }

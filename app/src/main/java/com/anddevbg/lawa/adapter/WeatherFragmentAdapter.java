@@ -30,15 +30,16 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
         notifyDataSetChanged();
     }
 
-    /*
-
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        BaseWeatherFragment baseFragment = (BaseWeatherFragment) super.instantiateItem(container, position);
-
-        return baseFragment;
+    public int getItemPosition(Object object) {
+        return WeatherFragmentAdapter.POSITION_NONE;
     }
-    */
+
+        public void removeWeatherData(int position) {
+        mWeatherData.remove(position);
+
+        notifyDataSetChanged();
+    }
 
     @Override
     public Fragment getItem(int position) {
@@ -49,7 +50,6 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
 
         return BaseWeatherFragment.createInstance(mWeatherData.get(position));
     }
-
 
     @Override
     public int getCount() {
