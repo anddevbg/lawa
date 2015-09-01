@@ -122,11 +122,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 Log.d("asd", "action add clicked");
                 Intent searchActivityIntent = new Intent(WeatherActivity.this, SearchCityActivity.class);
                 startActivityForResult(searchActivityIntent, search_request_code);
-            case  R.id.action_remove:
-                Log.d("asd", "action remove clicked");
-                if(result.size() > 0) {
-                    mWeatherAdapter.removeWeatherData(0);
-                }
         }
         return super.onOptionsItemSelected(item);
     }

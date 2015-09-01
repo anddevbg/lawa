@@ -4,9 +4,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.anddevbg.lawa.model.WeatherData;
+import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 
 import java.util.ArrayList;
@@ -15,7 +18,7 @@ import java.util.List;
 /**
  * Created by tpenkov on 15.6.2015 г..
  */
-public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
+public class WeatherFragmentAdapter extends FragmentPagerAdapter {
 
     private List<WeatherData> mWeatherData;
 
@@ -36,12 +39,12 @@ public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
         return WeatherFragmentAdapter.POSITION_NONE;
     }
 
-    public void removeWeatherData(int position) {
-        if(mWeatherData.size() > 0) {
-            mWeatherData.remove(position);
-        }
-        notifyDataSetChanged();
-    }
+//    public void removeWeatherData(int position) {
+//        if(mWeatherData.size() > 0) {
+//            mWeatherData.remove(position);
+//        }
+//        notifyDataSetChanged();
+//    }
 
     @Override
     public Fragment getItem(int position) {
@@ -57,4 +60,6 @@ public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return mWeatherData.size();
     }
+
+
 }
