@@ -108,7 +108,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         }
         cursor.close();
         mWeatherAdapter.setWeatherData(result);
-        viewPager.setCurrentItem(result.size(), true);
     }
 
 //    @Override
@@ -175,6 +174,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 }
                 sqLiteDatabase.execSQL("INSERT INTO " + TABLE_NAME + " VALUES(" + mLocationLatitude +
                         "," + mLocationLongitude + ");");
+                WeatherData data1 = new WeatherData();
+                data1.setLongitude(mLocationLongitude);
+                data1.setLatitude(mLocationLatitude);
+                result.add(data1);
+                mWeatherAdapter.setWeatherData(result);
+                viewPager.setCurrentItem(result.size());
             }
         }
     }
