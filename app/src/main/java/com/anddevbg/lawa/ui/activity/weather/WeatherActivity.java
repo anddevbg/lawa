@@ -4,6 +4,8 @@ package com.anddevbg.lawa.ui.activity.weather;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,6 +21,7 @@ import android.widget.SearchView;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
 import com.anddevbg.lawa.animation.ZoomPagerTransformation;
+import com.anddevbg.lawa.database.WeatherDatabase;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,6 +41,13 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     private static final String WEATHER_ARRAY = "weather_array";
 
+    private static final String DATABASE_NAME = "weather_databse";
+    private static final String TABLE_NAME = "weather_table";
+    private static final String CITY_NAME = "city_name";
+    private static final int DATABASE_VERSION = 1;
+    private static final String UID = "_id";
+    private WeatherDatabase mWeatherDatabase;
+
     private WeatherFragmentAdapter mWeatherAdapter;
     private ViewPager viewPager;
     private List<WeatherData> result;
@@ -46,6 +56,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private double mLocationLatitude;
     private double mLocationLongitude;
     private WeatherData weatherData;
+    private SQLiteDatabase sqLiteDatabase;
 
 
     private Location myLastLocation;
@@ -56,9 +67,13 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+        mWeatherDatabase = new WeatherDatabase(this);
+        sqLiteDatabase = mWeatherDatabase.getWritableDatabase();
         result = new ArrayList<>();
+
         setUpGoogleApiClient();
         initControls();
+        getInformationFromSQLiteDatabase();
     }
 
     private void setUpGoogleApiClient() {
@@ -81,18 +96,33 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         super.onPause();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(WEATHER_ARRAY, (Serializable) result);
+    public void getInformationFromSQLiteDatabase() {
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " +TABLE_NAME, null );
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            Log.d("db", "lat = " + cursor.getDouble(0));
+            Log.d("db", "lon = " + cursor.getDouble(1));
+            weatherData = new WeatherData();
+            weatherData.setLatitude(cursor.getDouble(0));
+            weatherData.setLongitude(cursor.getDouble(1));
+            result.add(weatherData);
+        }
+        cursor.close();
+        mWeatherAdapter.setWeatherData(result);
+        viewPager.setCurrentItem(result.size(), true);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        result = (List<WeatherData>) savedInstanceState.get(WEATHER_ARRAY);
-        mWeatherAdapter.setWeatherData(result);
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putSerializable(WEATHER_ARRAY, (Serializable) result);
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        result = (List<WeatherData>) savedInstanceState.get(WEATHER_ARRAY);
+//        mWeatherAdapter.setWeatherData(result);
+//    }
 
     @Override
     public boolean onSearchRequested() {
@@ -111,7 +141,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
         Button add = (Button) menu.findItem(R.id.action_add).getActionView();
-        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
+//        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -143,12 +173,8 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                weatherData = new WeatherData();
-                weatherData.setLatitude(mLocationLatitude);
-                weatherData.setLongitude(mLocationLongitude);
-                result.add(weatherData);
-                mWeatherAdapter.setWeatherData(result);
-                viewPager.setCurrentItem(result.size(), true);
+                sqLiteDatabase.execSQL("INSERT INTO " + TABLE_NAME + " VALUES(" + mLocationLatitude +
+                        "," + mLocationLongitude + ");");
             }
         }
     }
