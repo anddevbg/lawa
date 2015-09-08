@@ -4,8 +4,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
+import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.panoramio.IPanoramioCallback;
 import com.anddevbg.lawa.panoramio.PanoramioWrapper;
@@ -52,12 +56,19 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView mWindSpeed;
     private WeatherData mWeatherData;
     private TextView descriptionWeatherText;
+    private View coordinatorView;
+
+    private LocationCurrentWeatherWrapper weatherWrapper;
+    private PanoramioWrapper panoramioWrapper;
 
     private int currentWeather;
     private double wind;
     private int humidity;
     private String name;
     private String desc;
+
+    private SQLiteDatabase sqLiteDatabase;
+    private WeatherDatabaseManager manager;
 
     private NotificationManager notificationManager;
 
@@ -74,6 +85,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         super.onCreate(savedInstanceState);
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
         notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager = WeatherDatabaseManager.getInstance();
     }
 
     @Override
@@ -97,9 +109,9 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         Location location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
-        PanoramioWrapper panoramioWrapper = new PanoramioWrapper();
+        panoramioWrapper = new PanoramioWrapper();
         panoramioWrapper.fetchPictures(location, this);
-        LocationCurrentWeatherWrapper weatherWrapper = new LocationCurrentWeatherWrapper(location);
+        weatherWrapper = new LocationCurrentWeatherWrapper(location);
         weatherWrapper.getWeatherUpdate(this);
     }
 
@@ -131,6 +143,11 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 desc = description.getString("description");
                 //mWeatherData.setTimeLastRefresh(desc);
                 descriptionWeatherText.setText(desc);
+
+                JSONObject coord = result.getJSONObject("coord");
+                double lon = coord.getDouble("lon");
+                double lat = coord.getDouble("lat");
+
                 if (getActivity() != null) {
                     Notification notification = new NotificationCompat.Builder(getActivity())
                             .setContentTitle("LAWA")
@@ -141,6 +158,14 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 }
             } else {
                 Log.d("asd", "error loading weather data");
+                Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
+                        .setAction("retry", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                weatherWrapper.getWeatherUpdate(BaseWeatherFragment.this);
+                            }
+                        })
+                        .show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -159,6 +184,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onWeatherApiErrorResponse(VolleyError error) {
         Toast.makeText(getActivity(), "Something went wrong" + error.toString(), Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -194,6 +220,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mHumidity = (TextView) view.findViewById(R.id.min_temp_textView);
         mWindSpeed = (TextView) view.findViewById(R.id.max_temp_textView);
         descriptionWeatherText = (TextView) view.findViewById(R.id.last_refresh_textView);
+        coordinatorView = view.findViewById(R.id.snackbar);
         Button forecastButton = (Button) view.findViewById(R.id.forecast_button);
         forecastButton.setText("see forecast");
         forecastButton.setOnClickListener(new View.OnClickListener() {

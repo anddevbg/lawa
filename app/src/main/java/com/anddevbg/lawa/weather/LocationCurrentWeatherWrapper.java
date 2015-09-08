@@ -25,8 +25,6 @@ import java.util.Locale;
  */
 public class LocationCurrentWeatherWrapper {
     private Location mLocation;
-    private double latitude;
-    private double longitude;
     private String cityNameOne;
     private String mResultResponse;
 
@@ -35,8 +33,8 @@ public class LocationCurrentWeatherWrapper {
     }
 
     public final String getOpenWeatherApiUrl() {
-        latitude = mLocation.getLatitude();
-        longitude = mLocation.getLongitude();
+        double latitude = mLocation.getLatitude();
+        double longitude = mLocation.getLongitude();
         Geocoder geocoder = new Geocoder(LawaApplication.getContext(), Locale.getDefault());
         try {
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);

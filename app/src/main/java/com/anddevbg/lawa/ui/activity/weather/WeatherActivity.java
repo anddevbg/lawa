@@ -21,7 +21,8 @@ import android.widget.SearchView;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
 import com.anddevbg.lawa.animation.ZoomPagerTransformation;
-import com.anddevbg.lawa.database.WeatherDatabase;
+import com.anddevbg.lawa.database.WeatherDatabaseManager;
+//import com.anddevbg.lawa.database.CityTable;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 import com.google.android.gms.common.ConnectionResult;
@@ -32,7 +33,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -41,12 +41,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     private static final String WEATHER_ARRAY = "weather_array";
 
-    private static final String DATABASE_NAME = "weather_databse";
-    private static final String TABLE_NAME = "weather_table";
+    private static final String DATABASE_NAME = "city_databse";
+    private static final String TABLE_NAME = "city_table";
     private static final String CITY_NAME = "city_name";
     private static final int DATABASE_VERSION = 1;
     private static final String UID = "_id";
-    private WeatherDatabase mWeatherDatabase;
+//    private CityTable mCityTable;
 
     private WeatherFragmentAdapter mWeatherAdapter;
     private ViewPager viewPager;
@@ -58,22 +58,33 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private WeatherData weatherData;
     private SQLiteDatabase sqLiteDatabase;
 
-
     private Location myLastLocation;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
+    private WeatherDatabaseManager mWeatherDatabase;
+    private WeatherDatabaseManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-        mWeatherDatabase = new WeatherDatabase(this);
-        sqLiteDatabase = mWeatherDatabase.getWritableDatabase();
+//        mCityTable = new CityTable(this);
+
         result = new ArrayList<>();
 
         setUpGoogleApiClient();
         initControls();
-        getInformationFromSQLiteDatabase();
+        getManagerAndShowData();
+//        getInformationFromSQLiteDatabase();
+
+    }
+
+    private void getManagerAndShowData() {
+        manager = WeatherDatabaseManager.getInstance();
+        sqLiteDatabase = manager.getDatabase();
+        result = manager.showAll();
+        Log.d("db", "result array list is: "+result);
+        mWeatherAdapter.setWeatherData(result);
     }
 
     private void setUpGoogleApiClient() {
@@ -94,20 +105,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     protected void onPause() {
         super.onPause();
-    }
-
-    public void getInformationFromSQLiteDatabase() {
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " +TABLE_NAME, null );
-        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            Log.d("db", "lat = " + cursor.getDouble(0));
-            Log.d("db", "lon = " + cursor.getDouble(1));
-            weatherData = new WeatherData();
-            weatherData.setLatitude(cursor.getDouble(0));
-            weatherData.setLongitude(cursor.getDouble(1));
-            result.add(weatherData);
-        }
-        cursor.close();
-        mWeatherAdapter.setWeatherData(result);
     }
 
 //    @Override
@@ -169,17 +166,17 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                     Address address = addresses.get(0);
                     mLocationLongitude = address.getLongitude();
                     mLocationLatitude = address.getLatitude();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                sqLiteDatabase.execSQL("INSERT INTO " + TABLE_NAME + " VALUES(" + mLocationLatitude +
-                        "," + mLocationLongitude + ");");
                 WeatherData data1 = new WeatherData();
                 data1.setLongitude(mLocationLongitude);
                 data1.setLatitude(mLocationLatitude);
                 result.add(data1);
                 mWeatherAdapter.setWeatherData(result);
                 viewPager.setCurrentItem(result.size());
+                manager.insertData(data1.getId() ,mLocationLatitude, mLocationLongitude);
             }
         }
     }
@@ -195,26 +192,26 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     public void onConnected(Bundle bundle) {
         Log.d("asd", "connected to google api");
         if (result.size() == 0) {
-            handleWeatherInformation();
+//            handleWeatherInformation();
         }
     }
 
-    private void handleWeatherInformation() {
-        myLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1000);
-        WeatherData weatherDat4 = new WeatherData();
-        if (myLastLocation != null) {
-            weatherDat4.setLatitude(myLastLocation.getLatitude());
-            weatherDat4.setLongitude(myLastLocation.getLongitude());
-            result.add(weatherDat4);
-            mWeatherAdapter.setWeatherData(result);
-        } else {
-            Log.d("asd", "location is null");
-            LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
-        }
-    }
+//    private void handleWeatherInformation() {
+//        myLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+//        locationRequest = LocationRequest.create();
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        locationRequest.setInterval(1000);
+//        WeatherData weatherDat4 = new WeatherData();
+//        if (myLastLocation != null) {
+//            weatherDat4.setLatitude(myLastLocation.getLatitude());
+//            weatherDat4.setLongitude(myLastLocation.getLongitude());
+//            result.add(weatherDat4);
+//            mWeatherAdapter.setWeatherData(result);
+//        } else {
+//            Log.d("asd", "location is null");
+//            LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
+//        }
+//    }
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -233,8 +230,10 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         if (location != null) {
             Log.d("asd", "location FOUND!");
             LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
-            handleWeatherInformation();
+//            handleWeatherInformation();
         }
     }
+
+
 }
 

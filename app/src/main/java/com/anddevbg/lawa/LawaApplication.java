@@ -3,6 +3,7 @@ package com.anddevbg.lawa;
 import android.app.Application;
 import android.content.Context;
 
+import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.networking.NetworkRequestManager;
 
 /**
@@ -17,6 +18,8 @@ public class LawaApplication extends Application {
         super.onCreate();
         NetworkRequestManager.setup(this);
         instance = this;
+
+        WeatherDatabaseManager.initialize(this);
     }
     public static Context getContext() {
         return instance.getApplicationContext();
