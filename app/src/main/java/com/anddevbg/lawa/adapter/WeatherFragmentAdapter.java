@@ -39,12 +39,6 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
         return WeatherFragmentAdapter.POSITION_NONE;
     }
 
-//    public void removeWeatherData(int position) {
-//        if(mWeatherData.size() > 0) {
-//            mWeatherData.remove(position);
-//        }
-//        notifyDataSetChanged();
-//    }
 
     @Override
     public Fragment getItem(int position) {

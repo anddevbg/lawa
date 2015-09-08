@@ -2,6 +2,7 @@ package com.anddevbg.lawa.ui.activity.weather;
 
 
 import android.app.SearchManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -40,6 +41,7 @@ import java.util.Locale;
 public class WeatherActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String WEATHER_ARRAY = "weather_array";
+    private static final String CITY_TABLE_NAME = "city_information_table";
 
     private static final String DATABASE_NAME = "city_databse";
     private static final String TABLE_NAME = "city_table";
@@ -55,6 +57,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
+    private String mCityName;
     private WeatherData weatherData;
     private SQLiteDatabase sqLiteDatabase;
 
@@ -107,18 +110,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         super.onPause();
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putSerializable(WEATHER_ARRAY, (Serializable) result);
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        result = (List<WeatherData>) savedInstanceState.get(WEATHER_ARRAY);
-//        mWeatherAdapter.setWeatherData(result);
-//    }
 
     @Override
     public boolean onSearchRequested() {
@@ -132,12 +123,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_weather, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
+//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getComponentName()));
         Button add = (Button) menu.findItem(R.id.action_add).getActionView();
-//        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
+        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -148,6 +139,10 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 Log.d("asd", "action add clicked");
                 Intent searchActivityIntent = new Intent(WeatherActivity.this, SearchCityActivity.class);
                 startActivityForResult(searchActivityIntent, search_request_code);
+                break;
+            case R.id.action_remove:
+                Log.d("asd", "action remove clicked");
+                manager.deleteData("");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -166,17 +161,18 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                     Address address = addresses.get(0);
                     mLocationLongitude = address.getLongitude();
                     mLocationLatitude = address.getLatitude();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 WeatherData data1 = new WeatherData();
                 data1.setLongitude(mLocationLongitude);
                 data1.setLatitude(mLocationLatitude);
+                data1.setCityName(locationName);
                 result.add(data1);
                 mWeatherAdapter.setWeatherData(result);
                 viewPager.setCurrentItem(result.size());
-                manager.insertData(data1.getId() ,mLocationLatitude, mLocationLongitude);
+                Log.d("asd", "data1 id is: " + locationName);
+                manager.insertData(locationName, mLocationLatitude, mLocationLongitude);
             }
         }
     }
@@ -191,9 +187,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("asd", "connected to google api");
-        if (result.size() == 0) {
+//        if (result.size() == 0) {
 //            handleWeatherInformation();
-        }
+//        }
     }
 
 //    private void handleWeatherInformation() {
@@ -233,7 +229,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 //            handleWeatherInformation();
         }
     }
-
 
 }
 

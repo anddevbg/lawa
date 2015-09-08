@@ -16,25 +16,22 @@ import java.util.List;
  */
 public class WeatherDatabaseManager {
 
-    private static final String TABLE_NAME = "city_information_table";
+    private static final String TABLE_NAME = "city_information_table1";
     private static final String DATABASE_NAME = "city_database";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
     private static final String LATITUDE = "LATITUDE";
     private static final String LONGITUDE = "LONGITUDE";
-    private static final String CITY_ID = "CITY_ID";
-    private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + CITY_ID + " VARCHAR(10), "
+    private static final String LOCATION_NAME = "NAME";
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + LOCATION_NAME + " VARCHAR(20), "
             + LATITUDE + " VARCHAR(20), " + LONGITUDE + " VARCHAR(20));";
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     private static WeatherDatabaseManager sInstance;
-    //    private CityTable cityTable;
     private SQLiteDatabase mSQLiteDatabase;
     private WeatherSQLiteOpenHelper mSQLiteHelper;
-//    private IDatabaseTable[] mTables;
 
     private WeatherDatabaseManager(Context context) {
         mSQLiteHelper = new WeatherSQLiteOpenHelper(context);
         mSQLiteDatabase = getDatabase();
-//        cityTable = new CityTable(context);
     }
 
     public static WeatherDatabaseManager getInstance() {
@@ -54,18 +51,15 @@ public class WeatherDatabaseManager {
         sInstance = new WeatherDatabaseManager(context);
     }
 
-    public void insertData(int id, double latitude, double longitude) {
+    public void insertData(String locationName, double latitude, double longitude) {
         Log.d("db", "inserting into WeatherDatabaseManager");
-        String INSERT = "INSERT INTO " + TABLE_NAME + " VALUES(" + id + "," + latitude + "," + longitude + ");";
+        String INSERT = "INSERT INTO " + TABLE_NAME + " VALUES('" + locationName + "'," + latitude + "," + longitude + ");";
+        Log.d("asd", "insert: " + INSERT);
         mSQLiteDatabase.execSQL(INSERT);
     }
 
-//    public void deleteTable() {
-//        mSqLiteDatabase.execSQL("DELETE * FROM " + TABLE_NAME);
-//    }
-
-    public void deleteData(int id) {
-        String DELETE = "DELETE FROM" + TABLE_NAME + " WHERE " + CITY_ID + "= " + id + ";";
+    public void deleteData(String locationName) {
+        String DELETE = "DELETE FROM " +TABLE_NAME+ " WHERE " +LOCATION_NAME+ " ='Sofia'";
         mSQLiteDatabase.execSQL(DELETE);
     }
 
@@ -75,7 +69,7 @@ public class WeatherDatabaseManager {
         Cursor cursor = mSQLiteDatabase.rawQuery(SHOWALL, null);
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             WeatherData weatherData = new WeatherData();
-            weatherData.setId(cursor.getInt(0));
+            weatherData.setCityName(cursor.getString(0));
             weatherData.setLatitude(cursor.getDouble(1));
             weatherData.setLongitude(cursor.getDouble(2));
             list.add(weatherData);
@@ -102,6 +96,5 @@ public class WeatherDatabaseManager {
             sqLiteDatabase.execSQL(CREATE_TABLE);
         }
     }
-
 
 }

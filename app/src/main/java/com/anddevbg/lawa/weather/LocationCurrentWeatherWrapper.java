@@ -48,11 +48,9 @@ public class LocationCurrentWeatherWrapper {
         if (cityNameOne != null) {
             mResultResponse = cityNameOne.replaceAll("\\s", "%20");
         }
-        String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse + "&units=metric";
-//        String result = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude +
-//                "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
-//        Log.d("asd", result);
-        Log.d("asd", myNewResult);
+        String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
+        "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
+//        Log.d("asd", myNewResult);
         return myNewResult;
     }
 

@@ -91,7 +91,7 @@ public class WeatherData implements Serializable {
     @Override
     public String toString() {
         return "WeatherData{" +
-                "cityId=" + id +
+                "cityName=" + mCityName +
                 ", mLongitude=" + mLongitude +
                 ", mLatitude=" + mLatitude +
                 '}';

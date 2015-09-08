@@ -145,8 +145,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 descriptionWeatherText.setText(desc);
 
                 JSONObject coord = result.getJSONObject("coord");
-                double lon = coord.getDouble("lon");
-                double lat = coord.getDouble("lat");
+//                double lon = coord.getDouble("lon");
+//                double lat = coord.getDouble("lat");
 
                 if (getActivity() != null) {
                     Notification notification = new NotificationCompat.Builder(getActivity())
@@ -157,7 +157,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                     notificationManager.notify(1, notification);
                 }
             } else {
-                Log.d("asd", "error loading weather data");
+//                mWeatherData.setCityName(result.getString("name"));
                 Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
                         .setAction("retry", new View.OnClickListener() {
                             @Override

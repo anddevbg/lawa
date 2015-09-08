@@ -19,10 +19,12 @@ public class ForecastWrapper {
         cityIdName = cityIdentifier;
     }
 
-    private final String getForecastUrl() {
-
-        return "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityIdName +
+    private String getForecastUrl() {
+        String result = "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityIdName +
                 "&cnt=5&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
+        String trimmedResult = result.replaceAll("\\s", "");
+
+        return trimmedResult;
     }
 
     public void receiveWeatherForecast(final IForecastCallback callback) {
