@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -42,16 +43,15 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
-
         fetchForecast();
         initControls();
-
     }
 
     @Override
     public void onForecastReceived(JSONObject response) {
         dataList = new ArrayList<>();
         try {
+            Log.d("response", "forecast is + " + response.toString());
             JSONObject city = response.getJSONObject("city");
             String cityName = city.getString("name");
 

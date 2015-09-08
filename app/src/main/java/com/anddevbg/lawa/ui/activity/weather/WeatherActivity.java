@@ -59,33 +59,27 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
-    private String mCityName;
-    private WeatherData weatherData;
-    private SQLiteDatabase sqLiteDatabase;
-
-    private Location myLastLocation;
+//    private String mCityName;
+//    private WeatherData weatherData;
+//
+//    private Location myLastLocation;
     private GoogleApiClient client;
-    private LocationRequest locationRequest;
+//    private LocationRequest locationRequest;
     private WeatherDatabaseManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-//        mCityTable = new CityTable(this);
-
         result = new ArrayList<>();
-
         setUpGoogleApiClient();
         initControls();
         getManagerAndShowData();
 //        getInformationFromSQLiteDatabase();
-
     }
 
     private void getManagerAndShowData() {
         manager = WeatherDatabaseManager.getInstance();
-        sqLiteDatabase = manager.getDatabase();
         result = manager.showAll();
         Log.d("db", "result array list is: "+result);
         mWeatherAdapter.setWeatherData(result);
@@ -110,7 +104,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     protected void onPause() {
         super.onPause();
     }
-
 
     @Override
     public boolean onSearchRequested() {
@@ -144,14 +137,14 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             case R.id.action_remove:
                 Log.d("asd", "action remove clicked");
                 new AlertDialog.Builder(this)
-                        .setTitle("Are you sure you want to delete this city?")
+                        .setTitle("Delete this city?")
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 return;
                             }
                         })
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 int index = viewPager.getCurrentItem();

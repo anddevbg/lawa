@@ -22,8 +22,7 @@ public class ForecastWrapper {
     private String getForecastUrl() {
         String result = "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityIdName +
                 "&cnt=5&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
-        String trimmedResult = result.replaceAll("\\s", "");
-
+        String trimmedResult = result.replaceAll("\\s", "%20");
         return trimmedResult;
     }
 
@@ -40,6 +39,5 @@ public class ForecastWrapper {
             }
         });
         NetworkRequestManager.getInstance().performRequest(request);
-
     }
 }
