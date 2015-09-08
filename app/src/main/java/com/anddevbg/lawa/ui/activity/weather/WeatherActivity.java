@@ -1,9 +1,11 @@
 package com.anddevbg.lawa.ui.activity.weather;
 
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
@@ -140,13 +143,28 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 break;
             case R.id.action_remove:
                 Log.d("asd", "action remove clicked");
-                int index = viewPager.getCurrentItem();
-                String cityNameForDeletion = result.get(index).getCityName();
-                Log.d("asd", "name is: " + cityNameForDeletion);
-                manager.deleteData(cityNameForDeletion);
-                mWeatherAdapter.removeView(index);
-                result.remove(index);
-                mWeatherAdapter.notifyDataSetChanged();
+                new AlertDialog.Builder(this)
+                        .setTitle("Are you sure you want to delete this city?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                return;
+                            }
+                        })
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                int index = viewPager.getCurrentItem();
+                                String cityNameForDeletion = result.get(index).getCityName();
+                                Log.d("asd", "name is: " + cityNameForDeletion);
+                                manager.deleteData(cityNameForDeletion);
+                                mWeatherAdapter.removeView(index);
+                                result.remove(index);
+                                mWeatherAdapter.notifyDataSetChanged();
+                                Toast.makeText(WeatherActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
         }
         return super.onOptionsItemSelected(item);
     }

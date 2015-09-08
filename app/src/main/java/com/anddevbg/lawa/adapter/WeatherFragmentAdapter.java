@@ -2,14 +2,9 @@ package com.anddevbg.lawa.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.ViewGroup;
 
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 
 import java.util.ArrayList;
@@ -43,16 +38,10 @@ public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-//        Log.d("asd", "creating weather screen for:");
-//        Log.d("asd", "position: " + position);
-//        Log.d("asd", "wd: " + mWeatherData.get(position));
-//        Log.d("asd", "------------------------------");
         BaseWeatherFragment baseWeatherFragment = BaseWeatherFragment.createInstance(mWeatherData.get(position));
         mPageMap.put(position, baseWeatherFragment);
-        return baseWeatherFragment;
-
-
 //        return BaseWeatherFragment.createInstance(mWeatherData.get(position));
+        return baseWeatherFragment;
     }
 
     @Override
