@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by tpenkov on 15.6.2015 г..
  */
-public class WeatherFragmentAdapter extends FragmentPagerAdapter {
+public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
     private List<WeatherData> mWeatherData;
     private Map<Integer, BaseWeatherFragment> mPageMap = new HashMap<>();
 
@@ -38,9 +38,8 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        return WeatherFragmentAdapter.POSITION_NONE;
+        return POSITION_NONE;
     }
-
 
     @Override
     public Fragment getItem(int position) {
@@ -63,6 +62,11 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
 
     public BaseWeatherFragment getFragment(int key) {
         return mPageMap.get(key);
+    }
+
+    public void removeView(int index) {
+        mWeatherData.remove(index);
+        notifyDataSetChanged();
     }
 
 }

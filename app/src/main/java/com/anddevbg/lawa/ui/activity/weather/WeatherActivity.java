@@ -144,9 +144,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 String cityNameForDeletion = result.get(index).getCityName();
                 Log.d("asd", "name is: " + cityNameForDeletion);
                 manager.deleteData(cityNameForDeletion);
+                mWeatherAdapter.removeView(index);
                 result.remove(index);
                 mWeatherAdapter.notifyDataSetChanged();
-                mWeatherAdapter.setWeatherData(result);
         }
         return super.onOptionsItemSelected(item);
     }
