@@ -13,14 +13,16 @@ import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tpenkov on 15.6.2015 г..
  */
 public class WeatherFragmentAdapter extends FragmentPagerAdapter {
-
     private List<WeatherData> mWeatherData;
+    private Map<Integer, BaseWeatherFragment> mPageMap = new HashMap<>();
 
     public WeatherFragmentAdapter(FragmentManager fm) {
         super(fm);
@@ -42,12 +44,16 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.d("asd", "creating weather screen for:");
-        Log.d("asd", "position: " + position);
-        Log.d("asd", "wd: " + mWeatherData.get(position));
-        Log.d("asd", "------------------------------");
+//        Log.d("asd", "creating weather screen for:");
+//        Log.d("asd", "position: " + position);
+//        Log.d("asd", "wd: " + mWeatherData.get(position));
+//        Log.d("asd", "------------------------------");
+        BaseWeatherFragment baseWeatherFragment = BaseWeatherFragment.createInstance(mWeatherData.get(position));
+        mPageMap.put(position, baseWeatherFragment);
+        return baseWeatherFragment;
 
-        return BaseWeatherFragment.createInstance(mWeatherData.get(position));
+
+//        return BaseWeatherFragment.createInstance(mWeatherData.get(position));
     }
 
     @Override
@@ -55,5 +61,8 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
         return mWeatherData.size();
     }
 
+    public BaseWeatherFragment getFragment(int key) {
+        return mPageMap.get(key);
+    }
 
 }

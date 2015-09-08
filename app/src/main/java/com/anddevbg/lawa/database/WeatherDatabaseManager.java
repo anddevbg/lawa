@@ -59,8 +59,10 @@ public class WeatherDatabaseManager {
     }
 
     public void deleteData(String locationName) {
-        String DELETE = "DELETE FROM " +TABLE_NAME+ " WHERE " +LOCATION_NAME+ " ='Sofia'";
+        String DELETE = "DELETE FROM " +TABLE_NAME+ " WHERE " +LOCATION_NAME+ " ='" +locationName+
+                "';";
         mSQLiteDatabase.execSQL(DELETE);
+        Log.d("asd", "deleting from database:  " + locationName);
     }
 
     public List<WeatherData> showAll() {

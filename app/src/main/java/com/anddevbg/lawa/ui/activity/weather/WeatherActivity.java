@@ -23,7 +23,6 @@ import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
 import com.anddevbg.lawa.animation.ZoomPagerTransformation;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
-//import com.anddevbg.lawa.database.CityTable;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 import com.google.android.gms.common.ConnectionResult;
@@ -40,14 +39,14 @@ import java.util.Locale;
 
 public class WeatherActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private static final String WEATHER_ARRAY = "weather_array";
-    private static final String CITY_TABLE_NAME = "city_information_table";
-
-    private static final String DATABASE_NAME = "city_databse";
-    private static final String TABLE_NAME = "city_table";
-    private static final String CITY_NAME = "city_name";
-    private static final int DATABASE_VERSION = 1;
-    private static final String UID = "_id";
+//    private static final String WEATHER_ARRAY = "weather_array";
+//    private static final String CITY_TABLE_NAME = "city_information_table";
+//
+//    private static final String DATABASE_NAME = "city_databse";
+//    private static final String TABLE_NAME = "city_table";
+//    private static final String CITY_NAME = "city_name";
+//    private static final int DATABASE_VERSION = 1;
+//    private static final String UID = "_id";
 //    private CityTable mCityTable;
 
     private WeatherFragmentAdapter mWeatherAdapter;
@@ -64,7 +63,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private Location myLastLocation;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
-    private WeatherDatabaseManager mWeatherDatabase;
     private WeatherDatabaseManager manager;
 
     @Override
@@ -142,7 +140,13 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 break;
             case R.id.action_remove:
                 Log.d("asd", "action remove clicked");
-                manager.deleteData("");
+                int index = viewPager.getCurrentItem();
+                String cityNameForDeletion = result.get(index).getCityName();
+                Log.d("asd", "name is: " + cityNameForDeletion);
+                manager.deleteData(cityNameForDeletion);
+                result.remove(index);
+                mWeatherAdapter.notifyDataSetChanged();
+                mWeatherAdapter.setWeatherData(result);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -181,6 +185,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(mWeatherAdapter);
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setPageTransformer(false, new ZoomPagerTransformation());
     }
 
