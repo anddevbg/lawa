@@ -87,13 +87,11 @@ public class WeatherDatabaseManager {
 
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            Log.d("asd", "onCreate table in WeatherDatabaseManager");
             sqLiteDatabase.execSQL(CREATE_TABLE);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-            Log.d("asd", "onUpgrade table in WeatherDatabaseManager");
             sqLiteDatabase.execSQL(DROP_TABLE);
             sqLiteDatabase.execSQL(CREATE_TABLE);
         }

@@ -3,12 +3,9 @@ package com.anddevbg.lawa.ui.activity.weather;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -31,7 +28,6 @@ import com.anddevbg.lawa.model.WeatherData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
@@ -42,19 +38,10 @@ import java.util.Locale;
 
 public class WeatherActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-//    private static final String WEATHER_ARRAY = "weather_array";
-//    private static final String CITY_TABLE_NAME = "city_information_table";
-//
-//    private static final String DATABASE_NAME = "city_databse";
-//    private static final String TABLE_NAME = "city_table";
-//    private static final String CITY_NAME = "city_name";
-//    private static final int DATABASE_VERSION = 1;
-//    private static final String UID = "_id";
-//    private CityTable mCityTable;
 
     private WeatherFragmentAdapter mWeatherAdapter;
-    private ViewPager viewPager;
-    private List<WeatherData> result;
+    private ViewPager mViewPager;
+    private List<WeatherData> mResult;
     private int search_request_code = 1;
     private SearchView searchView;
     private double mLocationLatitude;
@@ -71,7 +58,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-        result = new ArrayList<>();
+        mResult = new ArrayList<>();
         setUpGoogleApiClient();
         initControls();
         getManagerAndShowData();
@@ -80,9 +67,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     private void getManagerAndShowData() {
         manager = WeatherDatabaseManager.getInstance();
-        result = manager.showAll();
-        Log.d("db", "result array list is: "+result);
-        mWeatherAdapter.setWeatherData(result);
+        mResult = manager.showAll();
+        Log.d("db", "result array list is: "+mResult);
+        mWeatherAdapter.setWeatherData(mResult);
     }
 
     private void setUpGoogleApiClient() {
@@ -147,12 +134,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                int index = viewPager.getCurrentItem();
-                                String cityNameForDeletion = result.get(index).getCityName();
+                                int index = mViewPager.getCurrentItem();
+                                String cityNameForDeletion = mResult.get(index).getCityName();
                                 Log.d("asd", "name is: " + cityNameForDeletion);
                                 manager.deleteData(cityNameForDeletion);
                                 mWeatherAdapter.removeView(index);
-                                result.remove(index);
+                                mResult.remove(index);
                                 mWeatherAdapter.notifyDataSetChanged();
                                 Toast.makeText(WeatherActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
                             }
@@ -183,9 +170,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 data1.setLongitude(mLocationLongitude);
                 data1.setLatitude(mLocationLatitude);
                 data1.setCityName(locationName);
-                result.add(data1);
-                mWeatherAdapter.setWeatherData(result);
-                viewPager.setCurrentItem(result.size());
+                mResult.add(data1);
+                mWeatherAdapter.setWeatherData(mResult);
+                mViewPager.setCurrentItem(mResult.size());
                 Log.d("asd", "data1 id is: " + locationName);
                 manager.insertData(locationName, mLocationLatitude, mLocationLongitude);
             }
@@ -194,10 +181,10 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     private void initControls() {
         mWeatherAdapter = new WeatherFragmentAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(mWeatherAdapter);
-        viewPager.setOffscreenPageLimit(5);
-        viewPager.setPageTransformer(false, new ZoomPagerTransformation());
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mViewPager.setAdapter(mWeatherAdapter);
+        mViewPager.setOffscreenPageLimit(5);
+        mViewPager.setPageTransformer(false, new ZoomPagerTransformation());
     }
 
     @Override
