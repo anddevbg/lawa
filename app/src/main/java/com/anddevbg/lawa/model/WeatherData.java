@@ -19,7 +19,16 @@ public class WeatherData implements Serializable {
     private double mLongitude;
     private double mLatitude;
 
+    private int id;
+
     public WeatherData() {
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setWindSpeed(double mWindSpeed) {
@@ -82,11 +91,7 @@ public class WeatherData implements Serializable {
     @Override
     public String toString() {
         return "WeatherData{" +
-                "mCurrent=" + mCurrent +
-                ", mHumidity=" + mHumidity +
-                ", mWindSpeed=" + mWindSpeed +
-                ", mCityName='" + mCityName + '\'' +
-                ", mDescription='" + mDescription + '\'' +
+                "cityName=" + mCityName +
                 ", mLongitude=" + mLongitude +
                 ", mLatitude=" + mLatitude +
                 '}';

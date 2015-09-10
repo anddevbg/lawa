@@ -20,14 +20,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:id="@+id/snackbar">
+            </android.support.design.widget.CoordinatorLayout>
             <ImageView
                 android:id="@+id/current_weather_imageView"
                 android:layout_width="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter" />
-
             <TextView
                 android:id="@+id/temperature_textView"
                 android:layout_width="fill_parent"
@@ -37,7 +42,6 @@
                 android:scaleType="fitCenter"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textSize="50sp" />
-
             <TextView
                 android:id="@+id/city_textView"
                 android:layout_width="fill_parent"
@@ -47,8 +51,6 @@
                 android:scaleType="fitCenter"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="42sp" />
-
-
             <TextView
                 android:id="@+id/min_temp_textView"
                 android:layout_width="fill_parent"
@@ -58,7 +60,6 @@
                 android:scaleType="fitCenter"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textSize="20sp" />
-
             <TextView
                 android:id="@+id/max_temp_textView"
                 android:layout_width="fill_parent"
@@ -87,6 +88,7 @@
                     />
             </RelativeLayout>
         </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>

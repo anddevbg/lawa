@@ -2,21 +2,22 @@ package com.anddevbg.lawa.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.ui.fragment.BaseWeatherFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tpenkov on 15.6.2015 г..
  */
-public class WeatherFragmentAdapter extends FragmentPagerAdapter {
-
+public class WeatherFragmentAdapter extends FragmentStatePagerAdapter {
     private List<WeatherData> mWeatherData;
+    private Map<Integer, BaseWeatherFragment> mPageMap = new HashMap<>();
 
     public WeatherFragmentAdapter(FragmentManager fm) {
         super(fm);
@@ -32,27 +33,29 @@ public class WeatherFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        return WeatherFragmentAdapter.POSITION_NONE;
-    }
-
-        public void removeWeatherData(int position) {
-        mWeatherData.remove(position);
-
-        notifyDataSetChanged();
+        return POSITION_NONE;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.d("asd", "creating weather screen for:");
-        Log.d("asd", "position: " + position);
-        Log.d("asd", "wd: " + mWeatherData.get(position));
-        Log.d("asd", "------------------------------");
-
-        return BaseWeatherFragment.createInstance(mWeatherData.get(position));
+        BaseWeatherFragment baseWeatherFragment = BaseWeatherFragment.createInstance(mWeatherData.get(position));
+        mPageMap.put(position, baseWeatherFragment);
+//        return BaseWeatherFragment.createInstance(mWeatherData.get(position));
+        return baseWeatherFragment;
     }
 
     @Override
     public int getCount() {
         return mWeatherData.size();
     }
+
+    public BaseWeatherFragment getFragment(int key) {
+        return mPageMap.get(key);
+    }
+
+    public void removeView(int index) {
+        mWeatherData.remove(index);
+        notifyDataSetChanged();
+    }
+
 }

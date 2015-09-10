@@ -25,8 +25,6 @@ import java.util.Locale;
  */
 public class LocationCurrentWeatherWrapper {
     private Location mLocation;
-    private double latitude;
-    private double longitude;
     private String cityNameOne;
     private String mResultResponse;
 
@@ -35,8 +33,8 @@ public class LocationCurrentWeatherWrapper {
     }
 
     public final String getOpenWeatherApiUrl() {
-        latitude = mLocation.getLatitude();
-        longitude = mLocation.getLongitude();
+        double latitude = mLocation.getLatitude();
+        double longitude = mLocation.getLongitude();
         Geocoder geocoder = new Geocoder(LawaApplication.getContext(), Locale.getDefault());
         try {
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
@@ -50,11 +48,9 @@ public class LocationCurrentWeatherWrapper {
         if (cityNameOne != null) {
             mResultResponse = cityNameOne.replaceAll("\\s", "%20");
         }
-        String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse + "&units=metric";
-//        String result = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude +
-//                "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
-//        Log.d("asd", result);
-        Log.d("asd", myNewResult);
+        String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
+        "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
+//        Log.d("asd", myNewResult);
         return myNewResult;
     }
 
