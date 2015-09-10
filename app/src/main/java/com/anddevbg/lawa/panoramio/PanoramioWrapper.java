@@ -1,5 +1,6 @@
 package com.anddevbg.lawa.panoramio;
 
+import android.content.res.Configuration;
 import android.location.Location;
 
 import com.anddevbg.lawa.networking.NetworkRequestManager;
@@ -24,7 +25,7 @@ public class PanoramioWrapper {
         return "http://www.panoramio.com" +
                 "/map/get_panoramas.php?" +
                 "order=popularity&" +
-                "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=small";
+                "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=medium";
     }
 
     public double getLatitude() {

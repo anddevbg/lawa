@@ -13,14 +13,14 @@ import org.json.JSONObject;
  */
 public class ForecastWrapper {
 
-    int cityIdName;
+    private int mCityIdName;
 
     public ForecastWrapper(int cityIdentifier) {
-        cityIdName = cityIdentifier;
+        mCityIdName = cityIdentifier;
     }
 
     private String getForecastUrl() {
-        String result = "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityIdName +
+        String result = "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + mCityIdName +
                 "&cnt=5&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
         String trimmedResult = result.replaceAll("\\s", "%20");
         return trimmedResult;

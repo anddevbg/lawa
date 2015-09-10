@@ -29,6 +29,8 @@
             <ImageView
                 android:id="@+id/current_weather_imageView"
                 android:layout_width="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter" />
             <TextView

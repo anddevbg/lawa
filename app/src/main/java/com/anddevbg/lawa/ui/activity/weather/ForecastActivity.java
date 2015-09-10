@@ -34,9 +34,9 @@ import java.util.List;
  */
 public class ForecastActivity extends AppCompatActivity implements IForecastCallback, OnStartDragListener {
 
-    public List<ForecastData> dataList;
+    public List<ForecastData> mDataList;
     ForecastAdapter mForecastAdapter;
-    private TextView emptyTextView;
+    private TextView mEmptyTextView;
     private RecyclerView mRecyclerView;
 
     @Override
@@ -49,7 +49,7 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
 
     @Override
     public void onForecastReceived(JSONObject response) {
-        dataList = new ArrayList<>();
+        mDataList = new ArrayList<>();
         try {
             Log.d("response", "forecast is + " + response.toString());
             JSONObject city = response.getJSONObject("city");
@@ -84,17 +84,17 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
                 String fullForecastIconUrl = "http://openweathermap.org/img/w/" + pngFileUrl + ".png";
                 forecastDataObj.setImageUrl(fullForecastIconUrl);
 
-                dataList.add(forecastDataObj);
+                mDataList.add(forecastDataObj);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        if(dataList.isEmpty()) {
+        if(mDataList.isEmpty()) {
             mRecyclerView.setVisibility(View.GONE);
-            emptyTextView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setVisibility(View.VISIBLE);
         } else {
-            mForecastAdapter.setData(dataList);
+            mForecastAdapter.setData(mDataList);
         }
     }
 
@@ -110,7 +110,7 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     }
 
     private void initControls() {
-        emptyTextView = (TextView) findViewById(R.id.empty_view);
+        mEmptyTextView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
