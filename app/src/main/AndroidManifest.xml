@@ -42,6 +42,7 @@
         </activity>
         <activity android:name=".ui.activity.weather.ForecastActivity" />
         <activity android:name=".ui.activity.weather.SearchCityActivity" />
+        <activity android:name=".weathergraph.GraphActivity"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

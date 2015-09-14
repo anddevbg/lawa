@@ -47,6 +47,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
+                android:textStyle="bold|italic"
                 android:gravity="center"
                 android:scaleType="fitCenter"
                 android:textAppearance="?android:attr/textAppearanceMedium"

@@ -25,6 +25,7 @@ import com.anddevbg.lawa.animation.ZoomPagerTransformation;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
+import com.anddevbg.lawa.weathergraph.GraphActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -145,6 +146,11 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                             }
                         })
                         .show();
+                break;
+            case R.id.action_graph:
+                Intent i = new Intent(this, GraphActivity.class);
+                startActivity(i);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
