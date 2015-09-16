@@ -2,17 +2,26 @@ package com.anddevbg.lawa.weathergraph;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import com.anddevbg.lawa.R;
+
 
 /**
  * Created by adri.stanchev on 14/09/2015.
  */
 public class GraphActivity extends AppCompatActivity {
 
-    private WeatherGraph mWeatherGraph;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mWeatherGraph = new WeatherGraph(this);
-        setContentView(mWeatherGraph);
+        setContentView(R.layout.activity_graph);
+        float[] graphData = new float[]{20, 15, 30, 22, 0};
+        for (int i=0; i< graphData.length; i++) {
+            graphData[i]= graphData[i]+20;
+            Log.d("qwe", "graph data is "+ graphData[i]);
+        }
+        WeatherGraph mWeatherGraph = (WeatherGraph) findViewById(R.id.weather_graph);
+        mWeatherGraph.setChartData(graphData);
     }
 }
