@@ -9,6 +9,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by adri.stanchev on 14/09/2015.
@@ -24,6 +27,41 @@ public class WeatherGraph extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         drawGraph(canvas);
+        drawBackgroundLines(canvas);
+//        drawTemperatureText(canvas);
+    }
+
+    private void drawTemperatureText(Canvas canvas) {
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.YELLOW);
+        textPaint.setStyle(Paint.Style.STROKE);
+        textPaint.setStrokeWidth(4);
+        textPaint.setTextSize(50);
+        canvas.drawText("HELLO", getWidth()/2, getHeight()/2, textPaint);
+    }
+
+    private void drawBackgroundLines(Canvas canvas) {
+        int[] intArray = new int[]{30,20,10,0,-10,-20};
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.GRAY);
+        backgroundPaint.setAntiAlias(true);
+        backgroundPaint.setStyle(Paint.Style.STROKE);
+        backgroundPaint.setStrokeWidth(4);
+        Paint temperaturePaint = new Paint();
+        temperaturePaint.setColor(Color.CYAN);
+        temperaturePaint.setStyle(Paint.Style.STROKE);
+        temperaturePaint.setTextSize(45);
+        temperaturePaint.setAntiAlias(true);
+        temperaturePaint.setStrokeWidth(4);
+        int fullHeight = getHeight();
+        List<Float> floatList = new ArrayList<>();
+        for(float y= fullHeight/6; y<fullHeight; y += fullHeight/6) {
+            canvas.drawLine(0, y, getWidth(), y, backgroundPaint);
+            floatList.add(y);
+        }
+        for(int i =0; i<6; i++) {
+            canvas.drawText(String.valueOf(intArray[i]), 0, floatList.get(i), temperaturePaint);
+        }
     }
 
     public void setChartData(float[] chartData) {
@@ -33,7 +71,6 @@ public class WeatherGraph extends View {
 
     private void drawGraph(Canvas canvas) {
         Paint graphPaint = new Paint();
-        Paint backgroundPaint = new Paint();
         Path path = new Path();
         path.moveTo(getXPos(0), getYPos(points[0]));
         for(int i=1; i<points.length; i++) {
@@ -44,15 +81,6 @@ public class WeatherGraph extends View {
         graphPaint.setAntiAlias(true);
         graphPaint.setStrokeWidth(6);
         canvas.drawPath(path, graphPaint);
-        int fullHeight = getHeight();
-        for(int h2= fullHeight/6; h2<fullHeight; h2 += fullHeight/6) {
-            backgroundPaint.setColor(Color.GRAY);
-            backgroundPaint.setAntiAlias(true);
-            backgroundPaint.setStyle(Paint.Style.STROKE);
-            backgroundPaint.setStrokeWidth(4);
-            Log.d("qwe", "h2 is " + h2);
-            canvas.drawLine(0, h2, getWidth(),h2, backgroundPaint);
-        }
     }
 
     @Override

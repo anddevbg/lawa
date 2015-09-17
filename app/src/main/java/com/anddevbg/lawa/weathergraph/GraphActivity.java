@@ -16,7 +16,7 @@ public class GraphActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        float[] graphData = new float[]{20, 15, 30, 22, 0};
+        float[] graphData = new float[]{0,30,10,-20,0};
         for (int i=0; i< graphData.length; i++) {
             graphData[i]= graphData[i]+20;
             Log.d("qwe", "graph data is "+ graphData[i]);
