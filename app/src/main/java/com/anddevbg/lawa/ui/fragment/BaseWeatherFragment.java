@@ -29,6 +29,7 @@ import com.anddevbg.lawa.ui.activity.weather.ForecastActivity;
 import com.anddevbg.lawa.util.RandomUtil;
 import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
+import com.anddevbg.lawa.weathergraph.GraphActivity;
 import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
 
@@ -57,6 +58,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private WeatherData mWeatherData;
     private TextView descriptionWeatherText;
     private View coordinatorView;
+    private Button mGraphButton;
 
     private LocationCurrentWeatherWrapper weatherWrapper;
     private PanoramioWrapper panoramioWrapper;
@@ -229,6 +231,19 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 goToForecastActivity();
             }
         });
+        mGraphButton = (Button) view.findViewById(R.id.graph_button);
+        mGraphButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToGraphActivity();
+            }
+        });
+    }
+
+    private void goToGraphActivity() {
+        Intent graphIntent = new Intent(getActivity(), GraphActivity.class);
+        graphIntent.putExtra("id", cityID);
+        startActivity(graphIntent);
     }
 
     public void goToForecastActivity() {
