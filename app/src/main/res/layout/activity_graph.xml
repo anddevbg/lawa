@@ -3,7 +3,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BBFF">
+    android:background="#000000">
+    <TextView
+        android:id="@+id/city_graph_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:textSize="35sp"
+        android:textColor="#FFFFFF"
+        android:text="Sofia"
+        android:gravity="center"
+        android:layout_gravity="center"/>
     <com.anddevbg.lawa.weathergraph.WeatherGraph
         android:id="@+id/weather_graph"
         android:layout_width="match_parent"

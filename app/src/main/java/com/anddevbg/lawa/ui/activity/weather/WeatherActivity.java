@@ -25,7 +25,6 @@ import com.anddevbg.lawa.animation.ZoomPagerTransformation;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.weathergraph.GraphActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -47,12 +46,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
-//    private String mCityName;
-//    private WeatherData weatherData;
-//
-//    private Location myLastLocation;
     private GoogleApiClient client;
-//    private LocationRequest locationRequest;
     private WeatherDatabaseManager manager;
 
     @Override
@@ -63,7 +57,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         setUpGoogleApiClient();
         initControls();
         getManagerAndShowData();
-//        getInformationFromSQLiteDatabase();
     }
 
     private void getManagerAndShowData() {
@@ -191,28 +184,8 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("asd", "connected to google api");
-//        if (result.size() == 0) {
-//            handleWeatherInformation();
-//        }
     }
 
-//    private void handleWeatherInformation() {
-//        myLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-//        locationRequest = LocationRequest.create();
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        locationRequest.setInterval(1000);
-//        WeatherData weatherDat4 = new WeatherData();
-//        if (myLastLocation != null) {
-//            weatherDat4.setLatitude(myLastLocation.getLatitude());
-//            weatherDat4.setLongitude(myLastLocation.getLongitude());
-//            result.add(weatherDat4);
-//            mWeatherAdapter.setWeatherData(result);
-//        } else {
-//            Log.d("asd", "location is null");
-//            LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
-//        }
-//    }
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -226,12 +199,8 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     @Override
     public void onLocationChanged(Location location) {
-
-        Log.d("asd", "location changed");
         if (location != null) {
-            Log.d("asd", "location FOUND!");
             LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
-//            handleWeatherInformation();
         }
     }
 

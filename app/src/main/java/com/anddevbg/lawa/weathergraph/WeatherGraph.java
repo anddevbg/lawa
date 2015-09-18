@@ -3,12 +3,9 @@ package com.anddevbg.lawa.weathergraph;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PathEffect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -19,8 +16,6 @@ import java.util.List;
  * Created by adri.stanchev on 14/09/2015.
  */
 public class WeatherGraph extends View {
-
-    private Matrix mMatrix;
 
     private Paint mMaxChartPaint;
     private Paint mMinChartPaint;
@@ -44,13 +39,13 @@ public class WeatherGraph extends View {
     private void initPaintObjects() {
         mMinChartPaint = new Paint();
         mMinChartPaint.setStyle(Paint.Style.STROKE);
-        mMinChartPaint.setColor(Color.BLUE);
+        mMinChartPaint.setColor(Color.rgb(29, 149, 255));
         mMinChartPaint.setAntiAlias(true);
         mMinChartPaint.setStrokeWidth(6);
 
         mMaxChartPaint = new Paint();
-        mMaxChartPaint.setColor(Color.YELLOW);
-        mMaxChartPaint.setStrokeWidth(4);
+        mMaxChartPaint.setColor(Color.rgb(244, 255, 70));
+        mMaxChartPaint.setStrokeWidth(6);
         mMaxChartPaint.setAntiAlias(true);
         mMaxChartPaint.setStyle(Paint.Style.STROKE);
 
@@ -61,7 +56,7 @@ public class WeatherGraph extends View {
         mBackgroundPaint.setStrokeWidth(4);
 
         mTemperaturePaint = new Paint();
-        mTemperaturePaint.setColor(Color.CYAN);
+        mTemperaturePaint.setColor(Color.rgb(255,255,255));
         mTemperaturePaint.setStyle(Paint.Style.STROKE);
         mTemperaturePaint.setTextSize(45);
         mTemperaturePaint.setAntiAlias(true);
@@ -82,7 +77,7 @@ public class WeatherGraph extends View {
             mBackgroundPaint.setStrokeWidth(2);
             canvas.drawLine(x, 0, x, getHeight(), mBackgroundPaint);
         }
-        for (int i = 0; i <= 5; i++) {
+        for (int i = 0; i < 5; i++) {
             canvas.drawText(String.valueOf(intArray[i]), 0, floatList.get(i), mTemperaturePaint);
         }
     }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.weather.ForecastWrapper;
@@ -34,17 +35,10 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+        mCityNameTextView = (TextView) findViewById(R.id.city_graph_text_view);
         mGraphMinimum = new ArrayList<>();
         mGraphMaximum = new ArrayList<>();
         fetchGraphData();
-
-//        float[] graphData = new float[]{0,30,10,-20,0};
-//        for (int i=0; i< graphData.length; i++) {
-//            graphData[i]= graphData[i]+20;
-//            Log.d("qwe", "graph data is "+ graphData[i]);
-//        }
-
-//        mWeatherGraph.setChartData(graphData);
     }
 
     private void fetchGraphData() {
@@ -54,6 +48,7 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         mForecastWrapper = new ForecastWrapper(cityId);
         Log.d("graph", "city id is " + cityId);
         mForecastWrapper.receiveWeatherForecast(this);
+        mCityNameTextView.setText(cityName);
     }
 
     @Override
@@ -90,6 +85,7 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
 
     @Override
     public void onForeastError(VolleyError error) {
+        Toast.makeText(this, "Oops! Something went wrong.", Toast.LENGTH_SHORT).show();
 
     }
 }

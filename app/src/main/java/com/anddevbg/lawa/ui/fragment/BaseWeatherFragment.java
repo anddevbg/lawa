@@ -59,13 +59,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private View coordinatorView;
 
     private LocationCurrentWeatherWrapper weatherWrapper;
-    private PanoramioWrapper panoramioWrapper;
 
-    private int currentWeather;
-    private double wind;
-    private int humidity;
     private String name;
-    private String desc;
 
     private WeatherDatabaseManager manager;
 
@@ -108,7 +103,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         Location location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
-        panoramioWrapper = new PanoramioWrapper();
+        PanoramioWrapper panoramioWrapper = new PanoramioWrapper();
         panoramioWrapper.fetchPictures(location, this);
         weatherWrapper = new LocationCurrentWeatherWrapper(location);
         weatherWrapper.getWeatherUpdate(this);
@@ -119,16 +114,16 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         try {
             if(result.has("main")) {
                 JSONObject main = result.getJSONObject("main");
-                currentWeather = main.getInt("temp");
+                int currentWeather = main.getInt("temp");
                 //mWeatherData.setCurrent(currentWeather);
                 mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
 
                 JSONObject windSpeed = result.getJSONObject("wind");
-                wind = windSpeed.getDouble("speed");
+                double wind = windSpeed.getDouble("speed");
                 //mWeatherData.setWindSpeed(wind);
                 mWindSpeed.setText(String.valueOf(wind) + " m/s");
 
-                humidity = main.getInt("humidity");
+                int humidity = main.getInt("humidity");
                 //mWeatherData.setHumidity(humidity);
                 mHumidity.setText(String.valueOf(humidity) + "%");
 
@@ -139,11 +134,11 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
                 JSONArray jArray = result.getJSONArray("weather");
                 JSONObject description = jArray.getJSONObject(0);
-                desc = description.getString("description");
+                String desc = description.getString("description");
                 //mWeatherData.setTimeLastRefresh(desc);
                 descriptionWeatherText.setText(desc);
 
-                JSONObject coord = result.getJSONObject("coord");
+//                JSONObject coord = result.getJSONObject("coord");
 //                double lon = coord.getDouble("lon");
 //                double lat = coord.getDouble("lat");
 
