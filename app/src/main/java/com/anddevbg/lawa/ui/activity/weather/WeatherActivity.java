@@ -147,10 +147,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                         })
                         .show();
                 break;
-            case R.id.action_graph:
-                Intent i = new Intent(this, GraphActivity.class);
-                startActivity(i);
-                break;
         }
         return super.onOptionsItemSelected(item);
     }

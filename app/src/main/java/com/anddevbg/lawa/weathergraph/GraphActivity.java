@@ -34,7 +34,6 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        mCityNameTextView = (TextView) findViewById(R.id.city_name_text_view);
         mGraphMinimum = new ArrayList<>();
         mGraphMaximum = new ArrayList<>();
         fetchGraphData();
@@ -52,7 +51,6 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         Intent i = getIntent();
         int cityId = i.getIntExtra("id", 0);
         String cityName = i.getStringExtra("name");
-        mCityNameTextView.setText(cityName);
         mForecastWrapper = new ForecastWrapper(cityId);
         Log.d("graph", "city id is " + cityId);
         mForecastWrapper.receiveWeatherForecast(this);

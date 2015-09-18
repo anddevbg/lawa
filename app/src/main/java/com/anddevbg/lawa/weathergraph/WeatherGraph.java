@@ -3,8 +3,10 @@ package com.anddevbg.lawa.weathergraph;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathEffect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,8 @@ import java.util.List;
  * Created by adri.stanchev on 14/09/2015.
  */
 public class WeatherGraph extends View {
+
+    private Matrix mMatrix;
 
     private Paint mMaxChartPaint;
     private Paint mMinChartPaint;
@@ -32,7 +36,9 @@ public class WeatherGraph extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        mMatrix = new Matrix();
         initPaintObjects();
+        canvas.concat(mMatrix);
         drawBackgroundLines(canvas);
         drawGraphLines(canvas);
     }
@@ -73,7 +79,7 @@ public class WeatherGraph extends View {
             canvas.drawLine(0, y, getWidth(), y, mBackgroundPaint);
             floatList.add(y);
         }
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 5; i++) {
             canvas.drawText(String.valueOf(intArray[i]), 0, floatList.get(i), mTemperaturePaint);
         }
     }
@@ -86,26 +92,20 @@ public class WeatherGraph extends View {
 
     private void drawGraphLines(Canvas canvas) {
         Path path = new Path();
-        if(maxCharPoints.length>0) {
+        if (maxCharPoints.length > 0) {
             path.moveTo(getXPos(0), getYPos(maxCharPoints[0]));
-        } else {
-            Log.d("graph", "length is 0");
         }
-        for (int i = 0; i < maxCharPoints.length; i++) {
+        for (int i = 1; i < maxCharPoints.length; i++) {
             path.lineTo(getXPos(i), getYPos(maxCharPoints[i]));
-            canvas.drawCircle(getXPos(i), getYPos(maxCharPoints[i]), 5, mMaxChartPaint);
-            Log.d("graph", "moving line to x= " + getXPos(i) + "  y= " + getYPos(maxCharPoints[i]));
+            canvas.drawCircle(getXPos(i), getYPos(maxCharPoints[i]), 4, mMinChartPaint);
         }
         Path path2 = new Path();
-        if(minCharPoints.length > 0) {
-        path2.moveTo(getXPos(0), getYPos(minCharPoints[0]));
-        } else {
-            Log.d("graph", "length is 0");
+        if (minCharPoints.length > 0) {
+            path2.moveTo(getXPos(0), getYPos(minCharPoints[0]));
         }
-        for (int y = 0; y < minCharPoints.length; y++) {
+        for (int y = 1; y < minCharPoints.length; y++) {
             path2.lineTo(getXPos(y), getYPos(minCharPoints[y]));
-            canvas.drawCircle(getXPos(y), getYPos(minCharPoints[y]), 5, mMinChartPaint);
-            Log.d("graph", "moving line to x= " + getXPos(y) + "  y= " + getYPos(minCharPoints[y]));
+            canvas.drawCircle(getXPos(y), getYPos(minCharPoints[y]), 4, mMaxChartPaint);
         }
         canvas.drawPath(path, mMinChartPaint);
         canvas.drawPath(path2, mMaxChartPaint);

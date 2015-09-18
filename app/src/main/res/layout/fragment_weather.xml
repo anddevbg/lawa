@@ -76,23 +76,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center" />
-            <Button
-                android:id="@+id/graph_button"
-                android:text="see graph"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
                 <Button
                     android:id="@+id/forecast_button"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:layout_weight="1"
                     android:onClick="goToForecastActivity"
-                    android:layout_alignParentBottom="true"
                     />
-            </RelativeLayout>
+                <Button
+                    android:id="@+id/graph_button"
+                    android:text="see graph"
+                    android:layout_weight="1"
+                    android:layout_gravity="bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

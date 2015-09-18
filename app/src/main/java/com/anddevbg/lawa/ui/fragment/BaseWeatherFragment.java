@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -58,7 +57,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private WeatherData mWeatherData;
     private TextView descriptionWeatherText;
     private View coordinatorView;
-    private Button mGraphButton;
 
     private LocationCurrentWeatherWrapper weatherWrapper;
     private PanoramioWrapper panoramioWrapper;
@@ -69,7 +67,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private String name;
     private String desc;
 
-    private SQLiteDatabase sqLiteDatabase;
     private WeatherDatabaseManager manager;
 
     private NotificationManager notificationManager;
@@ -231,7 +228,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 goToForecastActivity();
             }
         });
-        mGraphButton = (Button) view.findViewById(R.id.graph_button);
+        Button mGraphButton = (Button) view.findViewById(R.id.graph_button);
         mGraphButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
