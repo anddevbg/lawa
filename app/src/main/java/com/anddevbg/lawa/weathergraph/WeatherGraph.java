@@ -95,17 +95,26 @@ public class WeatherGraph extends View {
 
     private void drawGraph(Canvas canvas) {
         Path path = new Path();
-//        path.moveTo(getXPos(0), getYPos(maxCharPoints[0]));
-        Log.d("graph", "maxcharPoints length is " + maxCharPoints.length);
+        if(maxCharPoints.length>0) {
+            path.moveTo(getXPos(0), getYPos(maxCharPoints[0]));
+        } else {
+            Log.d("graph", "length is 0");
+        }
         for (int i = 0; i < maxCharPoints.length; i++) {
             path.lineTo(getXPos(i), getYPos(maxCharPoints[i]));
+            canvas.drawCircle(getXPos(i), getYPos(maxCharPoints[i]), 5, mMaxChartPaint);
+            Log.d("graph", "moving line to x= " + getXPos(i) + "  y= " + getYPos(maxCharPoints[i]));
         }
-        Log.d("graph", "maxcharPoints length is " + maxCharPoints.length);
         Path path2 = new Path();
-//        path2.moveTo(getXPos(0), getYPos(minCharPoints[0]));
+        if(minCharPoints.length > 0) {
+        path2.moveTo(getXPos(0), getYPos(minCharPoints[0]));
+        } else {
+            Log.d("graph", "length is 0");
+        }
         for (int y = 0; y < minCharPoints.length; y++) {
-            Log.d("graph", "mincharpoints length is " + minCharPoints.length);
             path2.lineTo(getXPos(y), getYPos(minCharPoints[y]));
+            canvas.drawCircle(getXPos(y), getYPos(minCharPoints[y]), 5, mMinChartPaint);
+            Log.d("graph", "moving line to x= " + getXPos(y) + "  y= " + getYPos(minCharPoints[y]));
         }
         canvas.drawPath(path, mMinChartPaint);
         canvas.drawPath(path2, mMaxChartPaint);
