@@ -243,6 +243,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private void goToGraphActivity() {
         Intent graphIntent = new Intent(getActivity(), GraphActivity.class);
         graphIntent.putExtra("id", cityID);
+        graphIntent.putExtra("name", name);
         startActivity(graphIntent);
     }
 

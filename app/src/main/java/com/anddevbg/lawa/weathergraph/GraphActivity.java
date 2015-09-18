@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.weather.ForecastWrapper;
@@ -27,10 +28,13 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
     private List<Float> mGraphMaximum;
     private ForecastWrapper mForecastWrapper;
 
+    private TextView mCityNameTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+        mCityNameTextView = (TextView) findViewById(R.id.city_name_text_view);
         mGraphMinimum = new ArrayList<>();
         mGraphMaximum = new ArrayList<>();
         fetchGraphData();
@@ -47,6 +51,8 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
     private void fetchGraphData() {
         Intent i = getIntent();
         int cityId = i.getIntExtra("id", 0);
+        String cityName = i.getStringExtra("name");
+        mCityNameTextView.setText(cityName);
         mForecastWrapper = new ForecastWrapper(cityId);
         Log.d("graph", "city id is " + cityId);
         mForecastWrapper.receiveWeatherForecast(this);

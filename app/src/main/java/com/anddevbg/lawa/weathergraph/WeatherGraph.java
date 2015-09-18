@@ -32,13 +32,12 @@ public class WeatherGraph extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        initPaint();
+        initPaintObjects();
         drawBackgroundLines(canvas);
-        drawGraph(canvas);
-//        drawTemperatureText(canvas);
+        drawGraphLines(canvas);
     }
 
-    private void initPaint() {
+    private void initPaintObjects() {
         mMinChartPaint = new Paint();
         mMinChartPaint.setStyle(Paint.Style.STROKE);
         mMinChartPaint.setColor(Color.BLUE);
@@ -48,6 +47,7 @@ public class WeatherGraph extends View {
         mMaxChartPaint = new Paint();
         mMaxChartPaint.setColor(Color.YELLOW);
         mMaxChartPaint.setStrokeWidth(4);
+        mMaxChartPaint.setAntiAlias(true);
         mMaxChartPaint.setStyle(Paint.Style.STROKE);
 
         mBackgroundPaint = new Paint();
@@ -62,15 +62,6 @@ public class WeatherGraph extends View {
         mTemperaturePaint.setTextSize(45);
         mTemperaturePaint.setAntiAlias(true);
         mTemperaturePaint.setStrokeWidth(4);
-    }
-
-    private void drawTemperatureText(Canvas canvas) {
-        Paint textPaint = new Paint();
-        textPaint.setColor(Color.YELLOW);
-        textPaint.setStyle(Paint.Style.STROKE);
-        textPaint.setStrokeWidth(4);
-        textPaint.setTextSize(50);
-        canvas.drawText("HELLO", getWidth() / 2, getHeight() / 2, textPaint);
     }
 
     private void drawBackgroundLines(Canvas canvas) {
@@ -93,7 +84,7 @@ public class WeatherGraph extends View {
         invalidate();
     }
 
-    private void drawGraph(Canvas canvas) {
+    private void drawGraphLines(Canvas canvas) {
         Path path = new Path();
         if(maxCharPoints.length>0) {
             path.moveTo(getXPos(0), getYPos(maxCharPoints[0]));
