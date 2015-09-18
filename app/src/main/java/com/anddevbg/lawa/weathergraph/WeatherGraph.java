@@ -36,9 +36,7 @@ public class WeatherGraph extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        mMatrix = new Matrix();
         initPaintObjects();
-        canvas.concat(mMatrix);
         drawBackgroundLines(canvas);
         drawGraphLines(canvas);
     }
@@ -79,7 +77,12 @@ public class WeatherGraph extends View {
             canvas.drawLine(0, y, getWidth(), y, mBackgroundPaint);
             floatList.add(y);
         }
-        for (int i = 0; i < 5; i++) {
+        int width = getWidth();
+        for (float x = width/4; x<width; x+= width/4) {
+            mBackgroundPaint.setStrokeWidth(2);
+            canvas.drawLine(x, 0, x, getHeight(), mBackgroundPaint);
+        }
+        for (int i = 0; i <= 5; i++) {
             canvas.drawText(String.valueOf(intArray[i]), 0, floatList.get(i), mTemperaturePaint);
         }
     }
