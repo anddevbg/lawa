@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
@@ -46,39 +48,39 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
-    private GoogleApiClient client;
-    private WeatherDatabaseManager manager;
+    private GoogleApiClient mGoogleClient;
+    private Location mLastKnownLocation;
+    private WeatherDatabaseManager mWeatherDataBaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         mResult = new ArrayList<>();
-        setUpGoogleApiClient();
         initControls();
         getManagerAndShowData();
     }
 
     private void getManagerAndShowData() {
-        manager = WeatherDatabaseManager.getInstance();
-        mResult = manager.showAll();
-        Log.d("db", "result array list is: "+mResult);
+        mWeatherDataBaseManager = WeatherDatabaseManager.getInstance();
+        mResult = mWeatherDataBaseManager.showAll();
         mWeatherAdapter.setWeatherData(mResult);
     }
 
     private void setUpGoogleApiClient() {
-        client = new GoogleApiClient.Builder(this)
+        mGoogleClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        client.connect();
+        mGoogleClient.connect();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        setUpGoogleApiClient();
     }
 
     @Override
@@ -131,7 +133,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                                 int index = mViewPager.getCurrentItem();
                                 String cityNameForDeletion = mResult.get(index).getCityName();
                                 Log.d("asd", "name is: " + cityNameForDeletion);
-                                manager.deleteData(cityNameForDeletion);
+                                mWeatherDataBaseManager.deleteData(cityNameForDeletion);
                                 mWeatherAdapter.removeView(index);
                                 mResult.remove(index);
                                 mWeatherAdapter.notifyDataSetChanged();
@@ -140,6 +142,16 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                         })
                         .show();
                 break;
+            case R.id.action_location:
+                Log.d("location", "action location clicked");
+
+                WeatherData currentLocationWeatherData = new WeatherData();
+                currentLocationWeatherData.setLongitude(mLastKnownLocation.getLongitude());
+                currentLocationWeatherData.setLatitude(mLastKnownLocation.getLatitude());
+                mResult.add(currentLocationWeatherData);
+                mWeatherAdapter.setWeatherData(mResult);
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -169,7 +181,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 mWeatherAdapter.setWeatherData(mResult);
                 mViewPager.setCurrentItem(mResult.size());
                 Log.d("asd", "data1 id is: " + locationName);
-                manager.insertData(locationName, mLocationLatitude, mLocationLongitude);
+                mWeatherDataBaseManager.insertData(locationName, mLocationLatitude, mLocationLongitude);
             }
         }
     }
@@ -184,23 +196,25 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.d("location", "google api client connected");
+        mLastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
     }
-
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d("asd", "location changed");
+        Log.d("location", "location suspended " + i);
+
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("asd", "location changed");
+        Log.d("asd", "location failed" + connectionResult.toString());
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
+//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleClient, this);
         }
     }
 

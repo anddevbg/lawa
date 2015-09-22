@@ -49,7 +49,6 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_city_activity);
         setupGoogleApiClient();
-//        myCities = getResources().getStringArray(R.array.city_list);
         initControls();
 
         searchCityButton.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +124,6 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d("asd", "connection suspended");
     }
 
     @Override
