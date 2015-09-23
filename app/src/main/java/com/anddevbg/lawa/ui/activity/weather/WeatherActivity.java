@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -51,12 +52,14 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private GoogleApiClient mGoogleClient;
     private Location mLastKnownLocation;
     private WeatherDatabaseManager mWeatherDataBaseManager;
+    private LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         mResult = new ArrayList<>();
+        mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         initControls();
         getManagerAndShowData();
     }
@@ -143,14 +146,18 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                         .show();
                 break;
             case R.id.action_location:
-                Log.d("location", "action location clicked");
-
                 WeatherData currentLocationWeatherData = new WeatherData();
-                currentLocationWeatherData.setLongitude(mLastKnownLocation.getLongitude());
-                currentLocationWeatherData.setLatitude(mLastKnownLocation.getLatitude());
-                mResult.add(currentLocationWeatherData);
-                mWeatherAdapter.setWeatherData(mResult);
-
+                if (mLastKnownLocation != null) {
+                    currentLocationWeatherData.setLatitude(mLastKnownLocation.getLatitude());
+                    currentLocationWeatherData.setLongitude(mLastKnownLocation.getLongitude());
+                    mResult.add(currentLocationWeatherData);
+                    mWeatherAdapter.setWeatherData(mResult);
+                    mViewPager.setCurrentItem(mResult.size());
+                    mWeatherDataBaseManager.insertData("city", mLastKnownLocation.getLatitude(),
+                            mLastKnownLocation.getLongitude());
+                } else {
+                    Toast.makeText(this, "Unknown location. Please try again.", Toast.LENGTH_SHORT).show();
+                }
 
         }
         return super.onOptionsItemSelected(item);
@@ -161,7 +168,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == search_request_code) {
             if (resultCode == RESULT_OK) {
-                Log.d("asd", "in weather activity result " + data.getStringExtra("c1name"));
                 String locationName = data.getStringExtra("c1name");
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses;
@@ -180,7 +186,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 mResult.add(data1);
                 mWeatherAdapter.setWeatherData(mResult);
                 mViewPager.setCurrentItem(mResult.size());
-                Log.d("asd", "data1 id is: " + locationName);
                 mWeatherDataBaseManager.insertData(locationName, mLocationLatitude, mLocationLongitude);
             }
         }
@@ -203,7 +208,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public void onConnectionSuspended(int i) {
         Log.d("location", "location suspended " + i);
-
     }
 
     @Override
