@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -38,6 +39,9 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -57,6 +61,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private WeatherData mWeatherData;
     private TextView descriptionWeatherText;
     private View coordinatorView;
+
+    private Set<String> mTempSet;
 
     private LocationCurrentWeatherWrapper weatherWrapper;
 
@@ -80,6 +86,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
         notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         manager = WeatherDatabaseManager.getInstance();
+        mTempSet = new HashSet<>();
     }
 
     @Override
@@ -111,10 +118,13 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     @Override
     public void onWeatherApiResponse(JSONObject result) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         try {
             if(result.has("main")) {
                 JSONObject main = result.getJSONObject("main");
                 int currentWeather = main.getInt("temp");
+                editor.putInt("temp", currentWeather);
                 //mWeatherData.setCurrent(currentWeather);
                 mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
 
@@ -165,6 +175,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             e.printStackTrace();
             Log.d("asd", "JSON EXCEPTION in baseweather frag " + e.toString());
         }
+        editor.commit();
     }
 
 //    private void setupControls() {

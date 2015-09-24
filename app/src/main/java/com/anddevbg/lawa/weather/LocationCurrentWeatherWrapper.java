@@ -42,6 +42,7 @@ public class LocationCurrentWeatherWrapper {
                 cityNameOne = addressList.get(0).getLocality();
             }
         } catch (IOException e) {
+            Log.d("wiidget", "IO Exception " + e.toString());
             e.printStackTrace();
         }
         if (cityNameOne != null) {
