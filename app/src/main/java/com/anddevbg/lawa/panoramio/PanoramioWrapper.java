@@ -1,9 +1,7 @@
 package com.anddevbg.lawa.panoramio;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.location.Location;
-import android.util.Log;
 
 import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.networking.NetworkRequestManager;
@@ -27,15 +25,12 @@ public class PanoramioWrapper {
     public String getPanoramioURL(double minx, double maxx, double miny, double maxy) {
         Context ctx = LawaApplication.getContext();
         float density = ctx.getResources().getDisplayMetrics().density;
-        Log.d("test", "screen density is " + density);
         if(density > 1.5) {
-            Log.d("test", "screen size is large");
             return "http://www.panoramio.com" +
                     "/map/get_panoramas.php?" +
                     "order=popularity&" +
                     "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=medium";
         } else {
-            Log.d("test", "screen size is small");
             return "http://www.panoramio.com" +
                     "/map/get_panoramas.php?" +
                     "order=popularity&" +

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -56,7 +57,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         setContentView(R.layout.activity_weather);
         mResult = new ArrayList<>();
         initControls();
+        setUpGoogleApiClient();
         getManagerAndShowData();
+
     }
 
     private void getManagerAndShowData() {
@@ -78,7 +81,20 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     protected void onResume() {
         super.onResume();
-        setUpGoogleApiClient();
+        if (isOnline()) {
+            Log.d("network", "device is online");
+        } else {
+            Toast.makeText(this, "No network access.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager.getActiveNetworkInfo() != null && manager.getActiveNetworkInfo().isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -102,8 +118,8 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 //                .getActionView();
 //        searchView.setSearchableInfo(searchManager
 //                .getSearchableInfo(getComponentName()));
-        Button add = (Button) menu.findItem(R.id.action_add).getActionView();
-        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
+//        Button add = (Button) menu.findItem(R.id.action_add).getActionView();
+//        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
