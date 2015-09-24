@@ -1,7 +1,9 @@
 package com.anddevbg.lawa.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,10 +94,16 @@ class ForecastViewHolder extends RecyclerView.ViewHolder {
 
         dayOfWeek = (TextView) itemView.findViewById(R.id.day_text_view);
         minimalTemperature = (TextView) itemView.findViewById(R.id.min_temperature_text_view);
+        minimalTemperature.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        minimalTemperature.setTextColor(Color.BLACK);
         maximalTemperature = (TextView) itemView.findViewById(R.id.max_temperature_text_view);
+        maximalTemperature.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        maximalTemperature.setTextColor(Color.BLACK);
         weatherIcon = (ImageView) itemView.findViewById(R.id.weather_Icon);
         slashText = (TextView) itemView.findViewById(R.id.slash_text_view);
+        slashText.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
         descriptionText = (TextView) itemView.findViewById(R.id.description_text_view);
+        descriptionText.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
         cityNameTextView = (TextView) itemView.findViewById(R.id.city_name_text_view);
     }
 }

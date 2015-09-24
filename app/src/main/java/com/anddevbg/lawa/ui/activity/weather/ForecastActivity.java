@@ -66,15 +66,15 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
                 int timestamp = jMain.getInt("dt");
                 Date date = new Date(timestamp*1000L);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                String day = sdf.format(date);
-
+//                String day = sdf.format(date);
+                String monday = new SimpleDateFormat("EEE, MMM d").format(date);
                 JSONObject main = jMain.getJSONObject("temp");
                 float maxTempDay = (float) main.getDouble("max");
                 float minTempDay = (float) main.getDouble("min");
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
                 forecastDataObj.setMaximalTemperature(Float.parseFloat(decimalFormat.format(maxTempDay)));
                 forecastDataObj.setMinimalTemperature(Float.parseFloat(decimalFormat.format(minTempDay)));
-                forecastDataObj.setDay(day);
+                forecastDataObj.setDay(monday);
 
                 JSONObject weatherObj = j1.getJSONObject(0);
                 String mainString = weatherObj.getString("main");

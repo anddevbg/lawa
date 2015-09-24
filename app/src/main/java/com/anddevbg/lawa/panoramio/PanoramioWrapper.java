@@ -1,8 +1,9 @@
 package com.anddevbg.lawa.panoramio;
 
-import android.content.res.Configuration;
+import android.content.Context;
 import android.location.Location;
 
+import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.networking.NetworkRequestManager;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -21,11 +22,20 @@ public class PanoramioWrapper {
 
     private static final double BOUNDING_BOX = 0.1;
 
-    public final String getPanoramioURL(double minx, double maxx, double miny, double maxy) {
-        return "http://www.panoramio.com" +
-                "/map/get_panoramas.php?" +
-                "order=popularity&" +
-                "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=medium";
+    public String getPanoramioURL(double minx, double maxx, double miny, double maxy) {
+        Context ctx = LawaApplication.getContext();
+        float density = ctx.getResources().getDisplayMetrics().density;
+        if(density > 1.5) {
+            return "http://www.panoramio.com" +
+                    "/map/get_panoramas.php?" +
+                    "order=popularity&" +
+                    "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=medium";
+        } else {
+            return "http://www.panoramio.com" +
+                    "/map/get_panoramas.php?" +
+                    "order=popularity&" +
+                    "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=small";
+        }
     }
 
     public double getLatitude() {
@@ -49,7 +59,7 @@ public class PanoramioWrapper {
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, panoramioURL, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                    callback.onPanoramioResponse(response);
+                callback.onPanoramioResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override

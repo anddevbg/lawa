@@ -40,9 +40,9 @@ public class LocationCurrentWeatherWrapper {
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
             if (addressList.size() > 0) {
                 cityNameOne = addressList.get(0).getLocality();
-                Log.d("asd", "city name is " + cityNameOne);
             }
         } catch (IOException e) {
+            Log.d("wiidget", "IO Exception " + e.toString());
             e.printStackTrace();
         }
         if (cityNameOne != null) {
@@ -50,7 +50,6 @@ public class LocationCurrentWeatherWrapper {
         }
         String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
         "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
-//        Log.d("asd", myNewResult);
         return myNewResult;
     }
 
