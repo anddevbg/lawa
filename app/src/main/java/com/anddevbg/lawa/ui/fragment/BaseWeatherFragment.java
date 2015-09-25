@@ -175,7 +175,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             e.printStackTrace();
             Log.d("asd", "JSON EXCEPTION in baseweather frag " + e.toString());
         }
-        editor.commit();
+        editor.apply();
     }
 
 //    private void setupControls() {

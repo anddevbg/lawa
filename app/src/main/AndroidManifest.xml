@@ -30,8 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".model.SearchActivity"
-            android:parentActivityName=".ui.activity.weather.WeatherActivity" >
+            android:name=".model.SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -60,6 +59,9 @@
                 android:resource="@xml/widget_provider">
             </meta-data>
         </receiver>
+        <service android:name=".widget.WeatherWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false"/>
     </application>
 
 </manifest>

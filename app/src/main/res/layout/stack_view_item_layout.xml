@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/stack_widget_item">
+
+    <TextView
+        android:id="@+id/widget_temperature_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TEMP"
+        android:textSize="25sp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>
