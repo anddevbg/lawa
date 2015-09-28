@@ -3,15 +3,32 @@ package com.anddevbg.lawa.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.WeatherData;
+import com.anddevbg.lawa.weather.ForecastWrapper;
+import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
+import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
+import com.android.volley.VolleyError;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +42,15 @@ public class WeatherWidgetService extends RemoteViewsService {
     }
 
 }
-class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
+
+class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory, ICurrentWeatherCallback {
 
     private Context mContext;
     private List<WeatherData> mWeatherDataList;
     private int mAppWidgetId;
+    private int[] mTempArray;
+    private List<Float> mCurrentTemperatureList;
+    private List<String> mIconArray;
     private WeatherDatabaseManager mDatabaseManager;
 
     public StackRemoteViews(Context context, Intent intent) {
@@ -41,8 +62,18 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
+        mCurrentTemperatureList = new ArrayList<>();
+        mIconArray = new ArrayList<>();
         mWeatherDataList = mDatabaseManager.showAll();
-        Log.d("widgetz", "is: " + mWeatherDataList.toString());
+        mTempArray = new int[10];
+        for (int i = 0; i < mWeatherDataList.size(); i++) {
+            WeatherData data = mWeatherDataList.get(i);
+            Location location = new Location("");
+            location.setLongitude(data.getLongitude());
+            location.setLatitude(data.getLatitude());
+            LocationCurrentWeatherWrapper locationCurrentWeatherWrapper = new LocationCurrentWeatherWrapper(location);
+            locationCurrentWeatherWrapper.getWeatherUpdate(this);
+        }
 
     }
 
@@ -65,17 +96,23 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int i) {
 
-        String[] names = new String[]{"Varna", "Burgas", "Sofia", "Yambol"};
+        Log.d("widgetz", "mIcon array is " + mIconArray.toString());
+        Log.d("widgetz", "mCurrentTemp array is " + mCurrentTemperatureList.toString());
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.stack_view_item_layout);
-        for(int y=0; y<names.length; y++) {
-            remoteViews.setTextViewText(R.id.widget_temperature_text_view, names[y]);
+        remoteViews.setTextViewText(R.id.widget_temperature_text_view, mWeatherDataList.get(i).getCityName());
+        if (i < mCurrentTemperatureList.size()) {
+            remoteViews.setTextViewText(R.id.city_text_widget_view, String.valueOf(mCurrentTemperatureList.get(i)) + "°C");
         }
-        Log.d("widgetz", "city name iss ss: " + mWeatherDataList.get(0).getCityName());
-//        Bundle extras = new Bundle();
-//        extras.putInt(WeatherWidget.EXTRA_ITEM, i);
-//        Intent fillIntent = new Intent();
-//        fillIntent.putExtras(extras);
-//        remoteViews.setOnClickFillInIntent(R.id.widget_city_text_view, fillIntent);
+
+        try {
+            Bitmap b = Picasso.with(mContext)
+                    .load(mIconArray.get(i)).get();
+            remoteViews.setImageViewBitmap(R.id.widget_image_view, b);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
         return remoteViews;
     }
 
@@ -97,5 +134,33 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    @Override
+    public void onWeatherApiResponse(JSONObject result) {
+        try {
+            JSONArray weather = result.getJSONArray("weather");
+            JSONObject w1 = weather.getJSONObject(0);
+            String pngFileUrl = w1.getString("icon");
+            String fullForecastIconUrl = "http://openweathermap.org/img/w/" + pngFileUrl + ".png";
+            mIconArray.add(fullForecastIconUrl);
+
+            JSONObject main = result.getJSONObject("main");
+            float currentTemp = (float) main.getDouble("temp");
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            float newCurrentTemp = Float.valueOf(decimalFormat.format(currentTemp));
+            mCurrentTemperatureList.add(newCurrentTemp);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void onWeatherApiErrorResponse(VolleyError error) {
+
     }
 }

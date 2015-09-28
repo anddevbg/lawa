@@ -5,38 +5,11 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <StackView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/stack_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:loopViews="true"/>
-
-
-        <!--<ImageView-->
-        <!--android:id="@+id/widget_image_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_alignParentStart="true" />-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/widget_temperature_text_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="TEMP"-->
-        <!--android:textSize="25sp"-->
-        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-        <!--android:layout_marginLeft="52dp"-->
-        <!--android:layout_marginStart="52dp" />-->
-
-    <TextView
-        android:id="@+id/widget_stack_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="EMPTY VIEW"
         android:gravity="center"
-        android:background="#BBFF00"
-        android:textSize="25sp" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
 </FrameLayout>

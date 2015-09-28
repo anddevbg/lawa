@@ -17,6 +17,7 @@ public class WeatherWidget extends AppWidgetProvider {
 
 //    public final static String EXTRA_ITEM = "com.anddevbg.lawa.EXTRA_ITEM";
 //    public final static String TOAST_ACTION = "com.anddevbg.lawa.TOAST_ACTION";
+    private static final String URI_SCHEME = "ABC";
 
 
     @Override
@@ -25,7 +26,8 @@ public class WeatherWidget extends AppWidgetProvider {
 
             Intent intent = new Intent(context, WeatherWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            Uri data = Uri.withAppendedPath(Uri.parse(URI_SCHEME + "://widget/id/"), String.valueOf(appWidgetIds));
+            intent.setData(data);
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             remoteViews.setRemoteAdapter(R.id.stack_view, intent);
             Log.d("widgetz", "after setting remote adapter");
