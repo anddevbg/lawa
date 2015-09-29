@@ -159,6 +159,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             case R.id.action_location:
                 WeatherData currentLocationWeatherData = new WeatherData();
                 if (mLastKnownLocation != null) {
+                    Log.d("asd", "Location is: latitude " + mLastKnownLocation.getLatitude() + " and longitude " + mLastKnownLocation.getLongitude());
                     currentLocationWeatherData.setLatitude(mLastKnownLocation.getLatitude());
                     currentLocationWeatherData.setLongitude(mLastKnownLocation.getLongitude());
                     mResult.add(currentLocationWeatherData);

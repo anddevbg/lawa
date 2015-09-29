@@ -5,18 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.media.Image;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.weather.ForecastWrapper;
 import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
 import com.android.volley.VolleyError;
@@ -37,7 +32,6 @@ import java.util.List;
 public class WeatherWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        Log.d("widgetz", "in weatherWidgetService");
         return new StackRemoteViews(getApplicationContext(), intent);
     }
 
@@ -54,7 +48,6 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory, ICurren
     private WeatherDatabaseManager mDatabaseManager;
 
     public StackRemoteViews(Context context, Intent intent) {
-        Log.d("widgetz", "in StackRemoteViews constructor");
         mDatabaseManager = WeatherDatabaseManager.getInstance();
         mContext = context;
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -74,7 +67,6 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory, ICurren
             LocationCurrentWeatherWrapper locationCurrentWeatherWrapper = new LocationCurrentWeatherWrapper(location);
             locationCurrentWeatherWrapper.getWeatherUpdate(this);
         }
-
     }
 
     @Override
@@ -85,7 +77,6 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory, ICurren
     @Override
     public void onDestroy() {
         mWeatherDataList.clear();
-
     }
 
     @Override
@@ -95,24 +86,23 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory, ICurren
 
     @Override
     public RemoteViews getViewAt(int i) {
-
-        Log.d("widgetz", "mIcon array is " + mIconArray.toString());
-        Log.d("widgetz", "mCurrentTemp array is " + mCurrentTemperatureList.toString());
+        if(mIconArray != null && mCurrentTemperatureList != null) {
+            Log.d("widgetz", "mIcon array is " + mIconArray.toString());
+            Log.d("widgetz", "mCurrentTemp array is " + mCurrentTemperatureList.toString());
+        }
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.stack_view_item_layout);
         remoteViews.setTextViewText(R.id.widget_temperature_text_view, mWeatherDataList.get(i).getCityName());
         if (i < mCurrentTemperatureList.size()) {
             remoteViews.setTextViewText(R.id.city_text_widget_view, String.valueOf(mCurrentTemperatureList.get(i)) + "°C");
         }
-
-        try {
-            Bitmap b = Picasso.with(mContext)
-                    .load(mIconArray.get(i)).get();
-            remoteViews.setImageViewBitmap(R.id.widget_image_view, b);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (mIconArray.size() > 0) {
+            try {
+                Bitmap b = Picasso.with(mContext).load(mIconArray.get(i)).get();
+                remoteViews.setImageViewBitmap(R.id.widget_image_view, b);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
-
         return remoteViews;
     }
 
@@ -123,7 +113,7 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory, ICurren
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return mWeatherDataList.size();
     }
 
     @Override
@@ -150,13 +140,9 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory, ICurren
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
             float newCurrentTemp = Float.valueOf(decimalFormat.format(currentTemp));
             mCurrentTemperatureList.add(newCurrentTemp);
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
