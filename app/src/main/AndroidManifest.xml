@@ -19,6 +19,9 @@
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".model.SearchActivity" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplcationId"
+            android:value="@string/facebook_app_id"/>
 
         <activity
             android:name=".ui.activity.weather.WeatherActivity"
@@ -29,6 +32,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
+
         <activity
             android:name=".model.SearchActivity">
             <intent-filter>
@@ -53,6 +63,7 @@
         <receiver android:name=".widget.WeatherWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.anddevbg.lawa.GO_TO_ACTIVITY"/>
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

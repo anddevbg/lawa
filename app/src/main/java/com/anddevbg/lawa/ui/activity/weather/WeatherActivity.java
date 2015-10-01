@@ -2,6 +2,7 @@ package com.anddevbg.lawa.ui.activity.weather;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,13 +11,14 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -26,6 +28,9 @@ import com.anddevbg.lawa.animation.ZoomPagerTransformation;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
+import com.anddevbg.lawa.networking.Connectivity;
+import com.facebook.FacebookSdk;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -50,6 +55,11 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private GoogleApiClient mGoogleClient;
     private Location mLastKnownLocation;
     private WeatherDatabaseManager mWeatherDataBaseManager;
+    private ProgressDialog mProgressDialog;
+
+    private static final String TAG = "connectiontest";
+
+    private LoginButton mLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +67,57 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         setContentView(R.layout.activity_weather);
         mResult = new ArrayList<>();
         initControls();
-        setUpGoogleApiClient();
-        getManagerAndShowData();
+        isInternetEnabled();
+//        FacebookSdk.sdkInitialize(this);
+    }
 
+    private void isInternetEnabled() {
+        final Connectivity connectivity = Connectivity.getInstance(this);
+        if (connectivity.isConnected()) {
+            setUpGoogleApiClient();
+            getManagerAndShowData();
+        } else {
+            Log.d(TAG, "no internet");
+            CharSequence positive = "Enable";
+            CharSequence negative = "Cancel";
+            new AlertDialog.Builder(this)
+                    .setTitle("No connection available")
+                    .setMessage("Please enable internet access to continue")
+                    .setNegativeButton(negative, null)
+                    .setPositiveButton(positive, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                            startActivity(intent);
+                        }
+                    }).show();
+
+            Log.d(TAG, "between AlertDialog and Thread");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (!connectivity.isConnected()) {
+                            Log.d(TAG, "looping in while");
+                            Thread.sleep(1000);
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d(TAG, "running on ui");
+                                setUpGoogleApiClient();
+                                getManagerAndShowData();
+                            }
+                        });
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d(TAG, "outside while loop");
+
+                }
+            }).start();
+        }
     }
 
     private void getManagerAndShowData() {
@@ -81,11 +139,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     protected void onResume() {
         super.onResume();
-        if (isOnline()) {
-            Log.d("network", "device is online");
-        } else {
-            Toast.makeText(this, "No network access.", Toast.LENGTH_LONG).show();
-        }
     }
 
     private boolean isOnline() {
@@ -170,6 +223,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 } else {
                     Toast.makeText(this, "Unknown location. Please try again.", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.facebook_share_button:
+                Log.d("facebook", "share button clicked");
 
         }
         return super.onOptionsItemSelected(item);
