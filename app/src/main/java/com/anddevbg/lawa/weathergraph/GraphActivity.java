@@ -1,10 +1,14 @@
 package com.anddevbg.lawa.weathergraph;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,11 +16,11 @@ import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.weather.ForecastWrapper;
 import com.anddevbg.lawa.weather.IForecastCallback;
 import com.android.volley.VolleyError;
+import com.eftimoff.androipathview.PathView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,17 +45,30 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
     private TextView mDay5TextView;
 
     private TextView mCityNameTextView;
+    private PathView mPathView;
+    private Path mPathMax;
+    private Path mPathMin;
+    private WeatherGraph mWeatherGraph;
+
+    private FrameLayout mFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        initArrays();
+        mFrameLayout = (FrameLayout) findViewById(R.id.frame_graph_layout);
+
+        mPathView = new PathView(this);
+        mPathView = (PathView) findViewById(R.id.path_view);
+        initArraysAndPaths();
         initControls();
         fetchGraphData();
     }
 
-    private void initArrays() {
+    private void initArraysAndPaths() {
+        mPathMax = new Path();
+        mPathMin = new Path();
+
         mTextViews = new ArrayList<>();
         mDaysOfWeek = new ArrayList<>();
         mGraphMinimum = new ArrayList<>();
@@ -72,6 +89,49 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         mTextViews.add(mDay5TextView);
     }
 
+    private void prepareAnimation() {
+        if (mGraphMaximum.size() > 0) {
+            mPathMax.moveTo(getXPos(0), getYPos(mGraphMaximum.get(0)));
+        }
+        for (int i = 1; i < mGraphMaximum.size(); i++) {
+            mPathMax.lineTo(getXPos(i), getYPos(mGraphMaximum.get(i)));
+            Log.d("graph", "x and y positions are: " + getXPos(i) + " + " + getYPos(i));
+        }
+        if (mGraphMinimum.size() > 0) {
+            mPathMin.moveTo(getXPos(0), getYPos(mGraphMinimum.get(0)));
+        }
+        for (int y = 1; y < mGraphMinimum.size(); y++) {
+            mPathMin.lineTo(getXPos(y), getYPos(mGraphMinimum.get(y)));
+        }
+        mPathView.getPathAnimator()
+                .delay(100)
+                .duration(1000)
+                .interpolator(new AccelerateDecelerateInterpolator())
+                .start();
+        mPathView.setPathColor(Color.WHITE);
+        mPathView.setPathWidth(3);
+        mPathView.setPath(mPathMax);
+        mPathView.setPath(mPathMin);
+
+    }
+
+    private float getYPos(float value) {
+        float height = mFrameLayout.getHeight();
+        Log.d("graph", "height is "+ height);
+        float maxValue = 60;
+        value = (value / maxValue) * height;
+        value = height - value;
+        return value;
+    }
+
+    private float getXPos(float value) {
+        float width = mFrameLayout.getWidth();
+        Log.d("graph", "width is "+ width);
+        float maxValue = mGraphMaximum.size() - 1;
+        value = (value / maxValue) * width;
+        return value;
+    }
+
     private void fetchGraphData() {
         Intent i = getIntent();
         int cityId = i.getIntExtra("id", 0);
@@ -82,6 +142,7 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         mCityNameTextView.setText(cityName);
     }
 
+
     @Override
     public void onForecastReceived(JSONObject response) {
         try {
@@ -90,9 +151,9 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
                 JSONObject jMain = jsonArray.getJSONObject(i);
                 JSONObject main = jMain.getJSONObject("temp");
                 float maxTempDay = (float) main.getDouble("max");
-                mGraphMaximum.add(maxTempDay);
+                mGraphMaximum.add(maxTempDay+20);
                 float minTempDay = (float) main.getDouble("min");
-                mGraphMinimum.add(minTempDay);
+                mGraphMinimum.add(minTempDay+20);
 
                 int timestamp = jMain.getInt("dt");
                 Date date = new Date(timestamp*1000L);
@@ -102,7 +163,11 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
+        prepareGraph();
 
+    }
+
+    private void prepareGraph() {
         float[] arrayMin = new float[5];
         float[] arrayMax = new float[5];
         for(int i=0; i<mGraphMinimum.size() && i<mGraphMaximum.size(); i++) {
@@ -117,14 +182,15 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
-        Log.d("metrics", "width is "  + width);
+        Log.d("metrics", "width is " + width);
         for(int i=0; i<mDaysOfWeek.size(); i++) {
             mTextViews.get(i).setWidth(width/5 + 10);
             mTextViews.get(i).setText(mDaysOfWeek.get(i));
         }
 
         WeatherGraph mWeatherGraph = (WeatherGraph) findViewById(R.id.weather_graph);
-        mWeatherGraph.setChartData(arrayMin, arrayMax);
+        prepareAnimation();
+//        mWeatherGraph.setChartData(arrayMin, arrayMax);
     }
 
     @Override

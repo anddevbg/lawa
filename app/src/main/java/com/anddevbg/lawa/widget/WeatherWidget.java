@@ -28,7 +28,7 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Connectivity connectivity = Connectivity.getInstance(context);
+        final Connectivity connectivity = Connectivity.getInstance(context);
         if (connectivity.isConnecting()) {
             for (int i = 0; i < appWidgetIds.length; ++i) {
                 Intent intent = new Intent(context, WeatherWidgetService.class);
@@ -41,10 +41,8 @@ public class WeatherWidget extends AppWidgetProvider {
 
                 appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
             }
-            super.onUpdate(context, appWidgetManager, appWidgetIds);
         } else {
-            Log.d("widgetz", "No internet connection");
-
+            Log.d("widgetz", "no internet connection");
         }
     }
 }

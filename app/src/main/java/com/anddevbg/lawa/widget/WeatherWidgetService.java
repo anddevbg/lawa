@@ -70,7 +70,7 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-
+        Log.d("widgetz", "in onDatasetChanged");
     }
 
     @Override
@@ -89,6 +89,7 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
         float newCurrentTemp;
         LocationCurrentWeatherWrapper locationCurrentWeatherWrapper = new LocationCurrentWeatherWrapper(mLocationList.get(i));
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.stack_view_item_layout);
+
         try {
             JSONObject object = locationCurrentWeatherWrapper.getWeatherUpdateSync().get(30, TimeUnit.SECONDS);
             JSONArray weather = object.getJSONArray("weather");
