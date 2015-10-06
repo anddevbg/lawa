@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 
 import org.json.JSONObject;
 
@@ -66,5 +67,12 @@ public class LocationCurrentWeatherWrapper {
             }
         });
         NetworkRequestManager.getInstance().performRequest(request);
+    }
+
+    public RequestFuture<JSONObject> getWeatherUpdateSync() {
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonObjectRequest a = new JsonObjectRequest(Request.Method.GET, getOpenWeatherApiUrl(), future, future);
+        NetworkRequestManager.getInstance().performRequest(a);
+        return future;
     }
 }

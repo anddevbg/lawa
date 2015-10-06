@@ -7,6 +7,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+
+import com.eftimoff.androipathview.PathView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,18 +25,33 @@ public class WeatherGraph extends View {
     private Paint mTemperaturePaint;
     private Paint mBackgroundPaint;
 
+    private Path pathMax;
+    private Path pathMin;
+
+    private PathView mPathView;
+
     private float[] maxCharPoints = new float[]{};
     private float[] minCharPoints = new float[]{};
 
     public WeatherGraph(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+        mPathView = new PathView(context);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         initPaintObjects();
         drawBackgroundLines(canvas);
+        preparePaths();
         drawGraphLines(canvas);
+
+        canvas.drawPath(pathMin, mMinChartPaint);
+        canvas.drawPath(pathMax, mMaxChartPaint);
+    }
+
+    private void preparePaths() {
+        pathMax = new Path();
+        pathMin = new Path();
     }
 
     private void initPaintObjects() {
@@ -56,7 +74,7 @@ public class WeatherGraph extends View {
         mBackgroundPaint.setStrokeWidth(4);
 
         mTemperaturePaint = new Paint();
-        mTemperaturePaint.setColor(Color.rgb(255,255,255));
+        mTemperaturePaint.setColor(Color.rgb(255, 255, 255));
         mTemperaturePaint.setStyle(Paint.Style.STROKE);
         mTemperaturePaint.setTextSize(45);
         mTemperaturePaint.setAntiAlias(true);
@@ -73,7 +91,7 @@ public class WeatherGraph extends View {
             floatList.add(y);
         }
         int width = getWidth();
-        for (float x = width/4; x<width; x+= width/4) {
+        for (float x = width / 4; x < width; x += width / 4) {
             mBackgroundPaint.setStrokeWidth(2);
             canvas.drawLine(x, 0, x, getHeight(), mBackgroundPaint);
         }
@@ -88,25 +106,27 @@ public class WeatherGraph extends View {
         invalidate();
     }
 
-    private void drawGraphLines(Canvas canvas) {
-        Path path = new Path();
+    public void drawGraphLines(Canvas canvas) {
         if (maxCharPoints.length > 0) {
-            path.moveTo(getXPos(0), getYPos(maxCharPoints[0]));
+            pathMax.moveTo(getXPos(0), getYPos(maxCharPoints[0]));
         }
         for (int i = 1; i < maxCharPoints.length; i++) {
-            path.lineTo(getXPos(i), getYPos(maxCharPoints[i]));
+            pathMax.lineTo(getXPos(i), getYPos(maxCharPoints[i]));
             canvas.drawCircle(getXPos(i), getYPos(maxCharPoints[i]), 4, mMinChartPaint);
         }
-        Path path2 = new Path();
         if (minCharPoints.length > 0) {
-            path2.moveTo(getXPos(0), getYPos(minCharPoints[0]));
+            pathMin.moveTo(getXPos(0), getYPos(minCharPoints[0]));
         }
         for (int y = 1; y < minCharPoints.length; y++) {
-            path2.lineTo(getXPos(y), getYPos(minCharPoints[y]));
+            pathMin.lineTo(getXPos(y), getYPos(minCharPoints[y]));
             canvas.drawCircle(getXPos(y), getYPos(minCharPoints[y]), 4, mMaxChartPaint);
         }
-        canvas.drawPath(path, mMinChartPaint);
-        canvas.drawPath(path2, mMaxChartPaint);
+
+        mPathView.setPath(pathMin);
+        mPathView.setPath(pathMax);
+
+
+
     }
 
     @Override

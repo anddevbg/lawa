@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+<FrameLayout
+    android:id="@+id/widget_frame_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="#BB00FF">
-
-    <TextView
-        android:id="@+id/widget_city_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:layout_gravity="center_vertical" />
-
-    <ImageView
-        android:id="@+id/widget_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/widget_temperature_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:layout_gravity="center_vertical" />
-
-
-</LinearLayout>
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <StackView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/stack_view"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

@@ -118,13 +118,13 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     @Override
     public void onWeatherApiResponse(JSONObject result) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
         try {
             if(result.has("main")) {
                 JSONObject main = result.getJSONObject("main");
                 int currentWeather = main.getInt("temp");
-                editor.putInt("temp", currentWeather);
+//                editor.putInt("temp", currentWeather);
                 //mWeatherData.setCurrent(currentWeather);
                 mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
 
@@ -175,7 +175,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             e.printStackTrace();
             Log.d("asd", "JSON EXCEPTION in baseweather frag " + e.toString());
         }
-        editor.commit();
+//        editor.apply();
     }
 
 //    private void setupControls() {
