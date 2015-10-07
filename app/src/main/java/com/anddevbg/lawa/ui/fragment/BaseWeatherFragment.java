@@ -235,5 +235,5 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private void respondToPanoramioErrorResponse(VolleyError error) {
         error.printStackTrace();
     }
-    
+
 }
