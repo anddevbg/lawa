@@ -106,7 +106,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     }
 
     public void initWeatherAndPanoramio(double longitude, double latitude) {
-        Log.d("asd", "long " + longitude + " lat " + latitude);
         Location location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
@@ -118,39 +117,27 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     @Override
     public void onWeatherApiResponse(JSONObject result) {
-//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
         try {
             if(result.has("main")) {
                 JSONObject main = result.getJSONObject("main");
                 int currentWeather = main.getInt("temp");
-//                editor.putInt("temp", currentWeather);
-                //mWeatherData.setCurrent(currentWeather);
                 mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
 
                 JSONObject windSpeed = result.getJSONObject("wind");
                 double wind = windSpeed.getDouble("speed");
-                //mWeatherData.setWindSpeed(wind);
                 mWindSpeed.setText(String.valueOf(wind) + " m/s");
 
                 int humidity = main.getInt("humidity");
-                //mWeatherData.setHumidity(humidity);
                 mHumidity.setText(String.valueOf(humidity) + "%");
 
                 cityID = result.getInt("id");
                 name = result.getString("name");
-                //mWeatherData.setCityName(name);
                 mCity.setText(name);
 
                 JSONArray jArray = result.getJSONArray("weather");
                 JSONObject description = jArray.getJSONObject(0);
                 String desc = description.getString("description");
-                //mWeatherData.setTimeLastRefresh(desc);
                 descriptionWeatherText.setText(desc);
-
-//                JSONObject coord = result.getJSONObject("coord");
-//                double lon = coord.getDouble("lon");
-//                double lat = coord.getDouble("lat");
 
                 if (getActivity() != null) {
                     Notification notification = new NotificationCompat.Builder(getActivity())
@@ -161,7 +148,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                     notificationManager.notify(1, notification);
                 }
             } else {
-//                mWeatherData.setCityName(result.getString("name"));
                 Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
                         .setAction("retry", new View.OnClickListener() {
                             @Override
@@ -175,21 +161,11 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             e.printStackTrace();
             Log.d("asd", "JSON EXCEPTION in baseweather frag " + e.toString());
         }
-//        editor.apply();
     }
-
-//    private void setupControls() {
-//        mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
-//        mWindSpeed.setText(String.valueOf(wind) + " m/s");
-//        descriptionWeatherText.setText(desc);
-//        mHumidity.setText(String.valueOf(humidity) + "%");
-//        mCity.setText(name);
-//    }
 
     @Override
     public void onWeatherApiErrorResponse(VolleyError error) {
         Toast.makeText(getActivity(), "Something went wrong" + error.toString(), Toast.LENGTH_LONG).show();
-
     }
 
     @Override
@@ -259,5 +235,5 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private void respondToPanoramioErrorResponse(VolleyError error) {
         error.printStackTrace();
     }
-
+    
 }

@@ -39,20 +39,25 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-    <FrameLayout
-        android:id="@+id/frame_graph_layout"
+
+    <com.anddevbg.lawa.weathergraph.WeatherGraphView
+        android:id="@+id/weather_graph_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.anddevbg.lawa.weathergraph.WeatherGraph
-            android:id="@+id/weather_graph"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#b81e0617"/>
-        <com.eftimoff.androipathview.PathView
-            android:id="@+id/path_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+
+    </com.anddevbg.lawa.weathergraph.WeatherGraphView>
+
+        <!--<com.anddevbg.lawa.weathergraph.GraphViewContent-->
+            <!--android:id="@+id/weather_graph"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#b81e0617">-->
+            <!--<com.eftimoff.androipathview.PathView-->
+                <!--android:id="@+id/path_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent" />-->
+        <!--</com.anddevbg.lawa.weathergraph.GraphViewContent>-->
+
 
 
 </LinearLayout>

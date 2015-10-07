@@ -48,18 +48,14 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
     private PathView mPathView;
     private Path mPathMax;
     private Path mPathMin;
-    private WeatherGraph mWeatherGraph;
-
-    private FrameLayout mFrameLayout;
+    private WeatherGraphView mWeatherGraphView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        mFrameLayout = (FrameLayout) findViewById(R.id.frame_graph_layout);
+        mWeatherGraphView = (WeatherGraphView) findViewById(R.id.weather_graph_view);
 
-        mPathView = new PathView(this);
-        mPathView = (PathView) findViewById(R.id.path_view);
         initArraysAndPaths();
         initControls();
         fetchGraphData();
@@ -89,48 +85,27 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         mTextViews.add(mDay5TextView);
     }
 
-    private void prepareAnimation() {
-        if (mGraphMaximum.size() > 0) {
-            mPathMax.moveTo(getXPos(0), getYPos(mGraphMaximum.get(0)));
-        }
-        for (int i = 1; i < mGraphMaximum.size(); i++) {
-            mPathMax.lineTo(getXPos(i), getYPos(mGraphMaximum.get(i)));
-            Log.d("graph", "x and y positions are: " + getXPos(i) + " + " + getYPos(i));
-        }
-        if (mGraphMinimum.size() > 0) {
-            mPathMin.moveTo(getXPos(0), getYPos(mGraphMinimum.get(0)));
-        }
-        for (int y = 1; y < mGraphMinimum.size(); y++) {
-            mPathMin.lineTo(getXPos(y), getYPos(mGraphMinimum.get(y)));
-        }
-        mPathView.getPathAnimator()
-                .delay(100)
-                .duration(1000)
-                .interpolator(new AccelerateDecelerateInterpolator())
-                .start();
-        mPathView.setPathColor(Color.WHITE);
-        mPathView.setPathWidth(3);
-        mPathView.setPath(mPathMax);
-        mPathView.setPath(mPathMin);
+//    private void prepareAnimation() {
+//        if (mGraphMaximum.size() > 0) {
+//            mPathMax.moveTo(getXPos(0), getYPos(mGraphMaximum.get(0)));
+//        }
+//        for (int i = 1; i < mGraphMaximum.size(); i++) {
+//            mPathMax.lineTo(getXPos(i), getYPos(mGraphMaximum.get(i)));
+//            Log.d("graph", "x and y positions are: " + getXPos(i) + " + " + getYPos(i));
+//        }
+//        if (mGraphMinimum.size() > 0) {
+//            mPathMin.moveTo(getXPos(0), getYPos(mGraphMinimum.get(0)));
+//        }
+//        for (int y = 1; y < mGraphMinimum.size(); y++) {
+//            mPathMin.lineTo(getXPos(y), getYPos(mGraphMinimum.get(y)));
+//        }
 
-    }
-
-    private float getYPos(float value) {
-        float height = mFrameLayout.getHeight();
-        Log.d("graph", "height is "+ height);
-        float maxValue = 60;
-        value = (value / maxValue) * height;
-        value = height - value;
-        return value;
-    }
-
-    private float getXPos(float value) {
-        float width = mFrameLayout.getWidth();
-        Log.d("graph", "width is "+ width);
-        float maxValue = mGraphMaximum.size() - 1;
-        value = (value / maxValue) * width;
-        return value;
-    }
+//        mPathView.setPathColor(Color.WHITE);
+//        mPathView.setPathWidth(3);
+//        mPathView.setPath(mPathMax);
+//        mPathView.setPath(mPathMin);
+//    }
+//
 
     private void fetchGraphData() {
         Intent i = getIntent();
@@ -164,7 +139,6 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
             ex.printStackTrace();
         }
         prepareGraph();
-
     }
 
     private void prepareGraph() {
@@ -175,10 +149,10 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
             arrayMax[i] = mGraphMaximum.get(i);
         }
 
-        for(int i=0; i<arrayMin.length && i<arrayMax.length; i++) {
-            arrayMin[i] = arrayMin[i] + 20;
-            arrayMax[i] = arrayMax[i] + 20;
-        }
+//        for(int i=0; i<arrayMin.length && i<arrayMax.length; i++) {
+////            arrayMin[i] = arrayMin[i] + 20;
+////            arrayMax[i] = arrayMax[i] + 20;
+//        }
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
@@ -188,14 +162,15 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
             mTextViews.get(i).setText(mDaysOfWeek.get(i));
         }
 
-        WeatherGraph mWeatherGraph = (WeatherGraph) findViewById(R.id.weather_graph);
-        prepareAnimation();
+        mWeatherGraphView.setArrays(arrayMin, arrayMax);
+
+//        GraphViewContent mWeatherGraph = (GraphViewContent) findViewById(R.id.weather_graph);
+//        prepareAnimation();
 //        mWeatherGraph.setChartData(arrayMin, arrayMax);
     }
 
     @Override
     public void onForeastError(VolleyError error) {
         Toast.makeText(this, "Oops! Something went wrong.", Toast.LENGTH_SHORT).show();
-
     }
 }

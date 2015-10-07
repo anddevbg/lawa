@@ -2,6 +2,7 @@ package com.anddevbg.lawa.panoramio;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.networking.NetworkRequestManager;
@@ -23,19 +24,10 @@ public class PanoramioWrapper {
     private static final double BOUNDING_BOX = 0.1;
 
     public String getPanoramioURL(double minx, double maxx, double miny, double maxy) {
-        Context ctx = LawaApplication.getContext();
-        float density = ctx.getResources().getDisplayMetrics().density;
-        if(density > 1.5) {
-            return "http://www.panoramio.com" +
-                    "/map/get_panoramas.php?" +
-                    "order=popularity&" +
-                    "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=medium";
-        } else {
-            return "http://www.panoramio.com" +
-                    "/map/get_panoramas.php?" +
-                    "order=popularity&" +
-                    "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=small";
-        }
+        return "http://www.panoramio.com" +
+                "/map/get_panoramas.php?" +
+                "order=popularity&" +
+                "set=public&from=0&to=100&minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy + "&size=medium";
     }
 
     public double getLatitude() {
@@ -69,5 +61,4 @@ public class PanoramioWrapper {
         });
         NetworkRequestManager.getInstance().performRequest(request);
     }
-
 }
