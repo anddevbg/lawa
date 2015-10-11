@@ -1,5 +1,6 @@
 package com.anddevbg.lawa.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ public class WeatherWidgetService extends RemoteViewsService {
         return new StackRemoteViews(getApplicationContext(), intent);
     }
 
+
 }
 
 class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
@@ -48,6 +50,7 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
     private int mAppWidgetId;
     private WeatherDatabaseManager mDatabaseManager;
     private List<Location> mLocationList;
+
 
     public StackRemoteViews(Context context, Intent intent) {
         mDatabaseManager = WeatherDatabaseManager.getInstance();
@@ -68,6 +71,8 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
         }
     }
 
+
+
     @Override
     public void onDataSetChanged() {
         Log.d("widgetz", "in onDatasetChanged");
@@ -85,10 +90,14 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int i) {
+
+
         String fullForecastIconUrl;
         float newCurrentTemp;
         LocationCurrentWeatherWrapper locationCurrentWeatherWrapper = new LocationCurrentWeatherWrapper(mLocationList.get(i));
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.stack_view_item_layout);
+
+
 
         try {
             JSONObject object = locationCurrentWeatherWrapper.getWeatherUpdateSync().get(30, TimeUnit.SECONDS);
@@ -98,11 +107,11 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
             fullForecastIconUrl = "http://openweathermap.org/img/w/" + pngFileUrl + ".png";
 
             JSONObject main = object.getJSONObject("main");
-            float currentTemp = (float) main.getDouble("temp");
-            DecimalFormat decimalFormat = new DecimalFormat("#.#");
-            newCurrentTemp = Float.valueOf(decimalFormat.format(currentTemp));
+            double currentTemp =  main.getDouble("temp");
+            DecimalFormat decimalFormat = new DecimalFormat("#");
+//            newCurrentTemp = Float.valueOf(decimalFormat.format(currentTemp));
             remoteViews.setTextViewText(R.id.widget_temperature_text_view, mWeatherDataList.get(i).getCityName());
-            remoteViews.setTextViewText(R.id.city_text_widget_view, String.valueOf(newCurrentTemp) +"°C");
+            remoteViews.setTextViewText(R.id.city_text_widget_view, String.valueOf(decimalFormat.format(currentTemp)) +"°C");
             try {
                 Bitmap b = Picasso.with(mContext).load(fullForecastIconUrl).get();
                 remoteViews.setImageViewBitmap(R.id.widget_image_view, b);
@@ -118,6 +127,7 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return remoteViews;
     }
 

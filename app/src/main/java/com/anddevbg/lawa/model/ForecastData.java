@@ -7,8 +7,8 @@ public class ForecastData {
 
     private String imageUrl;
     private String mDay;
-    private float mMinimalTemperature;
-    private float mMaximalTemperature;
+    private double mMinimalTemperature;
+    private double mMaximalTemperature;
     private String mDescription;
     private String mCityName;
 
@@ -50,19 +50,19 @@ public class ForecastData {
         this.mDay = mDay;
     }
 
-    public float getMinimalTemperature() {
+    public double getMinimalTemperature() {
         return mMinimalTemperature;
     }
 
-    public void setMinimalTemperature(float mMinimalTemperature) {
+    public void setMinimalTemperature(double mMinimalTemperature) {
         this.mMinimalTemperature = mMinimalTemperature;
     }
 
-    public float getMaximalTemperature() {
+    public double getMaximalTemperature() {
         return mMaximalTemperature;
     }
 
-    public void setMaximalTemperature(float mMaximalTemperature) {
+    public void setMaximalTemperature(double mMaximalTemperature) {
         this.mMaximalTemperature = mMaximalTemperature;
     }
 

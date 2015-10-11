@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -60,10 +59,10 @@ class GraphViewContent extends View {
             canvas.drawLine(x, 0, x, getHeight(), mBackgroundPaint);
         }
 
-        for (int i = 0; i < 5; i++) {
-            mTemperaturePaint.setTextSize(30);
-            canvas.drawText(String.valueOf(intArray[i]), 3, floatList.get(i), mTemperaturePaint);
-        }
+//        for (int i = 0; i < 5; i++) {
+//            mTemperaturePaint.setTextSize(30);
+//            canvas.drawText(String.valueOf(intArray[i]), 3, floatList.get(i), mTemperaturePaint);
+//        }
     }
 
 }

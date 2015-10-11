@@ -60,7 +60,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <receiver android:name=".widget.WeatherWidget">
+        <receiver android:name=".widget.WeatherWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="com.anddevbg.lawa.GO_TO_ACTIVITY"/>
