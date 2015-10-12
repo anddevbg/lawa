@@ -24,18 +24,13 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("wiidget", "in onReceive before IF");
         super.onReceive(context, intent);
         if (intent.getAction().equals(REFRESH_ACTION)) {
-            Log.d("wiidget", "in onReceive");
             updateWidgetContent(context);
-            Toast.makeText(context, "Refreshing...", Toast.LENGTH_LONG).show();
-
         }
     }
 
     private void updateWidgetContent(Context context) {
-        Log.d("wiidget", "in updateWidgetContent");
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
         remoteViews.setOnClickPendingIntent(R.id.refresh_widget_button, buildPendingIntent(context));
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -48,7 +43,6 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
     public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final Connectivity connectivity = Connectivity.getInstance(context);
         if (connectivity.isConnecting()) {
-            Log.d("wiidget", "in onUpdate");
             for (int i = 0; i < appWidgetIds.length; ++i) {
                 Intent intent = new Intent(context, WeatherWidgetService.class);
                 Uri data = Uri.withAppendedPath(Uri.parse(URI_SCHEME + "://widget/id/"), String.valueOf(appWidgetIds));

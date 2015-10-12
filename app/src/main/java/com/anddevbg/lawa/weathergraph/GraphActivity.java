@@ -62,7 +62,8 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
         String cityName = i.getStringExtra("name");
         ForecastWrapper mForecastWrapper = new ForecastWrapper(cityId);
         mForecastWrapper.receiveWeatherForecast(this);
-        mCityNameTextView.setText(cityName);
+        String trimmedCityName = cityName.replaceAll("Obshtina ", "");
+        mCityNameTextView.setText(trimmedCityName);
     }
 
     @Override
@@ -96,7 +97,6 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
             arrayMin[i] = mGraphMinimum.get(i);
             arrayMax[i] = mGraphMaximum.get(i);
         }
-
         mWeatherGraphView.setArrays(arrayMin, arrayMax, mDaysOfWeek);
     }
 

@@ -32,21 +32,13 @@ public class WeatherGraphView extends FrameLayout {
     private LinearLayout mTemperatureLinearLayout;
 
     private List<TextView> mTextViews;
-    private TextView mDayOfWeekTextView;
-    private TextView mDayOfWeekTextView2;
-    private TextView mDayOfWeekTextView3;
-    private TextView mDayOfWeekTextView4;
-    private TextView mDayOfWeekTextView5;
-    private WindowManager mWindowManager;
 
     private int mWidth;
     private int mHeight;
 
-
-
     public WeatherGraphView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = mWindowManager.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -102,16 +94,16 @@ public class WeatherGraphView extends FrameLayout {
 
     private void initLinearLayoutHorizontal(Context context) {
 
-        mDayOfWeekTextView = new TextView(context);
-        mDayOfWeekTextView2 = new TextView(context);
+        TextView mDayOfWeekTextView = new TextView(context);
+        TextView mDayOfWeekTextView2 = new TextView(context);
         mDayOfWeekTextView2.setBackgroundColor(Color.BLACK);
-        mDayOfWeekTextView3 = new TextView(context);
+        TextView mDayOfWeekTextView3 = new TextView(context);
         mDayOfWeekTextView3.setGravity(Gravity.CENTER);
         mDayOfWeekTextView3.setBackgroundColor(Color.BLACK);
-        mDayOfWeekTextView4 = new TextView(context);
+        TextView mDayOfWeekTextView4 = new TextView(context);
         mDayOfWeekTextView4.setGravity(Gravity.END);
         mDayOfWeekTextView4.setBackgroundColor(Color.BLACK);
-        mDayOfWeekTextView5 = new TextView(context);
+        TextView mDayOfWeekTextView5 = new TextView(context);
         mDayOfWeekTextView5.setGravity(Gravity.END);
 
         mTextViews.add(mDayOfWeekTextView);

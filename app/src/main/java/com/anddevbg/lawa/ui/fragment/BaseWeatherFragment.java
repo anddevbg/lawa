@@ -4,10 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -39,9 +37,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -62,11 +57,9 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView descriptionWeatherText;
     private View coordinatorView;
 
-    private Set<String> mTempSet;
-
     private LocationCurrentWeatherWrapper weatherWrapper;
 
-    private String name;
+    private String mCityName;
 
     private WeatherDatabaseManager manager;
 
@@ -86,7 +79,6 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
         notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         manager = WeatherDatabaseManager.getInstance();
-        mTempSet = new HashSet<>();
     }
 
     @Override
@@ -131,35 +123,43 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 mHumidity.setText(String.valueOf(humidity) + "%");
 
                 cityID = result.getInt("id");
-                name = result.getString("name");
-                mCity.setText(name);
+                mCityName = result.getString("name");
+                String trimmedCityName = mCityName.replaceAll("Obshtina ", "");
+                mCity.setText(trimmedCityName);
 
                 JSONArray jArray = result.getJSONArray("weather");
                 JSONObject description = jArray.getJSONObject(0);
                 String desc = description.getString("description");
                 descriptionWeatherText.setText(desc);
 
-                if (getActivity() != null) {
-                    Notification notification = new NotificationCompat.Builder(getActivity())
-                            .setContentTitle("LAWA")
-                            .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .build();
-                    notificationManager.notify(1, notification);
-                }
+                showNotification();
             } else {
-                Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
-                        .setAction("retry", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                weatherWrapper.getWeatherUpdate(BaseWeatherFragment.this);
-                            }
-                        })
-                        .show();
+                showSnackBar();
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d("asd", "JSON EXCEPTION in baseweather frag " + e.toString());
+        }
+    }
+
+    private void showSnackBar() {
+        Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
+                .setAction("retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        weatherWrapper.getWeatherUpdate(BaseWeatherFragment.this);
+                    }
+                })
+                .show();
+    }
+
+    private void showNotification() {
+        if (getActivity() != null) {
+            Notification notification = new NotificationCompat.Builder(getActivity())
+                    .setContentTitle("LAWA")
+                    .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .build();
+            notificationManager.notify(1, notification);
         }
     }
 
@@ -222,7 +222,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private void goToGraphActivity() {
         Intent graphIntent = new Intent(getActivity(), GraphActivity.class);
         graphIntent.putExtra("id", cityID);
-        graphIntent.putExtra("name", name);
+        graphIntent.putExtra("name", mCityName);
         startActivity(graphIntent);
     }
 

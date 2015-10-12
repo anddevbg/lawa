@@ -58,11 +58,6 @@ class GraphViewContent extends View {
             mBackgroundPaint.setStrokeWidth(2);
             canvas.drawLine(x, 0, x, getHeight(), mBackgroundPaint);
         }
-
-//        for (int i = 0; i < 5; i++) {
-//            mTemperaturePaint.setTextSize(30);
-//            canvas.drawText(String.valueOf(intArray[i]), 3, floatList.get(i), mTemperaturePaint);
-//        }
     }
 
 }
