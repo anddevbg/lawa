@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -55,7 +54,6 @@ public class WeatherGraphView extends FrameLayout {
         addView(mPathViewMax, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(mTemperatureLinearLayout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(mTextViewsLinearLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
     }
 
     private void initLinearLayoutVertical(Context context) {
@@ -80,10 +78,8 @@ public class WeatherGraphView extends FrameLayout {
             tempList.get(i).setGravity(Gravity.BOTTOM);
             tempList.get(i).setHeight(mHeight/8);
             tempList.get(i).setText(String.valueOf(tempArray[i]));
-            Log.d("graph", "tempArray[i] is: " + String.valueOf(tempArray[i]));
             mTemperatureLinearLayout.addView(tempList.get(i));
         }
-
 
     }
 
@@ -115,7 +111,6 @@ public class WeatherGraphView extends FrameLayout {
             mTextViews.get(i).setWidth(mWidth /5);
             mTextViews.get(i).setTextSize(15);
         }
-        Log.d("graph", "mWidth/5 is " + mWidth /5 + 10);
 
         mTextViewsLinearLayout = new LinearLayout(context);
         mTextViewsLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -124,7 +119,6 @@ public class WeatherGraphView extends FrameLayout {
         mTextViewsLinearLayout.addView(mDayOfWeekTextView3);
         mTextViewsLinearLayout.addView(mDayOfWeekTextView4);
         mTextViewsLinearLayout.addView(mDayOfWeekTextView5);
-//        addView(mTemperatureLinearLayout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
     }
 
@@ -146,7 +140,6 @@ public class WeatherGraphView extends FrameLayout {
 
         for(int i = 0; i<daysOfWeek.size(); i++) {
             mTextViews.get(i).setText(daysOfWeek.get(i));
-            Log.d("graph", "city name text view is + " + daysOfWeek.get(i));
         }
         mPathViewMax.setPath(mPathMax);
         mPathViewMax.setPathColor(Color.WHITE);

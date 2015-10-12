@@ -7,9 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.networking.Connectivity;
@@ -35,8 +33,8 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.refresh_widget_button, buildPendingIntent(context));
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName myWidget = new ComponentName(context, WeatherWidgetProvider.class);
-        int[] appwiIds = appWidgetManager.getAppWidgetIds(myWidget);
-        widgetUpdate(context, remoteViews, appwiIds);
+        int[] appWidgetIdss = appWidgetManager.getAppWidgetIds(myWidget);
+        widgetUpdate(context, remoteViews, appWidgetIdss);
     }
 
     @Override
@@ -53,23 +51,18 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
                 remoteViews.setRemoteAdapter(R.id.stack_view, intent);
                 remoteViews.setOnClickPendingIntent(R.id.widget_frame_layout, buildPendingIntent(context));
 
-                remoteViews.setEmptyView(R.id.widget_frame_layout, R.id.refresh_widget_button);
                 buildPendingIntent(context);
                 widgetUpdate(context, remoteViews, appWidgetIds);
             }
-        } else {
-            Log.d("widgetz", "no internet connection");
         }
     }
 
     public static void widgetUpdate(Context context, RemoteViews remoteViews, int[] appWidgetIds) {
-        Log.d("wiidget", "in widgetUpdate");
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
     }
 
     private static PendingIntent buildPendingIntent(Context context) {
-        Log.d("wiidget", "in buildPendingIntent");
         Intent refreshIntent = new Intent();
         refreshIntent.setAction(REFRESH_ACTION);
         return PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);

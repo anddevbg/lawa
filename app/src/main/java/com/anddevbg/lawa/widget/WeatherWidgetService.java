@@ -47,7 +47,6 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
     private List<WeatherData> mWeatherDataList;
-    private int mAppWidgetId;
     private WeatherDatabaseManager mDatabaseManager;
     private List<Location> mLocationList;
 
@@ -55,7 +54,6 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
     public StackRemoteViews(Context context, Intent intent) {
         mDatabaseManager = WeatherDatabaseManager.getInstance();
         mContext = context;
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
     @Override
@@ -73,7 +71,6 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        Log.d("widgetz", "in onDatasetChanged");
     }
 
     @Override
@@ -104,9 +101,8 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
     }
 
     private void setUpWidgetInformation(JSONObject object, RemoteViews remoteViews, int position) {
-        JSONArray weather = null;
         try {
-            weather = object.getJSONArray("weather");
+            JSONArray weather = object.getJSONArray("weather");
             JSONObject w1 = weather.getJSONObject(0);
             String pngFileUrl = w1.getString("icon");
             String fullForecastIconUrl = "http://openweathermap.org/img/w/" + pngFileUrl + ".png";

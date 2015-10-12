@@ -16,7 +16,6 @@ import java.util.List;
  */
 class GraphViewContent extends View {
 
-    private Paint mTemperaturePaint;
     private Paint mBackgroundPaint;
 
     public GraphViewContent(Context context, AttributeSet attributeSet) {
@@ -36,7 +35,7 @@ class GraphViewContent extends View {
         mBackgroundPaint.setStyle(Paint.Style.STROKE);
         mBackgroundPaint.setStrokeWidth(4);
 
-        mTemperaturePaint = new Paint();
+        Paint mTemperaturePaint = new Paint();
         mTemperaturePaint.setColor(Color.rgb(255, 255, 255));
         mTemperaturePaint.setStyle(Paint.Style.STROKE);
         mTemperaturePaint.setTextSize(45);
@@ -45,8 +44,6 @@ class GraphViewContent extends View {
     }
 
     private void drawBackgroundLines(Canvas canvas) {
-        int[] intArray = new int[]{30, 20, 10, 0, -10, -20};
-
         int fullHeight = getHeight();
         List<Float> floatList = new ArrayList<>();
         for (float y = fullHeight / 6; y < fullHeight; y += fullHeight / 6) {

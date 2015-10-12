@@ -117,10 +117,12 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
                 JSONObject windSpeed = result.getJSONObject("wind");
                 double wind = windSpeed.getDouble("speed");
-                mWindSpeed.setText(String.valueOf(wind) + " m/s");
+                String windSpeedText = String.valueOf(wind) + "m/s";
+                mWindSpeed.setText(windSpeedText);
 
                 int humidity = main.getInt("humidity");
-                mHumidity.setText(String.valueOf(humidity) + "%");
+                String humidityText = String.valueOf(humidity) + "%";
+                mHumidity.setText(humidityText);
 
                 cityID = result.getInt("id");
                 mCityName = result.getString("name");

@@ -77,7 +77,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             setUpGoogleApiClient();
             getManagerAndShowData();
         } else {
-            Log.d(TAG, "no internet");
             CharSequence positive = "Enable";
             CharSequence negative = "Cancel";
             new AlertDialog.Builder(this)
@@ -98,13 +97,11 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 public void run() {
                     try {
                         while (!connectivity.isConnected()) {
-                            Log.d(TAG, "looping in while");
                             Thread.sleep(1000);
                         }
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.d(TAG, "running on ui");
                                 setUpGoogleApiClient();
                                 getManagerAndShowData();
                             }
@@ -113,7 +110,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d(TAG, "outside while loop");
 
                 }
             }).start();
@@ -180,12 +176,10 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                Log.d("asd", "action add clicked");
                 Intent searchActivityIntent = new Intent(WeatherActivity.this, SearchCityActivity.class);
                 startActivityForResult(searchActivityIntent, search_request_code);
                 break;
             case R.id.action_remove:
-                Log.d("asd", "action remove clicked");
                 new AlertDialog.Builder(this)
                         .setTitle("Delete this city?")
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -199,7 +193,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 int index = mViewPager.getCurrentItem();
                                 String cityNameForDeletion = mResult.get(index).getCityName();
-                                Log.d("asd", "name is: " + cityNameForDeletion);
                                 mWeatherDataBaseManager.deleteData(cityNameForDeletion);
                                 mWeatherAdapter.removeView(index);
                                 mResult.remove(index);
@@ -212,7 +205,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             case R.id.action_location:
                 WeatherData currentLocationWeatherData = new WeatherData();
                 if (mLastKnownLocation != null) {
-                    Log.d("asd", "Location is: latitude " + mLastKnownLocation.getLatitude() + " and longitude " + mLastKnownLocation.getLongitude());
                     currentLocationWeatherData.setLatitude(mLastKnownLocation.getLatitude());
                     currentLocationWeatherData.setLongitude(mLastKnownLocation.getLongitude());
                     mResult.add(currentLocationWeatherData);
@@ -269,18 +261,15 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("location", "google api client connected");
         mLastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d("location", "location suspended " + i);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("asd", "location failed" + connectionResult.toString());
     }
 
     @Override
