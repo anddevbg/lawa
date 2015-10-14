@@ -11,6 +11,7 @@ import android.widget.RemoteViews;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.networking.Connectivity;
+import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 
 /**
  * Created by adri.stanchev on 24/09/2015.
@@ -30,7 +31,6 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
 
     private void updateWidgetContent(Context context) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-        remoteViews.setOnClickPendingIntent(R.id.refresh_widget_button, buildPendingIntent(context));
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName myWidget = new ComponentName(context, WeatherWidgetProvider.class);
         int[] appWidgetIdss = appWidgetManager.getAppWidgetIds(myWidget);
@@ -48,10 +48,13 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds);
 
                 RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+//                remoteViews.setOnClickPendingIntent(R.id.widget_frame_layout, buildPendingIntent(context));
                 remoteViews.setRemoteAdapter(R.id.stack_view, intent);
-                remoteViews.setOnClickPendingIntent(R.id.widget_frame_layout, buildPendingIntent(context));
+                Intent goToActivityIntent = new Intent(context, WeatherActivity.class);
+                goToActivityIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds);
+                goToActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                goToActivityIntent.setAction(REFRESH_ACTION);
 
-                buildPendingIntent(context);
                 widgetUpdate(context, remoteViews, appWidgetIds);
             }
         }
@@ -62,9 +65,8 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
     }
 
-    private static PendingIntent buildPendingIntent(Context context) {
-        Intent refreshIntent = new Intent();
-        refreshIntent.setAction(REFRESH_ACTION);
-        return PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
+//    private static PendingIntent buildPendingIntent(Context context) {
+//
+//        return PendingIntent.getActivity(context, 0, goToActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//    }
 }

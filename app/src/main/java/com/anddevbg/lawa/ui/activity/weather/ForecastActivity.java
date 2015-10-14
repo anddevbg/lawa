@@ -51,7 +51,6 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     public void onForecastReceived(JSONObject response) {
         mDataList = new ArrayList<>();
         try {
-            Log.d("response", "forecast is + " + response.toString());
             JSONObject city = response.getJSONObject("city");
             String cityName = city.getString("name");
 
@@ -65,8 +64,6 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
 
                 int timestamp = jMain.getInt("dt");
                 Date date = new Date(timestamp*1000L);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-//                String day = sdf.format(date);
                 String monday = new SimpleDateFormat("EEE, MMM d").format(date);
                 JSONObject main = jMain.getJSONObject("temp");
                 double maxTempDay = main.getDouble("max");
