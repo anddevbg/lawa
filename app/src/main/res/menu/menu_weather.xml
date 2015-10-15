@@ -14,8 +14,8 @@
     <item
         android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Remove"
-        android:showAsAction="ifRoom" />
+        android:title="Delete"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_add"
@@ -26,12 +26,12 @@
         android:id="@+id/action_location"
         android:title="Use Current Location"
         android:icon="@drawable/ic_action_locate"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/facebook_share_button"
         android:title="Share"
         android:icon="@android:drawable/ic_menu_share"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         />
 
 

@@ -1,22 +1,18 @@
 package com.anddevbg.lawa.widget;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
-import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -39,8 +35,6 @@ public class WeatherWidgetService extends RemoteViewsService {
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new StackRemoteViews(getApplicationContext(), intent);
     }
-
-
 }
 
 class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
@@ -49,11 +43,12 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
     private List<WeatherData> mWeatherDataList;
     private WeatherDatabaseManager mDatabaseManager;
     private List<Location> mLocationList;
-
+    private AppWidgetManager mAppWidgetManager;
 
     public StackRemoteViews(Context context, Intent intent) {
         mDatabaseManager = WeatherDatabaseManager.getInstance();
         mContext = context;
+        mAppWidgetManager = AppWidgetManager.getInstance(context);
     }
 
     @Override
@@ -97,6 +92,12 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
+        Intent fillIntent = new Intent();
+        Bundle extras = new Bundle();
+        extras.putInt(WeatherWidgetProvider.EXTRA_ITEM, i);
+        fillIntent.putExtras(extras);
+        remoteViews.setOnClickFillInIntent(R.id.stack_widget_item, fillIntent);
+
         return remoteViews;
     }
 

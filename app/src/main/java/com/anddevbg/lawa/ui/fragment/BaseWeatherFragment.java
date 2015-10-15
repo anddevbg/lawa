@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -158,8 +160,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         if (getActivity() != null) {
             Notification notification = new NotificationCompat.Builder(getActivity())
                     .setContentTitle("LAWA")
+                    .setSmallIcon(R.mipmap.ic_white_notification)
                     .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
-                    .setSmallIcon(R.mipmap.ic_launcher)
                     .build();
             notificationManager.notify(1, notification);
         }
@@ -237,5 +239,4 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private void respondToPanoramioErrorResponse(VolleyError error) {
         error.printStackTrace();
     }
-
 }
