@@ -3,16 +3,17 @@ package com.anddevbg.lawa.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.R;
+import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
 import com.anddevbg.lawa.networking.Connectivity;
 import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 
@@ -20,6 +21,9 @@ import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
  * Created by adri.stanchev on 24/09/2015.
  */
 public class WeatherWidgetProvider extends AppWidgetProvider {
+    private WeatherActivity mWeatherActivity;
+
+    private WeatherFragmentAdapter weatherFragmentAdapter;
 
     public static final String URI_SCHEME = "ABC";
     public static final String CLICK_ACTION = "com.anddevbg.lawa.CLICK_";
@@ -27,14 +31,18 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        mWeatherActivity = new WeatherActivity();
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
         if(intent.getAction().equals(CLICK_ACTION)) {
             Log.d("asdasd", "in onReceive after IF");
 //            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-//            int viewIndex = intent.getIntExtra(EXTRA_ITEM, 0);
+            int viewIndex = intent.getIntExtra(EXTRA_ITEM, 0);
             Intent goToActivity = new Intent(context, WeatherActivity.class);
+            Bundle appWidgetInfo = new Bundle();
+            appWidgetInfo.putInt("position", viewIndex);
+            intent.putExtras(appWidgetInfo);
             goToActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP
-            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(goToActivity);
         }
         super.onReceive(context, intent);

@@ -49,17 +49,14 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private ViewPager mViewPager;
     private List<WeatherData> mResult;
     private int search_request_code = 1;
-    private SearchView searchView;
+//    private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
     private GoogleApiClient mGoogleClient;
     private Location mLastKnownLocation;
     private WeatherDatabaseManager mWeatherDataBaseManager;
-    private ProgressDialog mProgressDialog;
 
     private static final String TAG = "connectiontest";
-
-    private LoginButton mLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +73,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         if (connectivity.isConnected()) {
             setUpGoogleApiClient();
             getManagerAndShowData();
+
         } else {
             CharSequence positive = "Enable";
             CharSequence negative = "Cancel";
@@ -137,15 +135,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         super.onResume();
     }
 
-    private boolean isOnline() {
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager.getActiveNetworkInfo() != null && manager.getActiveNetworkInfo().isConnectedOrConnecting()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -154,7 +143,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public boolean onSearchRequested() {
         Intent i = new Intent(this, SearchActivity.class);
-        i.putExtra("name", searchView.getQuery());
+//        i.putExtra("name", searchView.getQuery());
         startActivity(i);
         return super.onSearchRequested();
     }
@@ -163,12 +152,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_weather, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
-//                .getActionView();
-//        searchView.setSearchableInfo(searchManager
-//                .getSearchableInfo(getComponentName()));
-//        Button add = (Button) menu.findItem(R.id.action_add).getActionView();
-//        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -218,7 +201,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 break;
             case R.id.facebook_share_button:
                 Log.d("facebook", "share button clicked");
-
         }
         return super.onOptionsItemSelected(item);
     }

@@ -160,7 +160,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         if (getActivity() != null) {
             Notification notification = new NotificationCompat.Builder(getActivity())
                     .setContentTitle("LAWA")
-                    .setSmallIcon(R.mipmap.ic_white_notification)
+                    .setSmallIcon(R.mipmap.ic_white_not)
                     .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
                     .build();
             notificationManager.notify(1, notification);
