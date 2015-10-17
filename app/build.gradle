@@ -31,7 +31,7 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.17'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.android.support:design:22.2.1'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.eftimoff:android-pathview:1.0.6@aar'

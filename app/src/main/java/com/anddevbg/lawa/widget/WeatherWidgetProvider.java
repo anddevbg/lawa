@@ -6,14 +6,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.R;
-import com.anddevbg.lawa.adapter.WeatherFragmentAdapter;
 import com.anddevbg.lawa.networking.Connectivity;
 import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
 
@@ -21,9 +17,7 @@ import com.anddevbg.lawa.ui.activity.weather.WeatherActivity;
  * Created by adri.stanchev on 24/09/2015.
  */
 public class WeatherWidgetProvider extends AppWidgetProvider {
-    private WeatherActivity mWeatherActivity;
 
-    private WeatherFragmentAdapter weatherFragmentAdapter;
 
     public static final String URI_SCHEME = "ABC";
     public static final String CLICK_ACTION = "com.anddevbg.lawa.CLICK_";
@@ -31,16 +25,14 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        mWeatherActivity = new WeatherActivity();
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+//        AppWidgetManager manager = AppWidgetManager.getInstance(context);
         if(intent.getAction().equals(CLICK_ACTION)) {
             Log.d("asdasd", "in onReceive after IF");
 //            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             int viewIndex = intent.getIntExtra(EXTRA_ITEM, 0);
             Intent goToActivity = new Intent(context, WeatherActivity.class);
-            Bundle appWidgetInfo = new Bundle();
-            appWidgetInfo.putInt("position", viewIndex);
-            intent.putExtras(appWidgetInfo);
+            goToActivity.putExtra("position", viewIndex);
+            Log.d("widget", "viewIndex is " + viewIndex);
             goToActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(goToActivity);
@@ -65,9 +57,9 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
                 clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
                 clickIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-                PendingIntent toastPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent,
-                        0);
-                remoteViews.setPendingIntentTemplate(R.id.stack_view, toastPendingIntent);
+                PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteViews.setPendingIntentTemplate(R.id.stack_view, clickPendingIntent);
 
                 appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.stack_view);

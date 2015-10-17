@@ -1,12 +1,15 @@
 package com.anddevbg.lawa.ui.fragment;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -31,6 +34,11 @@ import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
 import com.anddevbg.lawa.weathergraph.GraphActivity;
 import com.android.volley.VolleyError;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -67,6 +75,9 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     private NotificationManager notificationManager;
 
+    private ShareButton mFacebookShareButton;
+
+
     public static BaseWeatherFragment createInstance(WeatherData weatherData) {
         BaseWeatherFragment fragment = new BaseWeatherFragment();
         Bundle args = new Bundle();
@@ -78,6 +89,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
         notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         manager = WeatherDatabaseManager.getInstance();
@@ -112,7 +124,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onWeatherApiResponse(JSONObject result) {
         try {
-            if(result.has("main")) {
+            if (result.has("main")) {
                 JSONObject main = result.getJSONObject("main");
                 int currentWeather = main.getInt("temp");
                 mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
@@ -178,12 +190,12 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     }
 
     @Override
-    public void onPanoramioResponse(JSONObject result)  {
+    public void onPanoramioResponse(JSONObject result) {
         JSONArray array;
         ArrayList<String> photoArray = new ArrayList<>();
         try {
             array = result.getJSONArray("photos");
-            JSONObject jsonObject = array.getJSONObject(RandomUtil.randInt(0,5));
+            JSONObject jsonObject = array.getJSONObject(RandomUtil.randInt(0, 5));
             photoArray.add(jsonObject.getString("photo_file_url"));
             panoURL = photoArray.get(0);
             Picasso.with(getActivity()).load(panoURL).placeholder(R.layout.progress).into(mWeatherImage);
@@ -221,6 +233,18 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 goToGraphActivity();
             }
         });
+
+    }
+
+
+
+    public ShareLinkContent getLinkContent(){
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentTitle("Share")
+                .setContentDescription("Description")
+                .setContentUrl(Uri.parse("www.google.com"))
+                .build();
+        return content;
     }
 
     private void goToGraphActivity() {

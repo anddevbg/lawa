@@ -27,13 +27,16 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/action_add"
         app:showAsAction="always" />
-
     <item
-        android:id="@+id/facebook_share_button"
+        android:id="@+id/action_share"
         android:title="Share"
-        android:icon="@android:drawable/ic_menu_share"
-        app:showAsAction="ifRoom"
+        android:actionProviderClass="android.widget.ShareActionProvider"
         />
+
+    <!--<com.facebook.share.widget.ShareButton-->
+        <!--android:id="@+id/button_facebook_share"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
 
 
 </menu>
