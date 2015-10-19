@@ -12,6 +12,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -58,7 +59,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private Location mLastKnownLocation;
     private WeatherDatabaseManager mWeatherDataBaseManager;
     private Intent mShareIntent;
-    private Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,20 +177,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private Bitmap getBitmap() {
-        if(mBitmap!=null) {
-            mBitmap.recycle();
-            View screenshotView = findViewById(android.R.id.content).getRootView();
-            mBitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(mBitmap);
-            screenshotView.draw(canvas);
-        } else {
-            View screenshotView = findViewById(android.R.id.content).getRootView();
-            mBitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(mBitmap);
-            screenshotView.draw(canvas);
-        }
+        View screenshotView = findViewById(android.R.id.content).getRootView();
+        Bitmap bitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        screenshotView.draw(canvas);
 
-        return mBitmap;
+        return bitmap;
     }
 
     private Intent setIntentToShare() {
@@ -295,11 +287,13 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private void setUpScreenshotButton() {
-        Button mScreenshotButton = (Button) findViewById(R.id.screenshot_image_button);
+        final Button mScreenshotButton = (Button) findViewById(R.id.screenshot_image_button);
         mScreenshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mScreenshotButton.setVisibility(View.GONE);
                 mShareIntent.putExtra(Intent.EXTRA_STREAM, getImageUri(getApplicationContext(), getBitmap()));
+                mScreenshotButton.setVisibility(View.VISIBLE);
                 Toast.makeText(WeatherActivity.this, "Screenshot captured.", Toast.LENGTH_SHORT).show();
             }
         });
