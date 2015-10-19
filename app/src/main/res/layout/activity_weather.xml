@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/viewPager_frame_layout"
+    android:id="@+id/view_pager_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,8 +10,9 @@
         android:contentDescription="@string/app_name"
         android:id="@+id/screenshot_image_button"
         android:layout_width="match_parent"
-        android:background="#1565C0"
-        android:drawableTop="@drawable/screenshotbackground"
+        android:paddingRight="10dp"
+        android:background="@color/colorPrimaryDark"
+        android:drawableRight="@drawable/screenshotbackground"
         android:layout_height="27dp" />
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"

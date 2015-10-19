@@ -33,8 +33,6 @@ import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.networking.Connectivity;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -59,20 +57,14 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private GoogleApiClient mGoogleClient;
     private Location mLastKnownLocation;
     private WeatherDatabaseManager mWeatherDataBaseManager;
-    private CallbackManager callbackManager;
     private Intent mShareIntent;
-
-    private ShareActionProvider mShareActionProvider;
+    private Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
 
         setContentView(R.layout.activity_weather);
-        View screenshotView = findViewById(R.id.viewPager_frame_layout);
-        screenshotView.setDrawingCacheEnabled(true);
         mResult = new ArrayList<>();
         initControls();
         isInternetEnabled();
@@ -88,7 +80,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             mViewPager.setCurrentItem(widgetPosition);
         }
     }
-
 
     private void isInternetEnabled() {
         final Connectivity connectivity = Connectivity.getInstance(this);
@@ -172,9 +163,8 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         getMenuInflater().inflate(R.menu.menu_weather, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem item = menu.findItem(R.id.action_share);
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-        mShareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-        mShareActionProvider.setShareIntent(setIntentToShare());
+        ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        shareActionProvider.setShareIntent(setIntentToShare());
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -187,17 +177,25 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private Bitmap getBitmap() {
-        View screenshotView = findViewById(android.R.id.content).getRootView();
-        Bitmap bitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        screenshotView.draw(canvas);
-        return bitmap;
+        if(mBitmap!=null) {
+            mBitmap.recycle();
+            View screenshotView = findViewById(android.R.id.content).getRootView();
+            mBitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(mBitmap);
+            screenshotView.draw(canvas);
+        } else {
+            View screenshotView = findViewById(android.R.id.content).getRootView();
+            mBitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(mBitmap);
+            screenshotView.draw(canvas);
+        }
+
+        return mBitmap;
     }
 
     private Intent setIntentToShare() {
         mShareIntent = new Intent(Intent.ACTION_SEND);
         mShareIntent.setType("image/jpeg");
-
         return mShareIntent;
     }
 
@@ -255,7 +253,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == search_request_code) {
             if (resultCode == RESULT_OK) {
                 String locationName = data.getStringExtra("c1name");

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
 
     android:id="@+id/row_forecast_layout"
-    android:background="@drawable/test_patch">
+    android:background="@drawable/patch_n9ne">
 
     <View
         android:layout_width="match_parent"
