@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:support="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".WeatherActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
@@ -20,7 +21,7 @@
         android:id="@+id/action_location"
         android:title="Use Current Location"
         android:icon="@drawable/ic_action_locate"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_add"
@@ -30,13 +31,10 @@
     <item
         android:id="@+id/action_share"
         android:title="Share"
-        android:actionProviderClass="android.widget.ShareActionProvider"
+        android:icon="@android:drawable/ic_menu_share"
+        support:showAsAction="always"
+        support:actionProviderClass="android.support.v7.widget.ShareActionProvider"
         />
-
-    <!--<com.facebook.share.widget.ShareButton-->
-        <!--android:id="@+id/button_facebook_share"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
 
 
 </menu>

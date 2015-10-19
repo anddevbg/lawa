@@ -6,23 +6,24 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
@@ -33,24 +34,15 @@ import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.networking.Connectivity;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareButton;
-import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -62,101 +54,29 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private ViewPager mViewPager;
     private List<WeatherData> mResult;
     private int search_request_code = 1;
-    //    private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
     private GoogleApiClient mGoogleClient;
     private Location mLastKnownLocation;
     private WeatherDatabaseManager mWeatherDataBaseManager;
-    private ShareButton mFacebookShareButton;
     private CallbackManager callbackManager;
-    private ShareDialog shareDialog;
+    private Intent mShareIntent;
 
-    private Bitmap mScreenshotBitmap;
-    private int counter = 0;
-
-    private static final String TAG = "connectiontest";
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
 
         setContentView(R.layout.activity_weather);
+        View screenshotView = findViewById(R.id.viewPager_frame_layout);
+        screenshotView.setDrawingCacheEnabled(true);
         mResult = new ArrayList<>();
         initControls();
-        mFacebookShareButton = (ShareButton) findViewById(R.id.button_facebook_share);
-        mFacebookShareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("facebook", "facebook share button clicked");
-//                postPicture();
-                ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                        .setContentTitle("My App")
-                        .setContentDescription("My Desc")
-                        .setContentUrl(Uri.parse("https://myapp.net"))
-                        .setImageUrl(Uri.parse("https://myapp.net/12.png"))
-                        .build();
-                mFacebookShareButton.setShareContent(linkContent);
-            }
-        });
-        mFacebookShareButton.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-            @Override
-            public void onSuccess(Sharer.Result result) {
-                Log.d("facebook", "success");
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d("facebook", "cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("facebook", "error");
-            }
-        });
         isInternetEnabled();
     }
-
-    private void postPicture() {
-        if (counter == 0) {
-            Log.d("facebook", "preparing screenshot");
-            View rootView = findViewById(android.R.id.content).getRootView();
-            rootView.setDrawingCacheEnabled(true);
-            mScreenshotBitmap = Bitmap.createBitmap(rootView.getDrawingCache());
-            rootView.destroyDrawingCache();
-
-            final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle("Share content to Facebook");
-            dialog.setMessage("Share image to Faccebok?");
-            dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    SharePhoto photo = new SharePhoto.Builder().setBitmap(mScreenshotBitmap).build();
-                    SharePhotoContent content = new SharePhotoContent.Builder().addPhoto(photo).build();
-                    mFacebookShareButton.setShareContent(content);
-                    counter = 1;
-                    mFacebookShareButton.performClick();
-                }
-            });
-            dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            });
-            dialog.show();
-        } else
-        {
-            Log.d("facebook", "in else");
-            counter = 0;
-            mFacebookShareButton.setShareContent(null);
-        }
-    }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -191,7 +111,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                         }
                     }).show();
 
-            Log.d(TAG, "between AlertDialog and Thread");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -206,11 +125,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                                 getManagerAndShowData();
                             }
                         });
-
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                 }
             }).start();
         }
@@ -254,7 +171,34 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_weather, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem item = menu.findItem(R.id.action_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        mShareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
+        mShareActionProvider.setShareIntent(setIntentToShare());
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "name.jpg", null);
+        return Uri.parse(path);
+    }
+
+    private Bitmap getBitmap() {
+        View screenshotView = findViewById(android.R.id.content).getRootView();
+        Bitmap bitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        screenshotView.draw(canvas);
+        return bitmap;
+    }
+
+    private Intent setIntentToShare() {
+        mShareIntent = new Intent(Intent.ACTION_SEND);
+        mShareIntent.setType("image/jpeg");
+
+        return mShareIntent;
     }
 
     @Override
@@ -270,7 +214,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                return;
+                                dialogInterface.cancel();
                             }
                         })
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -300,6 +244,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 } else {
                     Toast.makeText(this, "Unknown location. Please try again.", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.action_share:
+                Log.d("asd", "share clicked");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -339,6 +286,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPager.setAdapter(mWeatherAdapter);
         mViewPager.setOffscreenPageLimit(5);
+        setUpScreenshotButton();
         mViewPager.setPageTransformer(false, new ZoomPagerTransformation());
         Intent widgetIntent = getIntent();
         Bundle extras = widgetIntent.getExtras();
@@ -347,6 +295,17 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             Log.d("widget", "widgetPosition is " + widgetIntent);
             mViewPager.setCurrentItem(widgetPosition);
         }
+    }
+
+    private void setUpScreenshotButton() {
+        Button mScreenshotButton = (Button) findViewById(R.id.screenshot_image_button);
+        mScreenshotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mShareIntent.putExtra(Intent.EXTRA_STREAM, getImageUri(getApplicationContext(), getBitmap()));
+                Toast.makeText(WeatherActivity.this, "Screenshot captured.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
