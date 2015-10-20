@@ -10,6 +10,7 @@
         android:contentDescription="@string/app_name"
         android:id="@+id/screenshot_image_button"
         android:layout_width="match_parent"
+        android:layout_gravity="right"
         android:paddingRight="10dp"
         android:background="@color/colorPrimaryDark"
         android:drawableRight="@drawable/screenshotbackground"
