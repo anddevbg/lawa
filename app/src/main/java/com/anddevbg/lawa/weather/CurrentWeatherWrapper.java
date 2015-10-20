@@ -51,9 +51,9 @@ public class CurrentWeatherWrapper {
                     Toast.LENGTH_SHORT).show();
         }
         mResultResponse = cityNameOne.replaceAll("\\s", "%20");
-        String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
+        return  "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
                 "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
-        return myNewResult;
+//        return myNewResult;
     }
 
     public void getWeatherUpdate(final ICurrentWeatherCallback weatherCallback) {
