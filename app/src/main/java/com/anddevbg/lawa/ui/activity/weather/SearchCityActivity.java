@@ -34,12 +34,10 @@ import java.util.List;
  */
 public class SearchCityActivity extends FragmentActivity implements ISearchCityCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private AutoCompleteTextView searchCityEditText;
-    private Button searchCityButton;
-    private ListView searchCityListView;
-    private List<String> cityList;
-    private GoogleApiClient googleApiClient;
-    private PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
+    private AutoCompleteTextView mSearchCityEditText;
+    private Button mSearchCityButton;
+    private ListView mSearchCityListView;
+    private GoogleApiClient mGoogleApiClient;
 
     private static final LatLngBounds BOUNDS_BULGARIA = new LatLngBounds(
             new LatLng(41.5167, 23.4000), new LatLng(43.7000, 28.5167));
@@ -50,27 +48,9 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
         setContentView(R.layout.search_city_activity);
         setupGoogleApiClient();
         initControls();
-
-        searchCityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SearchCityWrapper searchCityWrapper = new SearchCityWrapper(searchCityEditText.getText().toString());
-                searchCityWrapper.receiveSearchCityList(SearchCityActivity.this);
-            }
-        });
-        searchCityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                String c1Name = (String) adapterView.getItemAtPosition(position);
-                Intent i = getIntent();
-                i.putExtra("c1name", c1Name);
-                setResult(RESULT_OK, i);
-                finish();
-            }
-        });
-        placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, googleApiClient,
-                BOUNDS_BULGARIA, null);
-        searchCityEditText.setAdapter(placeAutoCompleteAdapter);
+        setUpSearchCityButton();
+        setUpOnItemClickListener();
+        initPlaceAutoComplete();
     }
 
     @Override
@@ -78,24 +58,9 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
         super.onPause();
     }
 
-    public void setupGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, R.string.google_maps_key, this)
-                .addConnectionCallbacks(this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
-        googleApiClient.connect();
-    }
-
-    private void initControls() {
-        searchCityEditText = (AutoCompleteTextView) findViewById(R.id.search_city_edit_text);
-        searchCityButton = (Button) findViewById(R.id.button_search_city);
-        searchCityListView = (ListView) findViewById(R.id.city_list);
-    }
-
     @Override
     public void onJSONResponse(JSONObject response) {
-        cityList = new ArrayList<>();
+        List<String> cityList = new ArrayList<>();
         try {
             JSONArray searchCityArray = response.getJSONArray("list");
             for (int i = 0; i < searchCityArray.length(); i++) {
@@ -109,7 +74,51 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 cityList);
-        searchCityListView.setAdapter(arrayAdapter);
+        mSearchCityListView.setAdapter(arrayAdapter);
+    }
+
+    private void initPlaceAutoComplete() {
+        PlaceAutoCompleteAdapter placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, mGoogleApiClient,
+                BOUNDS_BULGARIA, null);
+        mSearchCityEditText.setAdapter(placeAutoCompleteAdapter);
+    }
+
+    private void setUpOnItemClickListener() {
+        mSearchCityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                String c1Name = (String) adapterView.getItemAtPosition(position);
+                Intent i = getIntent();
+                i.putExtra("c1name", c1Name);
+                setResult(RESULT_OK, i);
+                finish();
+            }
+        });
+    }
+
+    private void setUpSearchCityButton() {
+        mSearchCityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SearchCityWrapper searchCityWrapper = new SearchCityWrapper(mSearchCityEditText.getText().toString());
+                searchCityWrapper.receiveSearchCityList(SearchCityActivity.this);
+            }
+        });
+    }
+
+    public void setupGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, R.string.google_maps_key, this)
+                .addConnectionCallbacks(this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    private void initControls() {
+        mSearchCityEditText = (AutoCompleteTextView) findViewById(R.id.search_city_edit_text);
+        mSearchCityButton = (Button) findViewById(R.id.button_search_city);
+        mSearchCityListView = (ListView) findViewById(R.id.city_list);
     }
 
     @Override
@@ -128,6 +137,5 @@ public class SearchCityActivity extends FragmentActivity implements ISearchCityC
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("asd", "connection failed");
     }
 }

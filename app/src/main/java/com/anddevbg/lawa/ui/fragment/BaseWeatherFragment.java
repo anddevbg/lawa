@@ -1,20 +1,14 @@
 package com.anddevbg.lawa.ui.fragment;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +28,6 @@ import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
 import com.anddevbg.lawa.weathergraph.GraphActivity;
 import com.android.volley.VolleyError;
-import com.facebook.FacebookSdk;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareButton;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -55,8 +44,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
 
     private static final String WEATHER_DATA = "weather_data";
 
-    private int cityID;
-    public String panoURL;
+    private int mCityID;
+    public String mPanoramioURL;
 
     private ImageView mWeatherImage;
     private TextView mCity;
@@ -65,18 +54,12 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView mWindSpeed;
     private WeatherData mWeatherData;
     private TextView descriptionWeatherText;
-    private View coordinatorView;
+    private View mCoordinatorView;
 
-    private LocationCurrentWeatherWrapper weatherWrapper;
-
+    private LocationCurrentWeatherWrapper mWeatherWrapper;
     private String mCityName;
-
-    private WeatherDatabaseManager manager;
-
-    private NotificationManager notificationManager;
-
-    private ShareButton mFacebookShareButton;
-
+    private WeatherDatabaseManager mWeatherDatabaseManager;
+    private NotificationManager mNotificationManager;
 
     public static BaseWeatherFragment createInstance(WeatherData weatherData) {
         BaseWeatherFragment fragment = new BaseWeatherFragment();
@@ -89,10 +72,9 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
-        notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        manager = WeatherDatabaseManager.getInstance();
+        mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        mWeatherDatabaseManager = WeatherDatabaseManager.getInstance();
     }
 
     @Override
@@ -117,8 +99,8 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         location.setLongitude(longitude);
         PanoramioWrapper panoramioWrapper = new PanoramioWrapper();
         panoramioWrapper.fetchPictures(location, this);
-        weatherWrapper = new LocationCurrentWeatherWrapper(location);
-        weatherWrapper.getWeatherUpdate(this);
+        mWeatherWrapper = new LocationCurrentWeatherWrapper(location);
+        mWeatherWrapper.getWeatherUpdate(this);
     }
 
     @Override
@@ -128,21 +110,22 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 JSONObject main = result.getJSONObject("main");
                 int currentWeather = main.getInt("temp");
                 mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
-
+                //Get wind speed and set it to its TextView
                 JSONObject windSpeed = result.getJSONObject("wind");
                 double wind = windSpeed.getDouble("speed");
                 String windSpeedText = String.valueOf(wind) + "m/s";
                 mWindSpeed.setText(windSpeedText);
-
+                //Get humidity and set it to its TextView
                 int humidity = main.getInt("humidity");
                 String humidityText = String.valueOf(humidity) + "%";
                 mHumidity.setText(humidityText);
-
-                cityID = result.getInt("id");
+                //Get the city ID from the JSON response
+                mCityID = result.getInt("id");
                 mCityName = result.getString("name");
+                //Trim 'Obshtina' from the beginning of the city name
                 String trimmedCityName = mCityName.replaceAll("Obshtina ", "");
                 mCity.setText(trimmedCityName);
-
+                //Get the weather description string
                 JSONArray jArray = result.getJSONArray("weather");
                 JSONObject description = jArray.getJSONObject(0);
                 String desc = description.getString("description");
@@ -158,11 +141,11 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     }
 
     private void showSnackBar() {
-        Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
+        Snackbar.make(mCoordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
                 .setAction("retry", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        weatherWrapper.getWeatherUpdate(BaseWeatherFragment.this);
+                        mWeatherWrapper.getWeatherUpdate(BaseWeatherFragment.this);
                     }
                 })
                 .show();
@@ -175,13 +158,13 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                     .setSmallIcon(R.mipmap.ic_white_not)
                     .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
                     .build();
-            notificationManager.notify(1, notification);
+            mNotificationManager.notify(1, notification);
         }
     }
 
     @Override
     public void onWeatherApiErrorResponse(VolleyError error) {
-        Toast.makeText(getActivity(), "Something went wrong" + error.toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Something went wrong" + error.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -197,10 +180,9 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             array = result.getJSONArray("photos");
             JSONObject jsonObject = array.getJSONObject(RandomUtil.randInt(0, 5));
             photoArray.add(jsonObject.getString("photo_file_url"));
-            panoURL = photoArray.get(0);
-            Picasso.with(getActivity()).load(panoURL).placeholder(R.layout.progress).into(mWeatherImage);
+            mPanoramioURL = photoArray.get(0);
+            Picasso.with(getActivity()).load(mPanoramioURL).placeholder(R.layout.progress).into(mWeatherImage);
         } catch (JSONException e) {
-            Log.d("asd", "ops");
             e.printStackTrace();
         }
     }
@@ -217,7 +199,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mHumidity = (TextView) view.findViewById(R.id.min_temp_textView);
         mWindSpeed = (TextView) view.findViewById(R.id.max_temp_textView);
         descriptionWeatherText = (TextView) view.findViewById(R.id.last_refresh_textView);
-        coordinatorView = view.findViewById(R.id.snackbar);
+        mCoordinatorView = view.findViewById(R.id.snackbar);
         Button forecastButton = (Button) view.findViewById(R.id.forecast_button);
         forecastButton.setText("see forecast");
         forecastButton.setOnClickListener(new View.OnClickListener() {
@@ -233,30 +215,18 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 goToGraphActivity();
             }
         });
-
-    }
-
-
-
-    public ShareLinkContent getLinkContent(){
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentTitle("Share")
-                .setContentDescription("Description")
-                .setContentUrl(Uri.parse("www.google.com"))
-                .build();
-        return content;
     }
 
     private void goToGraphActivity() {
         Intent graphIntent = new Intent(getActivity(), GraphActivity.class);
-        graphIntent.putExtra("id", cityID);
+        graphIntent.putExtra("id", mCityID);
         graphIntent.putExtra("name", mCityName);
         startActivity(graphIntent);
     }
 
     public void goToForecastActivity() {
         Intent i = new Intent(getActivity(), ForecastActivity.class);
-        i.putExtra("id", cityID);
+        i.putExtra("id", mCityID);
         startActivity(i);
     }
 

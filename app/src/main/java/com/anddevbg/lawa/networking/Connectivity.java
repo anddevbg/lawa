@@ -27,18 +27,10 @@ public class Connectivity {
     public boolean isConnecting() {
         mConnectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
-        if(networkInfo!= null && networkInfo.isConnectedOrConnecting()) {
-            return true;
-        } else {
-            return false;
-        }
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
     public boolean isConnected() {
         NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
-        if(networkInfo!=null && networkInfo.isConnected()) {
-            return true;
-        } else {
-            return false;
-        }
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

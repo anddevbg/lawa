@@ -2,7 +2,6 @@ package com.anddevbg.lawa.ui.activity.weather;
 
 
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,7 +74,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         Bundle extras = intent.getExtras();
         if (extras != null) {
             int widgetPosition = extras.getInt("position", 0);
-            Log.d("widget", "widgett position in onNewIntent" + widgetPosition);
             mViewPager.setCurrentItem(widgetPosition);
         }
     }
@@ -86,7 +83,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         if (connectivity.isConnected()) {
             setUpGoogleApiClient();
             getManagerAndShowData();
-
         } else {
             CharSequence positive = "Enable";
             CharSequence negative = "Cancel";
@@ -101,7 +97,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                             startActivity(intent);
                         }
                     }).show();
-
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -153,7 +148,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public boolean onSearchRequested() {
         Intent i = new Intent(this, SearchActivity.class);
-//        i.putExtra("name", searchView.getQuery());
         startActivity(i);
         return super.onSearchRequested();
     }
@@ -161,11 +155,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_weather, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem item = menu.findItem(R.id.action_share);
         ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         shareActionProvider.setShareIntent(setIntentToShare());
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -177,7 +169,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private Bitmap getBitmap() {
-        if(mBitmap!=null) {
+        if (mBitmap != null) {
             mBitmap.recycle();
             View screenshotView = findViewById(android.R.id.content).getRootView();
             mBitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
@@ -189,7 +181,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             Canvas canvas = new Canvas(mBitmap);
             screenshotView.draw(canvas);
         }
-
         return mBitmap;
     }
 
@@ -243,9 +234,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                     Toast.makeText(this, "Unknown location. Please try again.", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.action_share:
-                Log.d("asd", "share clicked");
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -289,7 +277,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         Bundle extras = widgetIntent.getExtras();
         if (extras != null) {
             int widgetPosition = extras.getInt("position", 0);
-            Log.d("widget", "widgetPosition is " + widgetIntent);
             mViewPager.setCurrentItem(widgetPosition);
         }
     }
@@ -320,9 +307,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location != null) {
-//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleClient, this);
-        }
     }
 
 }

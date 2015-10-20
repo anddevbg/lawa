@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_pager_linear_layout"
@@ -7,13 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <Button
-        android:contentDescription="@string/app_name"
         android:id="@+id/screenshot_image_button"
+        android:contentDescription="@string/app_name"
         android:layout_width="match_parent"
         android:layout_gravity="right"
         android:paddingRight="10dp"
         android:background="@color/colorPrimaryDark"
-        android:drawableRight="@drawable/screenshotbackground"
+        android:drawableRight="@drawable/screenshot_background"
         android:layout_height="27dp" />
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
@@ -21,13 +20,12 @@
         android:layout_height="match_parent"
         tools:context=".WeatherActivity">
         <android.support.design.widget.CoordinatorLayout
-            android:id="@+id/snackbar2"
+            android:id="@+id/snackbar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start">
         </android.support.design.widget.CoordinatorLayout>
     </android.support.v4.view.ViewPager>
-
 
 </LinearLayout>
 
