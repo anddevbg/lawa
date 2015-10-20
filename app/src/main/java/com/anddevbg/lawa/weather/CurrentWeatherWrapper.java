@@ -24,12 +24,12 @@ import java.util.Locale;
 /**
  * Created by adri.stanchev on 18/07/2015.
  */
-public class LocationCurrentWeatherWrapper {
+public class CurrentWeatherWrapper {
     private Location mLocation;
     private String cityNameOne;
     private String mResultResponse;
 
-    public LocationCurrentWeatherWrapper(Location mLastKnownLocation) {
+    public CurrentWeatherWrapper(Location mLastKnownLocation) {
         mLocation = mLastKnownLocation;
     }
 
@@ -45,16 +45,14 @@ public class LocationCurrentWeatherWrapper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (cityNameOne != null) {
-            String hull = "Hull";
-            if(cityNameOne.equals(hull)) {
-                Toast.makeText(LawaApplication.getContext(), "The server cannot handle so many requests",
-                        Toast.LENGTH_LONG).show();
-            }
-            mResultResponse = cityNameOne.replaceAll("\\s", "%20");
+        String hull = "Hull";
+        if (cityNameOne.equals(hull)) {
+            Toast.makeText(LawaApplication.getContext(), "The server cannot handle so many requests",
+                    Toast.LENGTH_SHORT).show();
         }
+        mResultResponse = cityNameOne.replaceAll("\\s", "%20");
         String myNewResult = "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
-        "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
+                "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
         return myNewResult;
     }
 

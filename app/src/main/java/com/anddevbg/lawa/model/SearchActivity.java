@@ -17,7 +17,7 @@ import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.panoramio.IPanoramioCallback;
 import com.anddevbg.lawa.panoramio.PanoramioWrapper;
 import com.anddevbg.lawa.util.RandomUtil;
-import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
+import com.anddevbg.lawa.weather.CurrentWeatherWrapper;
 import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
 
@@ -72,9 +72,9 @@ public class SearchActivity extends Activity implements IPanoramioCallback {
                     super.onPostExecute(location);
                     PanoramioWrapper panoramioWrapObject = new PanoramioWrapper();
                     panoramioWrapObject.fetchPictures(location, SearchActivity.this);
-                    LocationCurrentWeatherWrapper locationCurrentWeatherWrapper = new LocationCurrentWeatherWrapper(location);
-                    locationCurrentWeatherWrapper.getOpenWeatherApiUrl();
-                    Log.d("location is: ", locationCurrentWeatherWrapper.getOpenWeatherApiUrl());
+                    CurrentWeatherWrapper currentWeatherWrapper = new CurrentWeatherWrapper(location);
+                    currentWeatherWrapper.getOpenWeatherApiUrl();
+                    Log.d("location is: ", currentWeatherWrapper.getOpenWeatherApiUrl());
 
                 }
             }.execute();

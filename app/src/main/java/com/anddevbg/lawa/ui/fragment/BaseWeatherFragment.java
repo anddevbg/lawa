@@ -25,7 +25,7 @@ import com.anddevbg.lawa.panoramio.PanoramioWrapper;
 import com.anddevbg.lawa.ui.activity.weather.ForecastActivity;
 import com.anddevbg.lawa.util.RandomUtil;
 import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
-import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
+import com.anddevbg.lawa.weather.CurrentWeatherWrapper;
 import com.anddevbg.lawa.weathergraph.GraphActivity;
 import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
@@ -56,7 +56,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView descriptionWeatherText;
     private View mCoordinatorView;
 
-    private LocationCurrentWeatherWrapper mWeatherWrapper;
+    private CurrentWeatherWrapper mWeatherWrapper;
     private String mCityName;
     private WeatherDatabaseManager mWeatherDatabaseManager;
     private NotificationManager mNotificationManager;
@@ -99,7 +99,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         location.setLongitude(longitude);
         PanoramioWrapper panoramioWrapper = new PanoramioWrapper();
         panoramioWrapper.fetchPictures(location, this);
-        mWeatherWrapper = new LocationCurrentWeatherWrapper(location);
+        mWeatherWrapper = new CurrentWeatherWrapper(location);
         mWeatherWrapper.getWeatherUpdate(this);
     }
 

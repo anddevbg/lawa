@@ -12,7 +12,7 @@ import android.widget.RemoteViewsService;
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
+import com.anddevbg.lawa.weather.CurrentWeatherWrapper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -80,10 +80,10 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int i) {
-        LocationCurrentWeatherWrapper locationCurrentWeatherWrapper = new LocationCurrentWeatherWrapper(mLocationList.get(i));
+        CurrentWeatherWrapper currentWeatherWrapper = new CurrentWeatherWrapper(mLocationList.get(i));
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.stack_view_item_layout);
         try {
-            JSONObject object = locationCurrentWeatherWrapper.getWeatherUpdateSync().get(30, TimeUnit.SECONDS);
+            JSONObject object = currentWeatherWrapper.getWeatherUpdateSync().get(30, TimeUnit.SECONDS);
             setUpWidgetInformation(object, remoteViews, i);
         } catch (InterruptedException e) {
             e.printStackTrace();
