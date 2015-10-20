@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
     android:id="@+id/row_forecast_layout"
-    android:background="@color/colorPrimaryDark">
+    android:background="@drawable/patch_n9ne">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c5c6c3"/>
 
 
     <TextView
@@ -12,7 +18,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Day"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -23,7 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Min Temp"
         android:layout_below="@+id/day_text_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -34,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Max Temp"
         android:layout_alignBottom="@+id/slash_text_view"
         android:layout_toRightOf="@+id/slash_text_view"
         android:layout_toEndOf="@+id/slash_text_view" />
@@ -65,7 +68,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="desc"
         android:layout_below="@+id/weather_Icon"
         android:layout_alignLeft="@+id/weather_Icon"
         android:layout_alignStart="@+id/weather_Icon" />
@@ -75,7 +77,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="city text"
         android:layout_below="@+id/min_temperature_text_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

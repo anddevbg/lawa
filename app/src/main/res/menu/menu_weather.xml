@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:support="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".WeatherActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
@@ -14,8 +15,13 @@
     <item
         android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Remove"
-        android:showAsAction="ifRoom" />
+        android:title="Delete"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_location"
+        android:title="Use Current Location"
+        android:icon="@drawable/ic_action_locate"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_add"
@@ -23,15 +29,11 @@
         android:title="@string/action_add"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_location"
-        android:title="Use Current Location"
-        android:icon="@drawable/ic_action_locate"
-        android:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/facebook_share_button"
+        android:id="@+id/action_share"
         android:title="Share"
         android:icon="@android:drawable/ic_menu_share"
-        android:showAsAction="ifRoom"
+        support:showAsAction="always"
+        support:actionProviderClass="android.support.v7.widget.ShareActionProvider"
         />
 
 

@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.anddevbg.lawa.R;
 import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.WeatherData;
-import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
-import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -38,21 +35,20 @@ public class WeatherWidgetService extends RemoteViewsService {
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new StackRemoteViews(getApplicationContext(), intent);
     }
-
 }
 
 class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
     private List<WeatherData> mWeatherDataList;
-    private int mAppWidgetId;
     private WeatherDatabaseManager mDatabaseManager;
     private List<Location> mLocationList;
+    private AppWidgetManager mAppWidgetManager;
 
     public StackRemoteViews(Context context, Intent intent) {
         mDatabaseManager = WeatherDatabaseManager.getInstance();
         mContext = context;
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        mAppWidgetManager = AppWidgetManager.getInstance(context);
     }
 
     @Override
@@ -70,7 +66,6 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        Log.d("widgetz", "in onDatasetChanged");
     }
 
     @Override
@@ -85,40 +80,48 @@ class StackRemoteViews implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int i) {
-        String fullForecastIconUrl;
-        float newCurrentTemp;
         LocationCurrentWeatherWrapper locationCurrentWeatherWrapper = new LocationCurrentWeatherWrapper(mLocationList.get(i));
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.stack_view_item_layout);
-
         try {
             JSONObject object = locationCurrentWeatherWrapper.getWeatherUpdateSync().get(30, TimeUnit.SECONDS);
-            JSONArray weather = object.getJSONArray("weather");
-            JSONObject w1 = weather.getJSONObject(0);
-            String pngFileUrl = w1.getString("icon");
-            fullForecastIconUrl = "http://openweathermap.org/img/w/" + pngFileUrl + ".png";
-
-            JSONObject main = object.getJSONObject("main");
-            float currentTemp = (float) main.getDouble("temp");
-            DecimalFormat decimalFormat = new DecimalFormat("#.#");
-            newCurrentTemp = Float.valueOf(decimalFormat.format(currentTemp));
-            remoteViews.setTextViewText(R.id.widget_temperature_text_view, mWeatherDataList.get(i).getCityName());
-            remoteViews.setTextViewText(R.id.city_text_widget_view, String.valueOf(newCurrentTemp) +"°C");
-            try {
-                Bitmap b = Picasso.with(mContext).load(fullForecastIconUrl).get();
-                remoteViews.setImageViewBitmap(R.id.widget_image_view, b);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            setUpWidgetInformation(object, remoteViews, i);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
+        }
+        Intent fillIntent = new Intent();
+        Bundle extras = new Bundle();
+        extras.putInt(WeatherWidgetProvider.EXTRA_ITEM, i);
+        fillIntent.putExtras(extras);
+        remoteViews.setOnClickFillInIntent(R.id.stack_widget_item, fillIntent);
+
+        return remoteViews;
+    }
+
+    private void setUpWidgetInformation(JSONObject object, RemoteViews remoteViews, int position) {
+        try {
+            JSONArray weather = object.getJSONArray("weather");
+            JSONObject w1 = weather.getJSONObject(0);
+            String pngFileUrl = w1.getString("icon");
+            String fullForecastIconUrl = "http://openweathermap.org/img/w/" + pngFileUrl + ".png";
+
+            JSONObject main = object.getJSONObject("main");
+            double currentTemp =  main.getDouble("temp");
+            DecimalFormat decimalFormat = new DecimalFormat("#");
+            remoteViews.setTextViewText(R.id.widget_temperature_text_view, mWeatherDataList.get(position).getCityName());
+            remoteViews.setTextViewText(R.id.city_text_widget_view, String.valueOf(decimalFormat.format(currentTemp)) +"°C");
+            try {
+                Bitmap b = Picasso.with(mContext).load(fullForecastIconUrl).get();
+                remoteViews.setImageViewBitmap(R.id.widget_image_view, b);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return remoteViews;
     }
 
     @Override

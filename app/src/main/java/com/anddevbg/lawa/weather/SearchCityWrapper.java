@@ -15,12 +15,12 @@ import org.json.JSONObject;
  */
 public class SearchCityWrapper {
 
-    String citySearchName;
+    String mCitySearchName;
     public SearchCityWrapper(String cityName) {
-        citySearchName = cityName;
+        mCitySearchName = cityName;
     }
     private String getCityList() {
-        String spaces = citySearchName.replaceAll("\\s","");
+        String spaces = mCitySearchName.replaceAll("\\s","");
         Log.d("asd", "spaces string = " + spaces);
         return "http://api.openweathermap.org/data/2.5/find?q=" + spaces + "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
     }

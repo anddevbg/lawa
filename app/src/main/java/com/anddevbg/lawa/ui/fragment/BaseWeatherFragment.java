@@ -1,13 +1,16 @@
 package com.anddevbg.lawa.ui.fragment;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -31,6 +34,11 @@ import com.anddevbg.lawa.weather.ICurrentWeatherCallback;
 import com.anddevbg.lawa.weather.LocationCurrentWeatherWrapper;
 import com.anddevbg.lawa.weathergraph.GraphActivity;
 import com.android.volley.VolleyError;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -39,9 +47,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -62,15 +67,16 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView descriptionWeatherText;
     private View coordinatorView;
 
-    private Set<String> mTempSet;
-
     private LocationCurrentWeatherWrapper weatherWrapper;
 
-    private String name;
+    private String mCityName;
 
     private WeatherDatabaseManager manager;
 
     private NotificationManager notificationManager;
+
+    private ShareButton mFacebookShareButton;
+
 
     public static BaseWeatherFragment createInstance(WeatherData weatherData) {
         BaseWeatherFragment fragment = new BaseWeatherFragment();
@@ -83,10 +89,10 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mWeatherData = (WeatherData) getArguments().get(WEATHER_DATA);
         notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         manager = WeatherDatabaseManager.getInstance();
-        mTempSet = new HashSet<>();
     }
 
     @Override
@@ -118,48 +124,58 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     @Override
     public void onWeatherApiResponse(JSONObject result) {
         try {
-            if(result.has("main")) {
+            if (result.has("main")) {
                 JSONObject main = result.getJSONObject("main");
                 int currentWeather = main.getInt("temp");
                 mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
 
                 JSONObject windSpeed = result.getJSONObject("wind");
                 double wind = windSpeed.getDouble("speed");
-                mWindSpeed.setText(String.valueOf(wind) + " m/s");
+                String windSpeedText = String.valueOf(wind) + "m/s";
+                mWindSpeed.setText(windSpeedText);
 
                 int humidity = main.getInt("humidity");
-                mHumidity.setText(String.valueOf(humidity) + "%");
+                String humidityText = String.valueOf(humidity) + "%";
+                mHumidity.setText(humidityText);
 
                 cityID = result.getInt("id");
-                name = result.getString("name");
-                mCity.setText(name);
+                mCityName = result.getString("name");
+                String trimmedCityName = mCityName.replaceAll("Obshtina ", "");
+                mCity.setText(trimmedCityName);
 
                 JSONArray jArray = result.getJSONArray("weather");
                 JSONObject description = jArray.getJSONObject(0);
                 String desc = description.getString("description");
                 descriptionWeatherText.setText(desc);
 
-                if (getActivity() != null) {
-                    Notification notification = new NotificationCompat.Builder(getActivity())
-                            .setContentTitle("LAWA")
-                            .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .build();
-                    notificationManager.notify(1, notification);
-                }
+                showNotification();
             } else {
-                Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
-                        .setAction("retry", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                weatherWrapper.getWeatherUpdate(BaseWeatherFragment.this);
-                            }
-                        })
-                        .show();
+                showSnackBar();
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d("asd", "JSON EXCEPTION in baseweather frag " + e.toString());
+        }
+    }
+
+    private void showSnackBar() {
+        Snackbar.make(coordinatorView, "Error loading data", Snackbar.LENGTH_LONG)
+                .setAction("retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        weatherWrapper.getWeatherUpdate(BaseWeatherFragment.this);
+                    }
+                })
+                .show();
+    }
+
+    private void showNotification() {
+        if (getActivity() != null) {
+            Notification notification = new NotificationCompat.Builder(getActivity())
+                    .setContentTitle("LAWA")
+                    .setSmallIcon(R.mipmap.ic_white_not)
+                    .setContentText("Weather in " + mCity.getText() + " is " + mCurrentTemp.getText())
+                    .build();
+            notificationManager.notify(1, notification);
         }
     }
 
@@ -174,12 +190,12 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     }
 
     @Override
-    public void onPanoramioResponse(JSONObject result)  {
+    public void onPanoramioResponse(JSONObject result) {
         JSONArray array;
         ArrayList<String> photoArray = new ArrayList<>();
         try {
             array = result.getJSONArray("photos");
-            JSONObject jsonObject = array.getJSONObject(RandomUtil.randInt(0,5));
+            JSONObject jsonObject = array.getJSONObject(RandomUtil.randInt(0, 5));
             photoArray.add(jsonObject.getString("photo_file_url"));
             panoURL = photoArray.get(0);
             Picasso.with(getActivity()).load(panoURL).placeholder(R.layout.progress).into(mWeatherImage);
@@ -217,12 +233,24 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
                 goToGraphActivity();
             }
         });
+
+    }
+
+
+
+    public ShareLinkContent getLinkContent(){
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentTitle("Share")
+                .setContentDescription("Description")
+                .setContentUrl(Uri.parse("www.google.com"))
+                .build();
+        return content;
     }
 
     private void goToGraphActivity() {
         Intent graphIntent = new Intent(getActivity(), GraphActivity.class);
         graphIntent.putExtra("id", cityID);
-        graphIntent.putExtra("name", name);
+        graphIntent.putExtra("name", mCityName);
         startActivity(graphIntent);
     }
 
@@ -235,5 +263,4 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private void respondToPanoramioErrorResponse(VolleyError error) {
         error.printStackTrace();
     }
-
 }

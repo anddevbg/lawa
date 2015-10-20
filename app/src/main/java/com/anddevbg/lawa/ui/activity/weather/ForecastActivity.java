@@ -51,7 +51,6 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
     public void onForecastReceived(JSONObject response) {
         mDataList = new ArrayList<>();
         try {
-            Log.d("response", "forecast is + " + response.toString());
             JSONObject city = response.getJSONObject("city");
             String cityName = city.getString("name");
 
@@ -65,15 +64,14 @@ public class ForecastActivity extends AppCompatActivity implements IForecastCall
 
                 int timestamp = jMain.getInt("dt");
                 Date date = new Date(timestamp*1000L);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-//                String day = sdf.format(date);
                 String monday = new SimpleDateFormat("EEE, MMM d").format(date);
                 JSONObject main = jMain.getJSONObject("temp");
-                float maxTempDay = (float) main.getDouble("max");
-                float minTempDay = (float) main.getDouble("min");
-                DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                forecastDataObj.setMaximalTemperature(Float.parseFloat(decimalFormat.format(maxTempDay)));
-                forecastDataObj.setMinimalTemperature(Float.parseFloat(decimalFormat.format(minTempDay)));
+                double maxTempDay = main.getDouble("max");
+                double minTempDay = main.getDouble("min");
+
+                DecimalFormat decimalFormat = new DecimalFormat("#");
+                forecastDataObj.setMaximalTemperature(Double.parseDouble(decimalFormat.format(maxTempDay)));
+                forecastDataObj.setMinimalTemperature(Double.parseDouble(decimalFormat.format(minTempDay)));
                 forecastDataObj.setDay(monday);
 
                 JSONObject weatherObj = j1.getJSONObject(0);

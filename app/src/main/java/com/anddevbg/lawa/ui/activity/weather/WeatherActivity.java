@@ -2,24 +2,29 @@ package com.anddevbg.lawa.ui.activity.weather;
 
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.os.AsyncTask;
+import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.anddevbg.lawa.R;
@@ -29,14 +34,13 @@ import com.anddevbg.lawa.database.WeatherDatabaseManager;
 import com.anddevbg.lawa.model.SearchActivity;
 import com.anddevbg.lawa.model.WeatherData;
 import com.anddevbg.lawa.networking.Connectivity;
-import com.facebook.FacebookSdk;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,26 +53,32 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private ViewPager mViewPager;
     private List<WeatherData> mResult;
     private int search_request_code = 1;
-    private SearchView searchView;
     private double mLocationLatitude;
     private double mLocationLongitude;
     private GoogleApiClient mGoogleClient;
     private Location mLastKnownLocation;
     private WeatherDatabaseManager mWeatherDataBaseManager;
-    private ProgressDialog mProgressDialog;
-
-    private static final String TAG = "connectiontest";
-
-    private LoginButton mLoginButton;
+    private Intent mShareIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_weather);
         mResult = new ArrayList<>();
         initControls();
         isInternetEnabled();
-//        FacebookSdk.sdkInitialize(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            int widgetPosition = extras.getInt("position", 0);
+            Log.d("widget", "widgett position in onNewIntent" + widgetPosition);
+            mViewPager.setCurrentItem(widgetPosition);
+        }
     }
 
     private void isInternetEnabled() {
@@ -76,8 +86,8 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         if (connectivity.isConnected()) {
             setUpGoogleApiClient();
             getManagerAndShowData();
+
         } else {
-            Log.d(TAG, "no internet");
             CharSequence positive = "Enable";
             CharSequence negative = "Cancel";
             new AlertDialog.Builder(this)
@@ -92,29 +102,23 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                         }
                     }).show();
 
-            Log.d(TAG, "between AlertDialog and Thread");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         while (!connectivity.isConnected()) {
-                            Log.d(TAG, "looping in while");
                             Thread.sleep(1000);
                         }
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.d(TAG, "running on ui");
                                 setUpGoogleApiClient();
                                 getManagerAndShowData();
                             }
                         });
-
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d(TAG, "outside while loop");
-
                 }
             }).start();
         }
@@ -141,15 +145,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         super.onResume();
     }
 
-    private boolean isOnline() {
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager.getActiveNetworkInfo() != null && manager.getActiveNetworkInfo().isConnectedOrConnecting()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -158,7 +153,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public boolean onSearchRequested() {
         Intent i = new Intent(this, SearchActivity.class);
-        i.putExtra("name", searchView.getQuery());
+//        i.putExtra("name", searchView.getQuery());
         startActivity(i);
         return super.onSearchRequested();
     }
@@ -167,31 +162,49 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_weather, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
-//                .getActionView();
-//        searchView.setSearchableInfo(searchManager
-//                .getSearchableInfo(getComponentName()));
-//        Button add = (Button) menu.findItem(R.id.action_add).getActionView();
-//        Button remove = (Button) menu.findItem(R.id.action_remove).getActionView();
+        MenuItem item = menu.findItem(R.id.action_share);
+        ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        shareActionProvider.setShareIntent(setIntentToShare());
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "name.jpg", null);
+        return Uri.parse(path);
+    }
+
+    private Bitmap getBitmap() {
+        View screenshotView = findViewById(android.R.id.content).getRootView();
+        Bitmap bitmap = Bitmap.createBitmap(screenshotView.getWidth(), screenshotView.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        screenshotView.draw(canvas);
+
+        return bitmap;
+    }
+
+    private Intent setIntentToShare() {
+        mShareIntent = new Intent(Intent.ACTION_SEND);
+        mShareIntent.setType("image/jpeg");
+        return mShareIntent;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                Log.d("asd", "action add clicked");
                 Intent searchActivityIntent = new Intent(WeatherActivity.this, SearchCityActivity.class);
                 startActivityForResult(searchActivityIntent, search_request_code);
                 break;
             case R.id.action_remove:
-                Log.d("asd", "action remove clicked");
                 new AlertDialog.Builder(this)
                         .setTitle("Delete this city?")
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                return;
+                                dialogInterface.cancel();
                             }
                         })
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -199,7 +212,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 int index = mViewPager.getCurrentItem();
                                 String cityNameForDeletion = mResult.get(index).getCityName();
-                                Log.d("asd", "name is: " + cityNameForDeletion);
                                 mWeatherDataBaseManager.deleteData(cityNameForDeletion);
                                 mWeatherAdapter.removeView(index);
                                 mResult.remove(index);
@@ -212,7 +224,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
             case R.id.action_location:
                 WeatherData currentLocationWeatherData = new WeatherData();
                 if (mLastKnownLocation != null) {
-                    Log.d("asd", "Location is: latitude " + mLastKnownLocation.getLatitude() + " and longitude " + mLastKnownLocation.getLongitude());
                     currentLocationWeatherData.setLatitude(mLastKnownLocation.getLatitude());
                     currentLocationWeatherData.setLongitude(mLastKnownLocation.getLongitude());
                     mResult.add(currentLocationWeatherData);
@@ -224,9 +235,9 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                     Toast.makeText(this, "Unknown location. Please try again.", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.facebook_share_button:
-                Log.d("facebook", "share button clicked");
-
+            case R.id.action_share:
+                Log.d("asd", "share clicked");
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -264,23 +275,41 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPager.setAdapter(mWeatherAdapter);
         mViewPager.setOffscreenPageLimit(5);
+        setUpScreenshotButton();
         mViewPager.setPageTransformer(false, new ZoomPagerTransformation());
+        Intent widgetIntent = getIntent();
+        Bundle extras = widgetIntent.getExtras();
+        if (extras != null) {
+            int widgetPosition = extras.getInt("position", 0);
+            Log.d("widget", "widgetPosition is " + widgetIntent);
+            mViewPager.setCurrentItem(widgetPosition);
+        }
+    }
+
+    private void setUpScreenshotButton() {
+        final Button mScreenshotButton = (Button) findViewById(R.id.screenshot_image_button);
+        mScreenshotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mScreenshotButton.setVisibility(View.GONE);
+                mShareIntent.putExtra(Intent.EXTRA_STREAM, getImageUri(getApplicationContext(), getBitmap()));
+                mScreenshotButton.setVisibility(View.VISIBLE);
+                Toast.makeText(WeatherActivity.this, "Screenshot captured.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("location", "google api client connected");
         mLastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d("location", "location suspended " + i);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("asd", "location failed" + connectionResult.toString());
     }
 
     @Override

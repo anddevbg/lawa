@@ -31,7 +31,6 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
 
     public PlaceAutoCompleteAdapter(Context context, int resource, GoogleApiClient googleApiClient, LatLngBounds bounds, AutocompleteFilter filter) {
         super(context, resource);
-        Log.d("asd", "PlaceAutoCompleteAdapter constructor");
         mGoogleApiClient = googleApiClient;
         mAutocompleteFilter = filter;
         latLngBounds = bounds;
@@ -54,10 +53,8 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults filterResults = new FilterResults();
                 if (charSequence != null) {
-                    Log.d("asd", "char sequence != null");
                     mResultList = getAutoComplete(charSequence);
                     if (mResultList != null) {
-                        Log.d("asd", "mResultList != NULL");
                         filterResults.values = mResultList;
                         filterResults.count = mResultList.size();
                     }
@@ -68,10 +65,8 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 if (filterResults != null && filterResults.count > 0) {
-                    Log.d("asd", "notifying data set changed");
                     notifyDataSetChanged();
                 } else {
-                    Log.d("asd", "data set invalidating :(");
                     notifyDataSetInvalidated();
                 }
             }
@@ -83,15 +78,12 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
         if (mGoogleApiClient.isConnected()) {
             PendingResult<AutocompletePredictionBuffer> results = Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient,
                     constraint.toString(), latLngBounds, mAutocompleteFilter);
-            Log.d("asd", "after getAutoCompletePredictions call");
             AutocompletePredictionBuffer autocompletePredictions = results.await(10, TimeUnit.SECONDS);
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
-                Log.d("asd", "Error connecting to API " + status.toString());
                 autocompletePredictions.release();
                 return null;
             }
-            Log.d("asd", "query completed. received " + autocompletePredictions.getCount() + " predictions");
             Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
             ArrayList<PlaceAutocomplete> resultList = new ArrayList<>(autocompletePredictions.getCount());
             while (iterator.hasNext()) {
@@ -101,7 +93,6 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<PlaceAutoCompleteAdap
             autocompletePredictions.release();
             return resultList;
         }
-        Log.d("asd", "Google Api Client not connected");
         return null;
     }
 
