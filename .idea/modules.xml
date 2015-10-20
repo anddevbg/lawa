@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/LAWA.iml" filepath="$PROJECT_DIR$/LAWA.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lawa.iml" filepath="$PROJECT_DIR$/lawa.iml" />
     </modules>
   </component>
 </project>
