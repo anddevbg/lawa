@@ -1,10 +1,7 @@
 package com.anddevbg.lawa.panoramio;
 
-import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 
-import com.anddevbg.lawa.LawaApplication;
 import com.anddevbg.lawa.networking.NetworkRequestManager;
 import com.android.volley.Request;
 import com.android.volley.Response;

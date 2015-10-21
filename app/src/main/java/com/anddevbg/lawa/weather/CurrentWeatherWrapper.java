@@ -46,14 +46,14 @@ public class CurrentWeatherWrapper {
             e.printStackTrace();
         }
         String hull = "Hull";
-        if (cityNameOne.equals(hull)) {
+        if (cityNameOne != null && cityNameOne.equals(hull)) {
             Toast.makeText(LawaApplication.getContext(), "The server cannot handle so many requests",
                     Toast.LENGTH_SHORT).show();
         }
+        assert cityNameOne != null : "city name cannot be null";
         mResultResponse = cityNameOne.replaceAll("\\s", "%20");
         return  "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
                 "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
-//        return myNewResult;
     }
 
     public void getWeatherUpdate(final ICurrentWeatherCallback weatherCallback) {
