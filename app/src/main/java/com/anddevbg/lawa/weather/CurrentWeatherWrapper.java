@@ -3,8 +3,6 @@ package com.anddevbg.lawa.weather;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.LinkAddress;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.anddevbg.lawa.LawaApplication;
@@ -41,6 +39,7 @@ public class CurrentWeatherWrapper {
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
             if (addressList.size() > 0) {
                 cityNameOne = addressList.get(0).getLocality();
+                mResultResponse = cityNameOne.replaceAll("\\s", "%20");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,8 +49,6 @@ public class CurrentWeatherWrapper {
             Toast.makeText(LawaApplication.getContext(), "The server cannot handle so many requests",
                     Toast.LENGTH_SHORT).show();
         }
-        assert cityNameOne != null : "city name cannot be null";
-        mResultResponse = cityNameOne.replaceAll("\\s", "%20");
         return  "http://api.openweathermap.org/data/2.5/weather?q=" + mResultResponse +
                 "&units=metric&APPID=8b632a903448af2dfe8865826f40b459";
     }
