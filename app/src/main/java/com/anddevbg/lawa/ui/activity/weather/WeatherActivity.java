@@ -157,15 +157,15 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         getMenuInflater().inflate(R.menu.menu_weather, menu);
         MenuItem item = menu.findItem(R.id.action_share);
         ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-//        shareActionProvider.setShareIntent(getPictureIntent());
-        shareActionProvider.setShareIntent(getTextIntent());
+        shareActionProvider.setShareIntent(getPictureIntent());
+//        shareActionProvider.setShareIntent(getTextIntent());
         return super.onCreateOptionsMenu(menu);
     }
 
     private Intent getTextIntent() {
         Intent textIntent = new Intent(Intent.ACTION_SEND);
-        textIntent.setType("text/plain");
-        textIntent.putExtra(Intent.EXTRA_TEXT, "Check out the weather in " + mResult.get(mViewPager.getCurrentItem()).getCityName());
+        textIntent.setType("text/*");
+        textIntent.putExtra(Intent.EXTRA_TEXT, "Check out the weather in");
         return textIntent;
     }
 
