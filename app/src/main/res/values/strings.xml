@@ -22,4 +22,6 @@
     <string name="use_current_location">Use current location</string>
     <string name="share_text">Share</string>
     <string name="add_text">Add</string>
+    <string name="see_forecast">See forecast</string>
+    <string name="see_graph">See graph</string>
 </resources>

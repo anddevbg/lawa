@@ -235,7 +235,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mDescriptionWeatherText = (TextView) view.findViewById(R.id.last_refresh_textView);
         mCoordinatorView = view.findViewById(R.id.snackbar);
         Button forecastButton = (Button) view.findViewById(R.id.forecast_button);
-        forecastButton.setText("see forecast");
+        forecastButton.setText(R.string.see_forecast);
         forecastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,6 +243,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
             }
         });
         Button mGraphButton = (Button) view.findViewById(R.id.graph_button);
+        mGraphButton.setText(R.string.see_graph);
         mGraphButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

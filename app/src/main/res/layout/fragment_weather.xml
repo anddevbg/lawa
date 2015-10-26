@@ -26,6 +26,7 @@
             </android.support.design.widget.CoordinatorLayout>
             <ImageView
                 android:id="@+id/current_weather_imageView"
+                android:contentDescription="@string/app_name"
                 android:layout_width="match_parent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
@@ -89,7 +90,6 @@
                     />
                 <Button
                     android:id="@+id/graph_button"
-                    android:text="see graph"
                     android:layout_weight="1"
                     android:layout_gravity="bottom"
                     android:layout_width="wrap_content"
