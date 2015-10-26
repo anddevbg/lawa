@@ -15,11 +15,11 @@
     <item
         android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Delete"
+        android:title="@string/delete_city_text"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_location"
-        android:title="Use Current Location"
+        android:title="@string/use_current_location"
         android:icon="@drawable/ic_action_locate"
         app:showAsAction="ifRoom"/>
 
@@ -30,7 +30,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_share"
-        android:title="Share"
+        android:title="@string/share_text"
         android:icon="@android:drawable/ic_menu_share"
         support:showAsAction="always"
         support:actionProviderClass="android.support.v7.widget.ShareActionProvider"

@@ -18,4 +18,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="image_description">Icon for weather conditions</string>
     <string name="facebook_app_id">1507630126227394</string>
+    <string name="delete_city_text">Delete</string>
+    <string name="use_current_location">Use current location</string>
+    <string name="share_text">Share</string>
+    <string name="add_text">Add</string>
 </resources>
