@@ -53,7 +53,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
     private TextView mHumidity;
     private TextView mWindSpeed;
     private WeatherData mWeatherData;
-    private TextView descriptionWeatherText;
+    private TextView mDescriptionWeatherText;
     private View mCoordinatorView;
 
     private CurrentWeatherWrapper mWeatherWrapper;
@@ -108,33 +108,67 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         try {
             if (result.has("main")) {
                 JSONObject main = result.getJSONObject("main");
-                int currentWeather = main.getInt("temp");
-                mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
-                //Get wind speed and set it to its TextView
-                JSONObject windSpeed = result.getJSONObject("wind");
-                double wind = windSpeed.getDouble("speed");
-                String windSpeedText = String.valueOf(wind) + "m/s";
-                mWindSpeed.setText(windSpeedText);
-                //Get humidity and set it to its TextView
-                int humidity = main.getInt("humidity");
-                String humidityText = String.valueOf(humidity) + "%";
-                mHumidity.setText(humidityText);
-                //Get the city ID from the JSON response
-                mCityID = result.getInt("id");
-                mCityName = result.getString("name");
-                //Trim 'Obshtina' from the beginning of the city name
-                String trimmedCityName = mCityName.replaceAll("Obshtina ", "");
-                mCity.setText(trimmedCityName);
-                //Get the weather description string
-                JSONArray jArray = result.getJSONArray("weather");
-                JSONObject description = jArray.getJSONObject(0);
-                String desc = description.getString("description");
-                descriptionWeatherText.setText(desc);
-
+                setupCurrentTemperature(main);
+                setupWindSpeed(result);
+                setUpHumidity(main);
+                trimCityNameAndGetCityID(result);
+                setupWeatherDescription(result);
                 showNotification();
             } else {
                 showSnackBar();
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void trimCityNameAndGetCityID(JSONObject result) {
+        try {
+            mCityID = result.getInt("id");
+            mCityName = result.getString("name");
+            String trimmedCityName = mCityName.replaceAll("Obshtina ", "");
+            mCity.setText(trimmedCityName);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setupWeatherDescription(JSONObject result) {
+        try {
+            JSONArray jArray = result.getJSONArray("weather");
+            JSONObject description = jArray.getJSONObject(0);
+            String desc = description.getString("description");
+            mDescriptionWeatherText.setText(desc);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setUpHumidity(JSONObject main) {
+        try {
+            int humidity = main.getInt("humidity");
+            String humidityText = String.valueOf(humidity) + "%";
+            mHumidity.setText(humidityText);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setupWindSpeed(JSONObject result) {
+        try {
+            JSONObject windSpeed = result.getJSONObject("wind");
+            double wind = windSpeed.getDouble("speed");
+            String windSpeedText = String.valueOf(wind) + "m/s";
+            mWindSpeed.setText(windSpeedText);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setupCurrentTemperature(JSONObject main) {
+        try {
+            int currentWeather = main.getInt("temp");
+            mCurrentTemp.setText(String.valueOf(currentWeather + "ºC"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -198,7 +232,7 @@ public class BaseWeatherFragment extends Fragment implements IPanoramioCallback,
         mCity = (TextView) view.findViewById(R.id.city_textView);
         mHumidity = (TextView) view.findViewById(R.id.min_temp_textView);
         mWindSpeed = (TextView) view.findViewById(R.id.max_temp_textView);
-        descriptionWeatherText = (TextView) view.findViewById(R.id.last_refresh_textView);
+        mDescriptionWeatherText = (TextView) view.findViewById(R.id.last_refresh_textView);
         mCoordinatorView = view.findViewById(R.id.snackbar);
         Button forecastButton = (Button) view.findViewById(R.id.forecast_button);
         forecastButton.setText("see forecast");
