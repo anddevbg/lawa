@@ -101,7 +101,7 @@ public class GraphActivity extends AppCompatActivity implements IForecastCallbac
     }
 
     @Override
-    public void onForeastError(VolleyError error) {
+    public void onForecastError(VolleyError error) {
         Toast.makeText(this, "Oops! Something went wrong.", Toast.LENGTH_SHORT).show();
     }
 }

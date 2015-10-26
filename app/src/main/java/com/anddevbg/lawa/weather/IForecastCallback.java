@@ -9,5 +9,5 @@ import org.json.JSONObject;
  */
 public interface IForecastCallback {
      void onForecastReceived(JSONObject response);
-     void onForeastError(VolleyError error);
+     void onForecastError(VolleyError error);
 }

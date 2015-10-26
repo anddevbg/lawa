@@ -35,7 +35,7 @@ public class ForecastWrapper {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                callback.onForeastError(error);
+                callback.onForecastError(error);
             }
         });
         NetworkRequestManager.getInstance().performRequest(request);
