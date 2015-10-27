@@ -25,4 +25,7 @@
     <string name="see_forecast">See forecast</string>
     <string name="see_graph">See graph</string>
     <string name="no_weather_information">No forecast information available for this location</string>
+    <string name="search_city_by_name">Search city by name</string>
+    <string name="search_text">Search</string>
+
 </resources>

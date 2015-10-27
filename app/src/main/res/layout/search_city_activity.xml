@@ -6,8 +6,8 @@
         android:id="@+id/search_city_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search city by name"
-        android:textSize="27dp"/>
+        android:text="@string/search_city_by_name"
+        android:textSize="27sp"/>
     <AutoCompleteTextView
         android:id="@+id/search_city_edit_text"
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:id="@+id/button_search_city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search"/>
+        android:text="@string/search_text"/>
     <ListView
         android:id="@+id/city_list"
         android:layout_width="match_parent"

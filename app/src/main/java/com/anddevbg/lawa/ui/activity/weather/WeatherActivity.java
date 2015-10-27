@@ -317,7 +317,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     @Override
     public void onConnectionSuspended(int i) {
-        Toast.makeText(this, "Connection suspended. Trying to reconnect", Toast.LENGTH_SHORT).show();
         mGoogleClient.connect();
     }
 
