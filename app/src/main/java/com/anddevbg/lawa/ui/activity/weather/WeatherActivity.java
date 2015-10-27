@@ -18,6 +18,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,6 +124,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private void getManagerAndShowData() {
         mWeatherDataBaseManager = WeatherDatabaseManager.getInstance();
         mResult = mWeatherDataBaseManager.showAll();
+        arraySizeCheck();
         mWeatherAdapter.setWeatherData(mResult);
     }
 
@@ -166,7 +168,6 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private Intent getTextIntent() {
         Intent textIntent = new Intent(Intent.ACTION_SEND);
         textIntent.setType("text/*");
-        textIntent.putExtra(Intent.EXTRA_TEXT, "Check out the weather in");
         return textIntent;
     }
 
@@ -193,8 +194,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         return mBitmap;
     }
 
-    private boolean resultArraySize() {
-        return mResult.size() == 0;
+    private void arraySizeCheck() {
+        if(mResult.size() == 0) {
+            mScreenshotButton.setVisibility(View.GONE);
+        } else {
+            mScreenshotButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private Intent getPictureIntent() {
@@ -275,11 +280,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 mWeatherAdapter.setWeatherData(mResult);
                 mViewPager.setCurrentItem(mResult.size());
                 mWeatherDataBaseManager.insertData(locationName, mLocationLatitude, mLocationLongitude);
-                if(resultArraySize()) {
-                    mScreenshotButton.setVisibility(View.GONE);
-                } else {
-                    mScreenshotButton.setVisibility(View.VISIBLE);
-                }
+                arraySizeCheck();
             }
         }
     }
@@ -291,6 +292,11 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         mViewPager.setOffscreenPageLimit(5);
         setUpScreenshotButton();
         mViewPager.setPageTransformer(false, new ZoomPagerTransformation());
+        handleWidgetClick();
+        arraySizeCheck();
+    }
+
+    private void handleWidgetClick() {
         Intent widgetIntent = getIntent();
         Bundle extras = widgetIntent.getExtras();
         if (extras != null) {
@@ -301,11 +307,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
 
     private void setUpScreenshotButton() {
         mScreenshotButton = (Button) findViewById(R.id.screenshot_image_button);
-        if(resultArraySize()) {
-            mScreenshotButton.setVisibility(View.GONE);
-        } else {
-            mScreenshotButton.setVisibility(View.VISIBLE);
-        }
+        arraySizeCheck();
         mScreenshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
