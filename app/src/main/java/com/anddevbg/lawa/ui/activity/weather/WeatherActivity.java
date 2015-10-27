@@ -161,14 +161,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         MenuItem item = menu.findItem(R.id.action_share);
         ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         shareActionProvider.setShareIntent(getPictureIntent());
-//        shareActionProvider.setShareIntent(getTextIntent());
         return super.onCreateOptionsMenu(menu);
-    }
-
-    private Intent getTextIntent() {
-        Intent textIntent = new Intent(Intent.ACTION_SEND);
-        textIntent.setType("text/*");
-        return textIntent;
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
