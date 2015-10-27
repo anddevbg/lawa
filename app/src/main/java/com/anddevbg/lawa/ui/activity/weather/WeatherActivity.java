@@ -57,6 +57,7 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     private WeatherDatabaseManager mWeatherDataBaseManager;
     private Intent mShareIntent;
     private Bitmap mBitmap;
+    private Button mScreenshotButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,6 +193,10 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
         return mBitmap;
     }
 
+    private boolean resultArraySize() {
+        return mResult.size() == 0;
+    }
+
     private Intent getPictureIntent() {
         mShareIntent = new Intent(Intent.ACTION_SEND);
         mShareIntent.setType("image/jpeg");
@@ -270,6 +275,11 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
                 mWeatherAdapter.setWeatherData(mResult);
                 mViewPager.setCurrentItem(mResult.size());
                 mWeatherDataBaseManager.insertData(locationName, mLocationLatitude, mLocationLongitude);
+                if(resultArraySize()) {
+                    mScreenshotButton.setVisibility(View.GONE);
+                } else {
+                    mScreenshotButton.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -290,7 +300,12 @@ public class WeatherActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private void setUpScreenshotButton() {
-        Button mScreenshotButton = (Button) findViewById(R.id.screenshot_image_button);
+        mScreenshotButton = (Button) findViewById(R.id.screenshot_image_button);
+        if(resultArraySize()) {
+            mScreenshotButton.setVisibility(View.GONE);
+        } else {
+            mScreenshotButton.setVisibility(View.VISIBLE);
+        }
         mScreenshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

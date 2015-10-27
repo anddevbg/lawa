@@ -24,4 +24,5 @@
     <string name="add_text">Add</string>
     <string name="see_forecast">See forecast</string>
     <string name="see_graph">See graph</string>
+    <string name="no_weather_information">No forecast information available for this location</string>
 </resources>

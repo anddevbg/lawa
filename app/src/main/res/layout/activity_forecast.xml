@@ -16,6 +16,6 @@
         android:layout_centerInParent="true"
         android:textSize="18sp"
         android:gravity="center"
-        android:text="No forecast information available for this location" />
+        android:text="@string/no_weather_information" />
 
 </RelativeLayout>
